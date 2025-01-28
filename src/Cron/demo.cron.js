@@ -1,14 +1,14 @@
 const cron = require("cron");
 const Logs = require("../Utils/logs");
 
-class TestCron {
+class DemoCron {
   
   constructor() {
-    this.name = "testcron";
+    this.name = "demoCron";
     // this.schedule = "*/2 * * * * *";
     this.schedule = this.datetimeExpression();
     this.timeZone = 'Asia/Kolkata';
-    this.cronrun;
+    this.cronRun;
   }
 
   datetimeExpression = (datetime = new Date()) => {
@@ -21,39 +21,39 @@ class TestCron {
     }
   }
 
-  crontask = async () => {
+  cronTask = async () => {
     try {
 
         console.log(`CronTask ${new Date()}`);
 
-        this.cronrun.stop();
+        this.cronRun.stop();
 
     } catch (error) {
-      Logs.CreateLog(error, "Test - Cron");
+      Logs.createLog(error, this.name);
     }
   };
 
-  croncomplete = () => {
+  cronComplete = () => {
     
     this.schedule = this.datetimeExpression();
     this.Run();
 
-    Logs.CreateLog(`Cron Completed :- ${new Date()}`, "Test - Cron");
+    Logs.createLog(`Cron Completed :- ${new Date()}`, this.name);
   }
 
-  nextcall = (next = 1) => {
-    return this.cronrun.nextDates(next);
+  nextCall = (next = 1) => {
+    return this.cronRun.nextDates(next);
   }
   
-  cronStastus = () => {
-    return this.cronrun.running?"running":"stopped";
+  cronStatus = () => {
+    return this.cronRun.running?"running":"stopped";
   }
 
   Run = () => {
-    this.cronrun = cron.CronJob.from({
+    this.cronRun = cron.CronJob.from({
       cronTime: this.schedule,
-      onTick: this.crontask,
-      onComplete: this.croncomplete,
+      onTick: this.cronTask,
+      onComplete: this.cronComplete,
       name: this.name,
       start: true,
       timeZone: this.timeZone
@@ -61,4 +61,4 @@ class TestCron {
   };
 
 }
-module.exports = new TestCron();
+module.exports = new DemoCron();
