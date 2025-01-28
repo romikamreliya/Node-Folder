@@ -1,6 +1,6 @@
 const Helper = require("../Utils/helper");
 const APIResources = require("../Resources/api.resources");
-const Toekn = require("../Utils/token");
+const Token = require("../Utils/token");
 const Logs = require("../Utils/logs");
 
 class LoginMiddleware {
@@ -10,15 +10,15 @@ class LoginMiddleware {
     try {
       
       const token = req.headers['authorization']?.replace('Bearer ','')
-      let tokenchack = Toekn.tokendecode(token,['user','admin'])
+      let tokenCheck = Token.tokendecode(token,['user','admin'])
       
-      if (!tokenchack.res) {
-        return APIResources.apierror(res,'You have no access');
-      }
+      // if (!tokenCheck.res) {
+      //   return APIResources.apiError(res,'You have no access');
+      // }
 
       // auth token with role wise token
       // let datas = {id:"01",name:"sdd"};
-      // let newtokens = Toekn.generatetoken(datas,'user')
+      // let newtokens = Token.generatetoken(datas,'user')
       // console.log(newtokens);
       
       next();

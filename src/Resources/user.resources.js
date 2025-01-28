@@ -23,15 +23,6 @@ class UserResources {
         return data?.map(item => this.fulldetails(item));
     }
 
-    pagination = (data) => {
-        return {
-            data: this.list(data.data),
-            currentpage: data.currentpage,
-            limit: data.limit,
-            total_pages: Math.ceil(data.recordcount.count / data.limit)
-        }
-    }
-
 }
 
 module.exports = new UserResources();

@@ -1,18 +1,22 @@
 const Helper = require("../Utils/helper");
 
-class APIResources{
+class APIResources extends Helper{
 
-    apierror = (res, msg = "error") => {
+    constructor() {
+        super();
+    }
+
+    apiError = (res, msg = "error") => {
         return res.send({
             res: false,
-            msg: Helper.ResMessage(msg),
+            msg: this.ResMessage(msg),
             data: []
         })
     }
-    apisuccess = (res, msg = "success", data = []) => {
+    apiSuccess = (res, msg = "success", data = []) => {
         return res.send({
             res: true,
-            msg: Helper.ResMessage(msg),
+            msg: this.ResMessage(msg),
             data
         });
     }

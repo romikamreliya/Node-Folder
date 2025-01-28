@@ -1,12 +1,13 @@
 const db = require("../Config/connection");
+const Helper = require("../Utils/helper");
 
-class UserModel {
+class UserModel extends Helper {
   constructor() {
+    super();
     this.name = "user";
-    this.pagelimit = 2;
   }
 
-  tablecolumn = (data) => {
+  tableColumn = (data) => {
     return Object.fromEntries(Object.entries({
       "id": data.id,
       "name": data.name,
@@ -23,47 +24,50 @@ class UserModel {
 
   find = async (query) => {
     try {
-      return await db(this.name).where(this.tablecolumn(query));
+      return await db(this.name).where(this.tableColumn(query));
     } catch (error) { throw error;}
   };
 
-  findone = async (query) => {
+  findOne = async (query) => {
     try {
-      return await db(this.name).where(this.tablecolumn(query)).first();
+      return await db(this.name).where(this.tableColumn(query)).first();
     } catch (error) { throw error;}
   };
 
   insert = async (data) => {
     try {
-      return await db(this.name).insert(this.tablecolumn(data));
+      return await db(this.name).insert(this.tableColumn(data));
     } catch (error) { throw error;}
   };
 
   update = async (id, data) => {
     try {
-      return await db(this.name).where("id", id).update(this.tablecolumn(data));
+      return await db(this.name).where("id", id).update(this.tableColumn(data));
     } catch (error) { throw error;}
   };
 
   delete = async (query) => {
     try {
-      return await db(this.name).where(this.tablecolumn(query)).del();
+      return await db(this.name).where(this.tableColumn(query)).del();
     } catch (error) { throw error;}
   };
 
   count = async (query = {}) => {
     try {
-      return await db(this.name).count('id as count').where(this.tablecolumn(query)).first();
+      return await db(this.name).count('id as count').where(this.tableColumn(query)).first();
     } catch (error) { throw error;}
   };
 
-  pagination = async (page = 1, limit = this.pagelimit, query = {}) => {
+  pagination = async (page = 1, limit = this.pageLimit, query = {}, select = '*') => {
     try {
+      const rowsCount = await this.count(query)      
       return {
-        data: await db(this.name).where(this.tablecolumn(query)).limit(limit).offset((page - 1) * limit),
-        recordcount: await this.count(query),
-        currentpage: page,
-        limit: limit
+        data: await db(this.name).where(this.tableColumn(query)).select(select).limit(limit).offset((page - 1) * limit),
+        pagination: {
+          total_pages:Math.ceil(rowsCount.count / limit),
+          currentPage: page,
+          limit: limit
+        }
       };
     } catch (error) { throw error;}
   }
