@@ -6,10 +6,10 @@ class Validation {
       allErrors: true,
       useDefaults: true,
     });
-    this.customkey();
+    this.customKey();
   }
 
-  customkey = () => {
+  customKey = () => {
     this.ajv.addKeyword("email", {
       type: "string",
       error: {message: "Email is Wrong"},
@@ -19,11 +19,11 @@ class Validation {
     });
   };
 
-  schemaganretor = (schemadata) => {
+  schemaGenerator = (schemaData) => {
     return {
       type: "object",
-      properties: schemadata,
-      required: Object.keys(schemadata),
+      properties: schemaData,
+      required: Object.keys(schemaData),
       additionalProperties: false,
     };
   };
@@ -47,7 +47,7 @@ class Validation {
   };
 
   ajvchack = (schema) => {
-    return this.ajv.compile(this.schemaganretor(schema));
+    return this.ajv.compile(this.schemaGenerator(schema));
   };
 }
 

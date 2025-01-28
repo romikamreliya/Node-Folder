@@ -10,7 +10,7 @@ class LoginMiddleware {
     try {
       
       const token = req.headers['authorization']?.replace('Bearer ','')
-      let tokenCheck = Token.tokendecode(token,['user','admin'])
+      let tokenCheck = Token.tokenDecode(token,['user','admin'])
       
       // if (!tokenCheck.res) {
       //   return APIResources.apiError(res,'You have no access');
@@ -18,13 +18,13 @@ class LoginMiddleware {
 
       // auth token with role wise token
       // let datas = {id:"01",name:"sdd"};
-      // let newtokens = Token.generatetoken(datas,'user')
+      // let newtokens = Token.generateToken(datas,'user')
       // console.log(newtokens);
       
       next();
     } catch (error) {
-      Logs.CreateLog(error);
-      return APIResources.apierror(res,'error');
+      Logs.createLog(error);
+      return APIResources.apiError(res,'error');
     }
   };
 }

@@ -28,6 +28,8 @@ class Logs{
     }
 
     createLog = (msg, name = "") => {
+
+        if (msg?.name = "Error") {return;}
         
         const errorObject = this.extractLineNumber(msg);
         const fileCheck = this.fileCheck();

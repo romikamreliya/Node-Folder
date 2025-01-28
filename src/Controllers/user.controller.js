@@ -23,9 +23,7 @@ class UserController {
 
       return APIResources.apiSuccess(res, 'success', userdata);
     } catch (error) {
-      if (error.name != "Error") {
-        Logs.createLog(error, 'GetAllUser'); 
-      }
+      Logs.createLog(error, 'GetAllUser');
       return APIResources.apiError(res,'error');
     }
   };
@@ -57,9 +55,7 @@ class UserController {
 
       return APIResources.apiSuccess(res,"success",data);
     } catch (error) {
-      if (error.name != "Error") {
-        Logs.createLog(error, 'addUser');
-      }
+      Logs.createLog(error, 'addUser');
       return APIResources.apiError(res,'error');
     }
   };
