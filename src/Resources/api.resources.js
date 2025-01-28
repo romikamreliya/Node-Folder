@@ -9,14 +9,14 @@ class APIResources extends Helper{
     apiError = (res, msg = "error") => {
         return res.send({
             res: false,
-            msg: this.ResMessage(msg),
+            msg: this.resMessage(msg),
             data: []
         })
     }
     apiSuccess = (res, msg = "success", data = []) => {
         return res.send({
             res: true,
-            msg: this.ResMessage(msg),
+            msg: this.resMessage(msg),
             data
         });
     }

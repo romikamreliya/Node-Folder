@@ -8,7 +8,7 @@ class Helper extends commonConst{
     super();
   }
 
-  ResMessage = (msg, len = "en") => {
+  resMessage = (msg, len = "en") => {
     const msgLen = require(`../Language/${len}/message.js`);
     return msgLen[msg] ?? msg;
   };

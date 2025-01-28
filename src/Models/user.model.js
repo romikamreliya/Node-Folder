@@ -1,5 +1,6 @@
 const db = require("../Config/connection");
 const Helper = require("../Utils/helper");
+const UserResources = require("../Resources/user.resources");
 
 class UserModel extends Helper {
   constructor() {
@@ -58,11 +59,12 @@ class UserModel extends Helper {
     } catch (error) { throw error;}
   };
 
-  pagination = async (page = 1, limit = this.pageLimit, query = {}, select = '*') => {
+  pagination = async ({page, limit = this.pageLimit, query = {}, select = "*"}) => {
     try {
+      const rowsData = await db(this.name).where(this.tableColumn(query)).select(select).limit(limit).offset((page - 1) * limit);
       const rowsCount = await this.count(query)      
       return {
-        data: await db(this.name).where(this.tableColumn(query)).select(select).limit(limit).offset((page - 1) * limit),
+        data: UserResources.list(rowsData),
         pagination: {
           total_pages:Math.ceil(rowsCount.count / limit),
           currentPage: page,

@@ -19,7 +19,7 @@ class UserController {
       // eventEmitter.emit('test',"demo user");
 
       // get data with pagination
-      const userdata = await UserModel.pagination(1,3);
+      const userdata = await UserModel.pagination({page:1, limit:3, select: "id"});
 
       return APIResources.apiSuccess(res, 'success', userdata);
     } catch (error) {
@@ -35,7 +35,7 @@ class UserController {
 
       // upload images
       await new Promise((resolve, reject) => {
-        ImageMulter.upload.single("reviewprofile")(req, res, (err) => {
+        ImageMulter.upload.single("reviewProfile")(req, res, (err) => {
           if (err) return reject(err);
           return resolve();
         });
