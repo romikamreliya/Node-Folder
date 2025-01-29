@@ -1,3 +1,4 @@
 .env
 public
 details
+/node_modules
