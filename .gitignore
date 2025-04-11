@@ -1,3 +1,5 @@
 .env
 public
 details
+/logs
+/node_modules
