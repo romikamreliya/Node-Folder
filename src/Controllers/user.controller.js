@@ -45,7 +45,7 @@ class UserController {
       };
 
       // json validation
-      const validate = Validation.ajvchack({
+      const validate = Validation.ajvChack({
         name: Validation.prop("string"),
         email: Validation.prop("string", { format: "email" }),
       });

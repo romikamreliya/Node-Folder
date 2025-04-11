@@ -46,7 +46,7 @@ class Validation {
     return propObj;
   };
 
-  ajvchack = (schema) => {
+  ajvChack = (schema) => {
     return this.ajv.compile(this.schemaGenerator(schema));
   };
 }
