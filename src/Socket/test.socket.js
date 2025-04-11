@@ -6,9 +6,9 @@ class TestSocket{
     }
     connection = () => {
         console.log('connection');
-        this.socketemit();
+        this.socketEmit();
     }
-    socketemit = () => {
+    socketEmit = () => {
         this.socket.on('send',(data)=>{
             this.socket.emit('send',`${data} - server`)
         })

@@ -9,7 +9,7 @@ class UserResources {
         }
     }
 
-    fulldetails = (data = {}) => {
+    fullDetails = (data = {}) => {
         return {
             id : data.id ?? this.user.id,
             name : data.name ?? this.user.name,
@@ -20,16 +20,7 @@ class UserResources {
     }
 
     list = (data) => {
-        return data?.map(item => this.fulldetails(item));
-    }
-
-    pagination = (data) => {
-        return {
-            data: this.list(data.data),
-            currentpage: data.currentpage,
-            limit: data.limit,
-            total_pages: Math.ceil(data.recordcount.count / data.limit)
-        }
+        return data?.map(item => this.fullDetails(item));
     }
 
 }

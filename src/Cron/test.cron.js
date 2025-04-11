@@ -4,10 +4,10 @@ const Logs = require("../Utils/logs");
 class TestCron {
   
   constructor() {
-    this.name = "testcron";
+    this.name = "testCron";
     this.schedule = "* * * * * *";
     this.timeZone = 'Asia/Kolkata';
-    this.cronrun;
+    this.cronRun;
   }
 
   datetimeExpression = (datetime = new Date()) => {
@@ -20,32 +20,32 @@ class TestCron {
     }
   }
 
-  crontask = async () => {
+  cronTask = async () => {
     try {
       console.log("CronTask");
     } catch (error) {
-      Logs.CreateLog(error, "Test - Cron");
+      Logs.createLog(error, this.name);
     }
   };
 
-  croncomplete = () => {
-    Logs.CreateLog(`Cron Completed :- ${new Date()}`, "Test - Cron");
+  cronComplete = () => {
+    Logs.CreateLog(`Cron Completed :- ${new Date()}`, this.name);
   }
 
-  nextcall = (next = 1) => {
-    return this.cronrun.nextDates(next);
+  nextCall = (next = 1) => {
+    return this.cronRun.nextDates(next);
   } 
 
-  cronStastus = () => {
-    return this.cronrun.running?"running":"stopped";
+  cronStatus = () => {
+    return this.cronRun.running?"running":"stopped";
   }
 
   Run = () => {
 
-    this.cronrun = cron.CronJob.from({
+    this.cronRun = cron.CronJob.from({
       cronTime: this.schedule,
-      onTick: this.crontask,
-      onComplete: this.croncomplete,
+      onTick: this.cronTask,
+      onComplete: this.cronComplete,
       name: this.name,
       start: true,
       timeZone: this.timeZone
