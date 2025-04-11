@@ -4,12 +4,12 @@ const crypto = require("crypto");
 class Token {
   constructor() {
     this.algorithm = process.env.algorithm;
-    this.tokenkey = process.env.tokenkey;
-    this.iv = Buffer.alloc(16, this.tokenkey, "base64");
-    this.key = Buffer.alloc(32, this.tokenkey, "base64");
+    this.tokenKey = process.env.tokenKey;
+    this.iv = Buffer.alloc(16, this.tokenKey, "base64");
+    this.key = Buffer.alloc(32, this.tokenKey, "base64");
   }
 
-  generatetoken = (data, key) => {
+  generateToken = (data, key) => {
     try {
       const cipher = crypto.createCipheriv(this.algorithm, this.key, this.iv);
       let encryptedData = cipher.update(JSON.stringify({ data, key }), "utf-8", "hex") + cipher.final("hex");
@@ -19,7 +19,7 @@ class Token {
     }
   };
   
-  tokendecode = (data, key) => {
+  tokenDecode = (data, key) => {
     try {
       const decipher = crypto.createDecipheriv(
         this.algorithm,

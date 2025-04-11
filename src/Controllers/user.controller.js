@@ -14,15 +14,17 @@ class UserController {
   getAllUser = async(req, res) => {
     try {
 
-      const eventEmitter = req.app.get('eventEmitter');
-      eventEmitter.emit('test',"demo user");
+      // Event Call
+      // const eventEmitter = req.app.get('eventEmitter');
+      // eventEmitter.emit('test',"demo user");
 
-      const userdata = await UserModel.pagination(1,3);
+      // get data with pagination
+      const userdata = await UserModel.pagination({page:1, limit:3, select: "id"});
 
-      return APIResources.apisuccess(res, 'success', UserResources.pagination(userdata));
+      return APIResources.apiSuccess(res, 'success', userdata);
     } catch (error) {
-      Logs.CreateLog(error, 'GetAllUser');
-      return APIResources.apierror(res,'error');
+      Logs.createLog(error, 'GetAllUser');
+      return APIResources.apiError(res,'error');
     }
   };
 
@@ -31,7 +33,7 @@ class UserController {
 
       // upload images
       await new Promise((resolve, reject) => {
-        ImageMulter.upload.single("reviewprofile")(req, res, (err) => {
+        ImageMulter.upload.single("reviewProfile")(req, res, (err) => {
           if (err) return reject(err);
           return resolve();
         });
@@ -43,18 +45,18 @@ class UserController {
       };
 
       // json validation
-      const validate = Validation.ajvchack({
+      const validate = Validation.ajvChack({
         name: Validation.prop("string"),
         email: Validation.prop("string", { format: "email" }),
       });
       if (!validate(data)) {
-        return APIResources.apierror(res,validate.errors[0].message);
+        throw new Error(validate.errors[0].message);
       }
 
-      return APIResources.apisuccess(res,"success",data);
+      return APIResources.apiSuccess(res,"success",data);
     } catch (error) {
-      Logs.CreateLog(error, 'AddUser');
-      return APIResources.apierror(res,'error');
+      Logs.createLog(error, 'addUser');
+      return APIResources.apiError(res,'error');
     }
   };
 }

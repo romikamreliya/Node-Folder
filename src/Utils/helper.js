@@ -1,12 +1,18 @@
 const lodash = require("lodash");
 
-class Helper {
+const commonConst = require("./commonConst");
+
+class Helper extends commonConst{
   
-  ResMessage = (msg, len = "en") => {
-    const msglen = require(`../Language/${len}/message.js`);
-    return msglen[msg] ?? msg;
+  constructor() {
+    super();
+  }
+
+  resMessage = (msg, len = "en") => {
+    const msgLen = require(`../Language/${len}/message.js`);
+    return msgLen[msg] ?? msg;
   };
   
 }
 
-module.exports = new Helper();
+module.exports = Helper;
