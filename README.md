@@ -38,4 +38,10 @@ A Node.js API project with advanced features and best practices.
 - Lodash utility functions
 
 
-
+### worker_threads
+Examples:
+- Big loops/calculations
+- Data compression
+- Image/video processing
+- Password hashing
+- PDF generation
