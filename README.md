@@ -45,3 +45,6 @@ Examples:
 - Image/video processing
 - Password hashing
 - PDF generation
+
+### Pending Work
+- rate limit ( throttle )

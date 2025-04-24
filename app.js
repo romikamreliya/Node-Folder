@@ -5,6 +5,7 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const EventEmitter = require('events');
 const {Server} = require('socket.io');
+const { rateLimit } = require('express-rate-limit');
 
 const APIRoutes = require("./src/Routes/api.route");
 const TestCron = require("./src/Cron/test.cron");
@@ -28,6 +29,12 @@ class Main {
     this.app.use(bodyParser.json())
     this.app.use(express.static('public'))
     this.app.set('eventEmitter', this.eventEmitter)
+    this.app.use(rateLimit({
+      windowMs: 1 * 60 * 1000, // 1 minutes
+      limit: 10,
+      standardHeaders: 'draft-8',
+      legacyHeaders: false,
+    }))
   }
 
   Routes = () => {
@@ -51,9 +58,9 @@ class Main {
   Start = () => {
     this.Config();
     this.Routes();
-    this.Cron();
     this.Socket();
     this.Events();
+    this.Cron();
 
     this.server.listen(this.PORT, () => {
       console.log(`Example app listening on port ${this.PORT}`);
