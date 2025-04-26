@@ -36,7 +36,7 @@ A Node.js API project with advanced features and best practices.
 - Environment configuration with dotenv
 - Request body parsing with body-parser
 - Lodash utility functions
-
+- rate limit ( throttle )
 
 ### worker_threads
 Examples:
@@ -45,3 +45,5 @@ Examples:
 - Image/video processing
 - Password hashing
 - PDF generation
+
+<!-- ### Pending Work -->
