@@ -10,7 +10,7 @@ class ApiRoutes {
   }
 
   userApi = () => {
-    this.routes.get("/user/temp", UserController.getAllUser);
+    this.routes.post("/user/ajv", UserController.ajv);
     this.routes.use("/user", LoginMiddleware.userLogin);
     this.routes.get("/user/get", UserController.getAllUser);
     this.routes.post("/user/get", UserController.addUser);

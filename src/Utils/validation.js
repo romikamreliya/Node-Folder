@@ -31,14 +31,32 @@ class Validation {
   prop = (type, options = {}) => {
     const propObj = { type };
 
-    type === "number"
-      ? ((propObj.minimum = options.minimum),
-        (propObj.maximum = options.maximum))
-      : type === "string"
-      ? ((propObj.minLength = options.minLength),
-        (propObj.maxLength = options.maxLength))
-      : null;
+    type.includes("number")
+    ? (
+      (propObj.minimum = options.minimum),
+      (propObj.maximum = options.maximum)
+    )
+    : type.includes("string")
+    ? (
+      (propObj.minLength = options.minLength),
+      (propObj.maxLength = options.maxLength)
+    )
+    : type.includes("array")
+    ? (
+      (propObj.minItems = options.minItems),
+      (propObj.maxItems = options.maxItems),
+      (propObj.uniqueItems = options.uniqueItems),
+      (propObj.items = options.items)
+    )
+    : type.includes("object")
+    ? (
+      (propObj.minProperties = options.minProperties),
+      (propObj.maxProperties = options.maxProperties),
+      (propObj.properties = options.properties)
+    )
+    : null;
 
+    options.pattern !== undefined && (propObj.pattern = options.pattern);
     options.enum !== undefined && (propObj.enum = options.enum);
     options.default !== undefined && (propObj.default = options.default);
     options.format !== undefined && (propObj[options.format] = true);

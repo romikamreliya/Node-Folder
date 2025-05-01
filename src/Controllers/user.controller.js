@@ -11,6 +11,46 @@ class UserController {
   constructor() {
   }
 
+  ajv = async(req, res) => {
+    try {
+
+      const data = {
+        name: req.body.name,
+        email: req.body.email,
+        array: req.body.array,
+        object: req.body.object,
+      };
+
+      // json validation
+      const validate = Validation.ajvChack({
+        name: Validation.prop("string",{minLength:2,}),
+        email: Validation.prop("string", { format: "email" }),
+        array: Validation.prop("array", { items: Validation.prop("object",{
+          properties: {
+            name: Validation.prop("string"),
+            email: Validation.prop(["string","null"]),
+          }, 
+          minProperties:2
+        }), minItems:2 }),
+        object: Validation.prop("object", { 
+          properties: {
+            name: Validation.prop("string"),
+            email: Validation.prop(["string","null"]),
+          }, 
+          minProperties:2 
+        }),
+      });
+      if (!validate(data)) {
+        return APIResources.apiError(res,validate.errors[0].message);
+      }
+
+      return APIResources.apiSuccess(res, 'success', "valid");
+    } catch (error) {
+      Logs.createLog(error, 'GetAllUser');
+      return APIResources.apiError(res,'error');
+    }
+  };
+
   getAllUser = async(req, res) => {
     try {
 
