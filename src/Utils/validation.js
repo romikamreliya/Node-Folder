@@ -19,11 +19,12 @@ class Validation {
     });
   };
 
-  schemaGenerator = (schemaData) => {
+  schemaGenerator = (schemaData, options) => {
     return {
       type: "object",
       properties: schemaData,
-      required: Object.keys(schemaData),
+      required: options.required || Object.keys(schemaData),
+      allOf:options.allOf,
       additionalProperties: false,
     };
   };
@@ -64,8 +65,8 @@ class Validation {
     return propObj;
   };
 
-  ajvChack = (schema) => {
-    return this.ajv.compile(this.schemaGenerator(schema));
+  ajvChack = (schema, options = {}) => {
+    return this.ajv.compile(this.schemaGenerator(schema, options));
   };
 }
 

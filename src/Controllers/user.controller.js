@@ -15,16 +15,20 @@ class UserController {
     try {
 
       const data = {
+        type: req.body.type,
         name: req.body.name,
         email: req.body.email,
+        demoTemp: req.body.demoTemp,
         array: req.body.array,
         object: req.body.object,
       };
 
       // json validation
       const validate = Validation.ajvChack({
-        name: Validation.prop("string",{minLength:2,}),
+        type: Validation.prop("string",{minLength:2}),
+        name: Validation.prop("string",{minLength:2}),
         email: Validation.prop("string", { format: "email" }),
+        demoTemp: Validation.prop("string"),
         array: Validation.prop("array", { items: Validation.prop("object",{
           properties: {
             name: Validation.prop("string"),
@@ -36,9 +40,26 @@ class UserController {
           properties: {
             name: Validation.prop("string"),
             email: Validation.prop(["string","null"]),
+            newTemp: Validation.prop(["string","null"]),
           }, 
           minProperties:2 
         }),
+      },
+      {
+        required:["type","name","email","array","object"],
+        allOf:[
+          {
+            if: {
+              properties: { type: { const: "admin" } }
+            },
+            then: {
+              required: ["demoTemp"],
+              properties: {
+                demoTemp: Validation.prop("string",{minLength:2})
+              } 
+            }
+          }
+        ]
       });
       if (!validate(data)) {
         return APIResources.apiError(res,validate.errors[0].message);
