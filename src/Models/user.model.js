@@ -59,12 +59,49 @@ class UserModel extends Helper {
     } catch (error) { throw error;}
   };
 
-  pagination = async ({page, limit = this.pageLimit, query = {}, select = "*"}) => {
+  pagination = async ({page = 1, limit = this.pageLimit, filters = {}, select = "*"}) => {
     try {
-      const rowsData = await db(this.name).where(this.tableColumn(query)).select(select).limit(limit).offset((page - 1) * limit);
-      const rowsCount = await this.count(query)      
+
+      let dbQuery = db(this.name).select(select);
+
+      // Columns filter
+      const columns = this.tableColumn(filters);
+
+      // Advanced filters
+      for (const [field, condition] of Object.entries(columns)) {
+        if (typeof condition === "object" && condition !== null) {
+          if (condition.like) {
+            dbQuery.where(field, 'like', `%${condition.like}%`);
+          } else if (condition.gt) {
+            dbQuery.where(field, '>', condition.gt);
+          } else if (condition.gte) {
+            dbQuery.where(field, '>=', condition.gte);
+          } else if (condition.lt) {
+            dbQuery.where(field, '<', condition.lt);
+          } else if (condition.lte) {
+            dbQuery.where(field, '<=', condition.lte);
+          } else if (condition.between && Array.isArray(condition.between)) {
+            dbQuery.whereBetween(field, condition.between);
+          } else if (condition.in && Array.isArray(condition.in)) {
+            dbQuery.whereIn(field, condition.in);
+          } else if (condition.notIn && Array.isArray(condition.notIn)) {
+            dbQuery.whereNotIn(field, condition.notIn);
+          } else if (condition.not) {
+            dbQuery.whereNot(field, condition.not);
+          } else if (condition.null) {
+            dbQuery.whereNull(field);
+          } else if (condition.notNull) {
+            dbQuery.whereNotNull(field);
+          }
+        }
+      }
+      
+      // Apply pagination
+      const rowsData = await dbQuery.clone().limit(limit).offset((page - 1) * limit);
+      const rowsCount = await dbQuery.clone().count('id as count').first();
+      
       return {
-        data: UserResources.list(rowsData),
+        data: rowsData,
         pagination: {
           total_pages:Math.ceil(rowsCount.count / limit),
           currentPage: page,

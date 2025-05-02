@@ -28,6 +28,13 @@ class Logs{
     }
 
     createLog = (msg, name = "") => {
+        
+        if (process.env.DEBUG == "true") {
+            console.log(`------------ ${name} -----------------`);
+            console.log(msg);
+            console.log(`-----------------------------`);
+            return;
+        }
 
         if (msg?.name == "Error") {return;}
         

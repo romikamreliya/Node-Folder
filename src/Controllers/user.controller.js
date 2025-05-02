@@ -72,6 +72,40 @@ class UserController {
     }
   };
 
+  filter = async(req, res) => {
+    try {
+
+      const data = {
+        name: req.body.name,
+        id: req.body.id,
+        range: req.body.range,
+      };
+
+      // json validation
+      const validate = Validation.ajvChack({
+        name: Validation.prop("string",),
+        id: Validation.prop("number"),
+        range: Validation.prop("array", { items: Validation.prop("number"), minItems:2, maxItems:2 }),
+      },
+      {
+        required:[]
+      });
+      if (!validate(data)) {
+        return APIResources.apiError(res,validate.errors[0].message);
+      }
+
+      const filterUser = await UserModel.pagination({filters:{
+        // name:{like:data.name}, // like
+        id:{not:data.id} // gt, gte, lt, lte, not
+        // id:{notIn:data.range} // between, in, notIn
+      }});
+      return APIResources.apiSuccess(res, 'success', filterUser);
+    } catch (error) {
+      Logs.createLog(error, 'GetAllUser');
+      return APIResources.apiError(res,'error');
+    }
+  }
+
   getAllUser = async(req, res) => {
     try {
 
