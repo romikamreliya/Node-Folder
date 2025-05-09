@@ -10,12 +10,32 @@ class Validation {
   }
 
   customKey = () => {
-    this.ajv.addKeyword("email", {
+    this.ajv.addKeyword({
+      keyword:"customEmail",
       type: "string",
       error: {message: "Email is Wrong"},
       validate: (schema, data) => {
-        return (schema && /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,8}$/.test(data));
+        if (!schema) return true;
+        return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,8}$/.test(data);
       },
+    });
+    this.ajv.addKeyword({
+      keyword: "customPhone",
+      type: "string",
+      validate: function (schema, data) {
+        if (!schema) return true;
+        return /^\+?[0-9]{7,15}$/.test(data); // e.g., +12345678900
+      },
+      error: {message: "Phone Number is Wrong"},
+    });
+    this.ajv.addKeyword({
+      keyword: "customWebsite",
+      type: "string",
+      validate: function (schema, data) {
+        if (!schema) return true;
+        return /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[\w-./?%&=]*)?$/.test(data);
+      },
+      error: {message: "Website URL is Wrong"},
     });
   };
 

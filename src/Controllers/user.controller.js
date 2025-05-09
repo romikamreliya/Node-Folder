@@ -18,6 +18,8 @@ class UserController {
         type: req.body.type,
         name: req.body.name,
         email: req.body.email,
+        phone: req.body.phone,
+        website: req.body.website,
         demoTemp: req.body.demoTemp,
         array: req.body.array,
         object: req.body.object,
@@ -27,7 +29,9 @@ class UserController {
       const validate = Validation.ajvChack({
         type: Validation.prop("string",{minLength:2}),
         name: Validation.prop("string",{minLength:2}),
-        email: Validation.prop("string", { format: "email" }),
+        email: Validation.prop("string", { format: "customEmail" }),
+        phone: Validation.prop("string", { format: "customPhone" }),
+        website: Validation.prop("string", { format: "customWebsite" }),
         demoTemp: Validation.prop("string"),
         array: Validation.prop("array", { items: Validation.prop("object",{
           properties: {
