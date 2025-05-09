@@ -6,6 +6,7 @@ const UserResources = require("../Resources/user.resources");
 const Validation = require("../Utils/validation");
 const ImageMulter = require("../Utils/image.multer");
 const Logs = require("../Utils/logs");
+const token = require("../Utils/token");
 
 class UserController {
   constructor() {
@@ -106,6 +107,48 @@ class UserController {
       return APIResources.apiSuccess(res, 'success', filterUser);
     } catch (error) {
       Logs.createLog(error, 'GetAllUser');
+      return APIResources.apiError(res,'error');
+    }
+  }
+
+  token = async(req,res) => {
+    try {
+
+      let userData = {email:"user@gmail.com",pass:"pass"};
+      let userToken = token.generateToken(userData,'user')
+      if (!userToken.res) {
+        return APIResources.apiError(res,'error');
+      }
+
+      return APIResources.apiSuccess(res, 'success', {token:userToken.token});
+    } catch (error) {
+      Logs.createLog(error, 'token');
+      return APIResources.apiError(res,'error');
+    }
+  }
+
+  tokenCheck = async(req,res) => {
+    try {
+
+      const data = {
+        token: req.body.token,
+      };
+      // json validation
+      const validate = Validation.ajvChack({
+        token: Validation.prop("string",{minLength:10}),
+      });
+      if (!validate(data)) {
+        return APIResources.apiError(res,validate.errors[0].message);
+      }
+
+      const tokenValue = token.tokenDecode(data.token,"user");
+      if (!tokenValue.res) {
+        return APIResources.apiError(res,tokenValue.msg);
+      }
+
+      return APIResources.apiSuccess(res, 'success', {token:tokenValue.data});
+    } catch (error) {
+      Logs.createLog(error, 'token');
       return APIResources.apiError(res,'error');
     }
   }

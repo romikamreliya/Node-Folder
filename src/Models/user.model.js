@@ -103,7 +103,8 @@ class UserModel extends Helper {
       return {
         data: rowsData,
         pagination: {
-          total_pages:Math.ceil(rowsCount.count / limit),
+          totalRows: rowsCount.count,
+          totalPages:Math.ceil(rowsCount.count / limit),
           currentPage: page,
           limit: limit
         }
