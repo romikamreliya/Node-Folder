@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "migration": "node ./src/Config/migrations",
+    "migrations": "node ./src/Config/migrations",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -22,6 +22,7 @@
     "multer": "^1.4.5-lts.2",
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.13",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7"
   }
 }
