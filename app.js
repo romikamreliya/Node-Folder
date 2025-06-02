@@ -5,6 +5,7 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const EventEmitter = require('events');
 const {Server} = require('socket.io');
+const cors = require('cors');
 const { rateLimit } = require('express-rate-limit');
 
 const APIRoutes = require("./src/Routes/api.route");
@@ -28,6 +29,7 @@ class Main {
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(bodyParser.json())
     this.app.use(express.static('public'))
+    this.app.use(cors())
     this.app.set('eventEmitter', this.eventEmitter)
     this.app.use(rateLimit({
       windowMs: 1 * 60 * 1000, // 1 minutes

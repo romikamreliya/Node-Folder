@@ -3,10 +3,6 @@ const NodeMailer = require('nodemailer');
 class Mail{
 
     constructor(){
-        this.service = process.env.service;
-        this.host = process.env.host;
-        this.port = process.env.port;
-        this.secure = process.env.secure;
         this.auth = {
             user: process.env.user,
             pass: process.env.pass
@@ -14,13 +10,13 @@ class Mail{
     }
 
     MailConn = NodeMailer.createTransport({
-        service: this.service,
-        host: this.host,
-        port: this.port,
-        secure: this.secure,
+        service: process.env.service,
+        host: process.env.host,
+        port: process.env.port,
+        secure: process.env.secure,
         auth: {
-            user: this.auth.user,
-            pass: this.auth.pass
+            user: process.env.user,
+            pass: process.env.pass
         }
     });
 
