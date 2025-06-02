@@ -19,6 +19,7 @@ class UserController {
         type: req.body.type,
         name: req.body.name,
         email: req.body.email,
+        email_two: req.body.email_two,
         phone: req.body.phone,
         website: req.body.website,
         demoTemp: req.body.demoTemp,
@@ -31,27 +32,30 @@ class UserController {
         type: Validation.prop("string",{minLength:2}),
         name: Validation.prop("string",{minLength:2}),
         email: Validation.prop("string", { format: "customEmail" }),
+        email_two: Validation.prop("string", { format: "customEmail" }),
         phone: Validation.prop("string", { format: "customPhone" }),
         website: Validation.prop("string", { format: "customWebsite" }),
         demoTemp: Validation.prop("string"),
         array: Validation.prop("array", { items: Validation.prop("object",{
           properties: {
-            name: Validation.prop("string"),
-            email: Validation.prop(["string","null"]),
+            name: Validation.prop("string",{minLength:2}),
+            email: Validation.prop(["string","null"],{ format: "customEmail" }),
           }, 
-          minProperties:2
+          minProperties:2,
+          required:["name","email"]
         }), minItems:2 }),
         object: Validation.prop("object", { 
           properties: {
             name: Validation.prop("string"),
-            email: Validation.prop(["string","null"]),
+            email: Validation.prop(["string","null"],{ format: "customEmail" }),
             newTemp: Validation.prop(["string","null"]),
           }, 
-          minProperties:2 
+          minProperties:2,
+          required:["name"]
         }),
       },
       {
-        required:["type","name","email","array","object"],
+        required:["type","name","email","array","object","email_two"],
         allOf:[
           {
             if: {
@@ -67,7 +71,7 @@ class UserController {
         ]
       });
       if (!validate(data)) {
-        return APIResources.apiError(res,validate.errors[0].message);
+        return APIResources.apiError(res,`${validate.errors[0]?.instancePath.split('/').join(' > ')} : ${validate.errors[0].message}`);
       }
 
       return APIResources.apiSuccess(res, 'success', "valid");

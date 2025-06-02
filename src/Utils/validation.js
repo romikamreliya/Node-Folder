@@ -80,7 +80,8 @@ class Validation {
     options.pattern !== undefined && (propObj.pattern = options.pattern);
     options.enum !== undefined && (propObj.enum = options.enum);
     options.default !== undefined && (propObj.default = options.default);
-    options.format !== undefined && (propObj[options.format] = true);
+    options.format !== undefined && (propObj[options.format] = true);    
+    options.required !== undefined && (propObj.required = options.required);
 
     return propObj;
   };
