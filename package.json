@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "migrations": "node ./src/Config/migrations",
+    "migration": "node ./src/Config/migrations",
+    "seeder": "node ./src/Config/seeder",
     "start": "node app.js"
   },
   "author": "",

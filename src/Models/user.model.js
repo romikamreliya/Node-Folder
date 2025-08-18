@@ -59,7 +59,10 @@ class UserModel extends Helper {
     } catch (error) { throw error;}
   };
 
-  pagination = async ({page = 1, limit = this.pageLimit, filters = {}, select = "*"}) => {
+  pagination = async ({page = 1, limit = this.pageLimit, filters = {}, select = "*", order = [] }) => {
+    // order Ex.: [{ column: "created_at", dir: "desc" }, { column: "name", dir: "asc" }]
+    // select Ex.: ["id", "name", "email"]
+    // filters Ex.: { name: { like: "John" }, email: { not: "jon" } }
     try {
 
       let dbQuery = db(this.name).select(select);
@@ -80,6 +83,8 @@ class UserModel extends Helper {
             dbQuery.where(field, '<', condition.lt);
           } else if (condition.lte) {
             dbQuery.where(field, '<=', condition.lte);
+          } else if (condition.eq) {
+            dbQuery.where(field, '=', condition.eq);
           } else if (condition.between && Array.isArray(condition.between)) {
             dbQuery.whereBetween(field, condition.between);
           } else if (condition.in && Array.isArray(condition.in)) {
@@ -94,6 +99,13 @@ class UserModel extends Helper {
             dbQuery.whereNotNull(field);
           }
         }
+      }
+
+      // Apply dynamic ordering
+      if (Array.isArray(order) && order.length > 0) {
+        order.forEach(({ column, dir }) => {
+          if (column) dbQuery.orderBy(column, dir || "asc");
+        });
       }
       
       // Apply pagination
