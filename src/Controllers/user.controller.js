@@ -4,12 +4,13 @@ const APIResources = require("../Resources/api.resources");
 const UserResources = require("../Resources/user.resources");
 
 const Validation = require("../Utils/validation");
-const ImageMulter = require("../Utils/image.multer");
+const ImageMulter = require("../Services/multer/image.multer");
 const Logs = require("../Utils/logs");
 const token = require("../Utils/token");
 
 class UserController {
   constructor() {
+    this.count = 0;
   }
 
   ajv = async(req, res) => {

@@ -45,5 +45,8 @@ Examples:
 - Image/video processing
 - Password hashing
 - PDF generation
+- Add Seeder
+- APIs load testing 
 
 <!-- ### Pending Work -->
+- jestjs for testing
