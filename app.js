@@ -29,7 +29,12 @@ class Main {
     this.PORT = process.env.PORT;
     this.eventEmitter = new EventEmitter();
     this.io = new Server(this.server);
-    this.Start();
+
+    this.Config();
+    this.Routes();
+    this.Socket();
+    this.Events();
+    this.Cron();
   }
 
   Config = () => {
@@ -43,7 +48,7 @@ class Main {
     this.app.set('view engine', 'ejs')
 
     // set limit for API requests
-    this.app.use(rateLimit({
+    this.app.use("/api",rateLimit({
       windowMs: 1 * 60 * 1000, // 1 minutes
       limit: 10,
       standardHeaders: 'draft-8',
@@ -71,15 +76,15 @@ class Main {
   }
 
   Start = () => {
-    this.Config();
-    this.Routes();
-    this.Socket();
-    this.Events();
-    this.Cron();
-
     this.server.listen(this.PORT, () => {
       console.log(`Example app listening on port ${this.PORT}`);
     });
   };
 }
-new Main();
+
+const main = new Main();
+
+if (process.env.NODE_APP_ENV != "test") {
+  main.Start();
+}
+module.exports = { app: main.app, server: main.server };
