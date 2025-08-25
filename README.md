@@ -47,6 +47,6 @@ Examples:
 - PDF generation
 - Add Seeder
 - APIs load testing 
+- jest
 
 <!-- ### Pending Work -->
-- jestjs for testing
