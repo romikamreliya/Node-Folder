@@ -44,7 +44,7 @@ class UserController {
           }, 
           minProperties:2,
           required:["name","email"]
-        }), minItems:2 }),
+        }), minItems:2, uniqueItems: true}),
         object: Validation.prop("object", { 
           properties: {
             name: Validation.prop("string"),
@@ -72,7 +72,7 @@ class UserController {
         ]
       });
       if (!validate(data)) {
-        return APIResources.apiError(res,`${validate.errors[0]?.instancePath.split('/').join(' > ')} : ${validate.errors[0].message}`);
+        return APIResources.apiError(res,`${validate.errors[0]?.instancePath.split('/').join(' > ') || "key"} : ${validate.errors[0].message}`);
       }
 
       return APIResources.apiSuccess(res, 'success', "valid");
