@@ -1,5 +1,6 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 class ImageMulter {
   constructor() {
@@ -7,7 +8,16 @@ class ImageMulter {
   }
 
   storage = multer.diskStorage({
-    destination: "./public/upload",
+    destination: (req, file, cb) => {
+      const uploadPath = path.join(process.env.path, "logo");
+
+      // check if folder exists, if not create it
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+      }
+
+      cb(null, uploadPath);
+    },
     filename: function (req, file, cb) {
       cb(
         null,

@@ -86,14 +86,14 @@ class UserController {
     try {
 
       const data = {
-        name: req.body.name,
-        id: req.body.id,
-        range: req.body.range,
+        name: req.body?.name,
+        id: req.body?.id,
+        range: req.body?.range,
       };
 
       // json validation
       const validate = Validation.ajvChack({
-        name: Validation.prop("string",),
+        name: Validation.prop("string",{}),
         id: Validation.prop("number"),
         range: Validation.prop("array", { items: Validation.prop("number"), minItems:2, maxItems:2 }),
       },
