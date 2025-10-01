@@ -12,6 +12,10 @@ class commonConst{
         success: 200,
         error: 500,
     }
+    tokenType = {
+        api:"api",
+        web:"web"
+    }
 }
 
 module.exports = commonConst;
