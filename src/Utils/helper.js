@@ -1,5 +1,4 @@
 const lodash = require("lodash");
-
 const commonConst = require("./commonConst");
 
 class Helper extends commonConst{
@@ -8,9 +7,14 @@ class Helper extends commonConst{
     super();
   }
 
-  resMessage = (msg, len = "en") => {
+  resMessage = (msg, len = this.commandLen) => {
     const msgLen = require(`../Language/${len}/message.js`);
-    return msgLen[msg] ?? msg;
+    if (msgLen[msg]) {
+      return msgLen[msg]
+    } else {
+      const defLen = require(`../Language/${this.commandLen}/message.js`);
+      return defLen[msg] ?? msg;
+    }
   };
   
 }

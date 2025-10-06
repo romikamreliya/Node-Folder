@@ -1,6 +1,7 @@
 const express = require("express");
 
-const LoginMiddleware = require("../Middleware/login.middleware");
+const apiMiddleware = require("../Middleware/api.middleware");
+const permissionMiddleware = require("../Middleware/permission.middleware");
 const UserController = require("../Controllers/user.controller");
 
 class ApiRoutes {
@@ -14,9 +15,9 @@ class ApiRoutes {
     this.routes.post("/user/filter", UserController.filter);
     this.routes.post("/user/token", UserController.token);
     this.routes.post("/user/tokenCheck", UserController.tokenCheck);
-    this.routes.use("/user", LoginMiddleware.userLogin);
-    this.routes.get("/user/get", UserController.getAllUser);
-    this.routes.post("/user/get", UserController.addUser);
+    this.routes.use("/user", apiMiddleware.userLogin);
+    this.routes.get("/user/get",permissionMiddleware.checkPermission({moduleName:"user",actionName:"read"}), UserController.getAllUser);
+    this.routes.post("/user/get",permissionMiddleware.checkPermission({moduleName:"user",actionName:"add"}), UserController.addUser);
   };
 
   allRoutes = () => {

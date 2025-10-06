@@ -6,9 +6,11 @@ class UserModel extends Helper {
   constructor() {
     super();
     this.name = "user";
+    this.column = ["id", "name", "email", "phone"];
+    this.columnHide = ["created_at", "created_by"];
   }
 
-  tableColumn = (data) => {
+  validateData = (data) => {
     return Object.fromEntries(Object.entries({
       "id": data.id,
       "name": data.name,
@@ -20,49 +22,71 @@ class UserModel extends Helper {
   get = async () => {
     try {
       return await db(this.name);
-    } catch (error) { throw error;}
+    } catch (error) { throw error; }
   };
 
   find = async (query) => {
     try {
-      return await db(this.name).where(this.tableColumn(query));
-    } catch (error) { throw error;}
+      return await db(this.name).where(this.validateData(query));
+    } catch (error) { throw error; }
   };
 
   findOne = async (query) => {
     try {
-      return await db(this.name).where(this.tableColumn(query)).first();
-    } catch (error) { throw error;}
+      return await db(this.name).where(this.validateData(query)).first();
+    } catch (error) { throw error; }
   };
 
   insert = async (data) => {
     try {
-      return await db(this.name).insert(this.tableColumn(data));
-    } catch (error) { throw error;}
+      return await db(this.name).insert(this.validateData(data));
+    } catch (error) { throw error; }
   };
 
   update = async (id, data) => {
     try {
-      return await db(this.name).where("id", id).update(this.tableColumn(data));
-    } catch (error) { throw error;}
+      return await db(this.name).where("id", id).update(this.validateData(data));
+    } catch (error) { throw error; }
   };
 
   delete = async (query) => {
     try {
-      return await db(this.name).where(this.tableColumn(query)).del();
-    } catch (error) { throw error;}
+      return await db(this.name).where(this.validateData(query)).del();
+    } catch (error) { throw error; }
   };
 
   count = async (query = {}) => {
     try {
-      return await db(this.name).count('id as count').where(this.tableColumn(query)).first();
-    } catch (error) { throw error;}
+      return await db(this.name).count('id as count').where(this.validateData(query)).first();
+    } catch (error) { throw error; }
   };
 
-  pagination = async ({page = 1, limit = this.pageLimit, filters = {}, select = "*", order = [] }) => {
-    // order Ex.: [{ column: "created_at", dir: "desc" }, { column: "name", dir: "asc" }]
-    // select Ex.: ["id", "name", "email"]
-    // filters Ex.: { name: { like: "John" }, email: { not: "jon" } }
+  /**
+   * Fetch paginated data with filters, ordering, and selection.
+   * @param {Object} options Options object
+   * @param {number} [options.page=1] Current page number
+   * @param {number} [options.limit=this.pageLimit] Number of records per page
+   * @param {Object} [options.filters={}] Filter conditions
+   * @param {string|string[]} [options.select="*"] Columns to select
+   * @param {Array<{column: string, dir?: "asc"|"desc"}>} [options.order=[]] Sorting rules
+   * @returns {Promise<Object>} Paginated result object
+   * @returns {Array<Object>} return.data Array of rows
+   * @returns {Object} return.pagination Pagination info
+   * @returns {number} return.pagination.totalRows Total number of rows matching the filters
+   * @returns {number} return.pagination.totalPages Total number of pages
+   * @returns {number} return.pagination.currentPage Current page number
+   * @returns {number} return.pagination.limit Number of rows per page
+   *
+   * @example
+   * const result = await User.pagination({
+   *   page: 2,
+   *   limit: 10,
+   *   filters: { name: { like: "Romik" } },
+   *   select: ["id","name","email"],
+   *   order: [{ column: "created_at", dir: "desc" }]
+   * });
+   */
+  pagination = async ({ page = 1, limit = this.pageLimit, filters = {}, select = "*", order = [] }) => {
     try {
 
       let dbQuery = db(this.name).select(select);
@@ -107,21 +131,21 @@ class UserModel extends Helper {
           if (column) dbQuery.orderBy(column, dir || "asc");
         });
       }
-      
+
       // Apply pagination
       const rowsData = await dbQuery.clone().limit(limit).offset((page - 1) * limit);
       const rowsCount = await dbQuery.clone().count('id as count').first();
-      
+
       return {
         data: rowsData,
         pagination: {
           totalRows: rowsCount.count,
-          totalPages:Math.ceil(rowsCount.count / limit),
+          totalPages: Math.ceil(rowsCount.count / limit),
           currentPage: page,
           limit: limit
         }
       };
-    } catch (error) { throw error;}
+    } catch (error) { throw error; }
   }
 }
 module.exports = new UserModel();

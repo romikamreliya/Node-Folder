@@ -1,4 +1,5 @@
 const UserModel = require("../Models/user.model");
+const Helper = require("../Utils/helper");
 
 const APIResources = require("../Resources/api.resources");
 const UserResources = require("../Resources/user.resources");
@@ -8,9 +9,9 @@ const ImageMulter = require("../Services/multer/image.multer");
 const Logs = require("../Utils/logs");
 const token = require("../Utils/token");
 
-class UserController {
+class UserController extends Helper {
   constructor() {
-    this.count = 0;
+    super();
   }
 
   ajv = async(req, res) => {
@@ -86,14 +87,14 @@ class UserController {
     try {
 
       const data = {
-        name: req.body.name,
-        id: req.body.id,
-        range: req.body.range,
+        name: req.body?.name,
+        id: req.body?.id,
+        range: req.body?.range,
       };
 
       // json validation
       const validate = Validation.ajvChack({
-        name: Validation.prop("string",),
+        name: Validation.prop("string",{}),
         id: Validation.prop("number"),
         range: Validation.prop("array", { items: Validation.prop("number"), minItems:2, maxItems:2 }),
       },
@@ -120,7 +121,7 @@ class UserController {
     try {
 
       let userData = {email:"user@gmail.com",pass:"pass"};
-      let userToken = token.generateToken(userData,'user')
+      let userToken = token.generateToken(userData,this.tokenType.api)
       if (!userToken.res) {
         return APIResources.apiError(res,'error');
       }

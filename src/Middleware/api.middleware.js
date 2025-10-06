@@ -3,23 +3,24 @@ const APIResources = require("../Resources/api.resources");
 const Token = require("../Utils/token");
 const Logs = require("../Utils/logs");
 
-class LoginMiddleware {
+class apiMiddleware extends Helper {
   constructor() {}
 
   userLogin = (req, res, next) => {
     try {
       
       const token = req.headers['authorization']?.replace('Bearer ','')
-      let tokenCheck = Token.tokenDecode(token,['user','admin'])
-      
-      // if (!tokenCheck.res) {
-      //   return APIResources.apiError(res,'You have no access');
-      // }
+      if (!token) {
+        return APIResources.apiError(res,"Token required");
+      }
 
-      // auth token with role wise token
-      // let datas = {id:"01",name:"sdd"};
-      // let newtokens = Token.generateToken(datas,'user')
-      // console.log(newtokens);
+      // check Token 
+      const tokenCheck = Token.tokenDecode(token,[this.tokenType.api])
+      if (!tokenCheck.res) {
+        return APIResources.apiError(res,'You have no access');
+      }
+
+      req.tokenData = tokenCheck.data;
       
       next();
     } catch (error) {
@@ -27,6 +28,7 @@ class LoginMiddleware {
       return APIResources.apiError(res,'error');
     }
   };
+  
 }
 
-module.exports = new LoginMiddleware();
+module.exports = new apiMiddleware();
