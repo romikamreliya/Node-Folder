@@ -1,10 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Check Docker') {
+        stage('Test Demo') {
             steps {
-                sh 'docker version'
-                sh 'node -v'
+                echo 'Test Demo'
             }
         }
     }
