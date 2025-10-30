@@ -73,13 +73,13 @@ class UserController extends Helper {
         ]
       });
       if (!validate(data)) {
-        return APIResources.apiError(res,`${validate.errors[0]?.instancePath.split('/').join(' > ') || "key"} : ${validate.errors[0].message}`);
+        return APIResources.error({res,msg:`${validate.errors[0]?.instancePath.split('/').join(' > ') || "key"} : ${validate.errors[0].message}`});
       }
 
-      return APIResources.apiSuccess(res, 'success', "valid");
+      return APIResources.success({res, msg:'success', data:"valid"});
     } catch (error) {
       Logs.createLog(error, 'GetAllUser');
-      return APIResources.apiError(res,'error');
+      return APIResources.error({res,msg:'error'});
     }
   };
 
@@ -102,7 +102,7 @@ class UserController extends Helper {
         required:[]
       });
       if (!validate(data)) {
-        return APIResources.apiError(res,validate.errors[0].message);
+        return APIResources.error({res,msg:`${validate.errors[0]?.instancePath.split('/').join(' > ') || "key"} : ${validate.errors[0].message}`});
       }
 
       const filterUser = await UserModel.pagination({filters:{
@@ -110,10 +110,10 @@ class UserController extends Helper {
         id:{not:data.id} // gt, gte, lt, lte, not
         // id:{notIn:data.range} // between, in, notIn
       }});
-      return APIResources.apiSuccess(res, 'success', filterUser);
+      return APIResources.success({res, msg:'success', data:filterUser});
     } catch (error) {
       Logs.createLog(error, 'GetAllUser');
-      return APIResources.apiError(res,'error');
+      return APIResources.error({res,msg:'error'});
     }
   }
 
@@ -123,13 +123,13 @@ class UserController extends Helper {
       let userData = {email:"user@gmail.com",pass:"pass"};
       let userToken = token.generateToken(userData,this.tokenType.api)
       if (!userToken.res) {
-        return APIResources.apiError(res,'error');
+        return APIResources.error({res,msg:'error'});
       }
 
-      return APIResources.apiSuccess(res, 'success', {token:userToken.token});
+      return APIResources.success({res, msg:'success', data:{token:userToken.token}});
     } catch (error) {
       Logs.createLog(error, 'token');
-      return APIResources.apiError(res,'error');
+      return APIResources.error({res,msg:'error'});
     }
   }
 
@@ -144,18 +144,18 @@ class UserController extends Helper {
         token: Validation.prop("string",{minLength:10}),
       });
       if (!validate(data)) {
-        return APIResources.apiError(res,validate.errors[0].message);
+        return APIResources.error({res,msg:`${validate.errors[0]?.instancePath.split('/').join(' > ') || "key"} : ${validate.errors[0].message}`});
       }
 
       const tokenValue = token.tokenDecode(data.token,"user");
       if (!tokenValue.res) {
-        return APIResources.apiError(res,tokenValue.msg);
+        return APIResources.error({res,msg:tokenValue.msg});
       }
 
-      return APIResources.apiSuccess(res, 'success', {token:tokenValue.data});
+      return APIResources.success({res, msg:'success', data:{token:tokenValue.data}});
     } catch (error) {
       Logs.createLog(error, 'token');
-      return APIResources.apiError(res,'error');
+      return APIResources.error({res,msg:'error'});
     }
   }
 
@@ -169,10 +169,10 @@ class UserController extends Helper {
       // get data with pagination
       const userdata = await UserModel.pagination({page:1, limit:3, select: "id"});
 
-      return APIResources.apiSuccess(res, 'success', userdata);
+      return APIResources.success({res, msg:'success', data:userdata});
     } catch (error) {
       Logs.createLog(error, 'GetAllUser');
-      return APIResources.apiError(res,'error');
+      return APIResources.error({res,msg:'error'});
     }
   };
 
@@ -198,13 +198,13 @@ class UserController extends Helper {
         email: Validation.prop("string", { format: "email" }),
       });
       if (!validate(data)) {
-        throw new Error(validate.errors[0].message);
+        return APIResources.error({res,msg:`${validate.errors[0]?.instancePath.split('/').join(' > ') || "key"} : ${validate.errors[0].message}`});
       }
 
-      return APIResources.apiSuccess(res,"success",data);
+      return APIResources.success({res,msg:"success",data});
     } catch (error) {
       Logs.createLog(error, 'addUser');
-      return APIResources.apiError(res,'error');
+      return APIResources.error({res,msg:'error'});
     }
   };
 }
