@@ -182,7 +182,7 @@ class UserController extends Helper {
       // upload images
       await new Promise((resolve, reject) => {
         ImageMulter.upload.single("reviewProfile")(req, res, (err) => {
-          if (err) return reject(err);
+          if (err) return APIResources.apiError(res, err);
           return resolve();
         });
       });

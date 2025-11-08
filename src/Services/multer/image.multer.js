@@ -30,7 +30,7 @@ class ImageMulter {
     storage: this.storage,
 
     fileFilter: (req, file, cb) => {
-      if (!this.imgUpload.includes(file.mimetype)) return cb(null, false);
+      if (!this.imgUpload.includes(file.mimetype)) return cb(`${file.fieldname} type is not match`, false);
       else return cb(null, true);
     },
     limits: { fileSize: 1024 * 1024 * 5 }, // 5MB
