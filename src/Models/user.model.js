@@ -92,7 +92,7 @@ class UserModel extends Helper {
       let dbQuery = db(this.name).select(select);
 
       // Columns filter
-      const columns = this.tableColumn(filters);
+      const columns = this.validateData(filters);
 
       // Advanced filters
       for (const [field, condition] of Object.entries(columns)) {

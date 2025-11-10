@@ -4,7 +4,9 @@ const Token = require("../Utils/token");
 const Logs = require("../Utils/logs");
 
 class permissionMiddleware extends Helper {
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   checkPermission = ({moduleName, actionName}) => {
     if (!moduleName || !actionName) {
@@ -18,7 +20,7 @@ class permissionMiddleware extends Helper {
             next();
         } catch (error) {
             Logs.createLog(error);
-            return APIResources.apiError(res,'error');
+            return APIResources.error({res,msg:'error'});
         }
     }
   };
