@@ -1,5 +1,5 @@
 class TestSocket{
-    constructor(socket, io){
+    constructor({socket, io}){
         this.socket = socket;
         this.io = io;
         this.connection();

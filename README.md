@@ -50,3 +50,6 @@ Examples:
 - jest
 
 <!-- ### Pending Work -->
+module file in add find and all add condition condition 
+module update
+set image delete funcation

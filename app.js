@@ -9,6 +9,7 @@ const cors = require('cors');
 const ejs = require('ejs');
 const path = require('path');
 const { rateLimit } = require('express-rate-limit');
+const mqtt = require("mqtt");
 
 // Routes
 const APIRoutes = require("./src/Routes/api.route");
@@ -22,6 +23,10 @@ const DemoCron = require("./src/Cron/demo.cron");
 const TestEvent = require("./src/Events/test.event");
 const TestSocket = require("./src/Socket/test.socket");
 
+// MQTT
+const publishMqtt = require("./src/Mqtt/publish.mqtt");
+const subscribeMqtt = require("./src/Mqtt/subscribe.mqtt");
+
 class Main {
   constructor() {
     this.app = express();
@@ -29,12 +34,14 @@ class Main {
     this.PORT = process.env.PORT;
     this.eventEmitter = new EventEmitter();
     this.io = new Server(this.server);
+    this.mqttUrl = `${process.env.mqttUrl}`;
 
     this.Config();
     this.Routes();
     this.Socket();
     this.Events();
     this.Cron();
+    this.Mqtt();
   }
 
   Config = () => {
@@ -68,11 +75,20 @@ class Main {
   }
 
   Socket = () => {
-    this.io.of('/test').on('connection',(socket) => new TestSocket(socket,this.io));
+    this.io.of('/test').on('connection',(socket) => new TestSocket({io: this.io,socket}));
+  }
+
+  Mqtt = () => {
+    const mqttConn = mqtt.connect(this.mqttUrl);
+    mqttConn.on("connect", () => {
+      console.log("✅ Connected to broker:", this.mqttUrl);
+      new publishMqtt({conn:mqttConn, event: this.eventEmitter});
+      new subscribeMqtt({conn:mqttConn});
+    });
   }
 
   Events = () => {
-    new TestEvent(this.eventEmitter);
+    new TestEvent({eventEmitter:this.eventEmitter});
   }
 
   Start = () => {
@@ -87,4 +103,6 @@ const main = new Main();
 if (process.env.NODE_APP_ENV != "test") {
   main.Start();
 }
+
+// Run for jest Testing
 module.exports = { app: main.app, server: main.server };

@@ -67,9 +67,10 @@ class UserModel extends Helper {
    * @param {number} [options.page=1] Current page number
    * @param {number} [options.limit=this.pageLimit] Number of records per page
    * @param {Object} [options.filters={}] Filter conditions
+   * @param {Boolean} [options.pagination=true] Filter conditions
    * @param {string|string[]} [options.select="*"] Columns to select
    * @param {Array<{column: string, dir?: "asc"|"desc"}>} [options.order=[]] Sorting rules
-   * @returns {Promise<Object>} Paginated result object
+   * @returns {Promise<Object|Array>} Paginated result object or array
    * @returns {Array<Object>} return.data Array of rows
    * @returns {Object} return.pagination Pagination info
    * @returns {number} return.pagination.totalRows Total number of rows matching the filters
@@ -84,9 +85,10 @@ class UserModel extends Helper {
    *   filters: { name: { like: "Romik" } },
    *   select: ["id","name","email"],
    *   order: [{ column: "created_at", dir: "desc" }]
+   *   pagination: true,
    * });
    */
-  pagination = async ({ page = 1, limit = this.pageLimit, filters = {}, select = "*", order = [] }) => {
+  pagination = async ({ page = 1, limit = this.pageLimit, filters = {}, select = "*", order = [], pagination = true }) => {
     try {
 
       let dbQuery = db(this.name).select(select);
@@ -130,6 +132,10 @@ class UserModel extends Helper {
         order.forEach(({ column, dir }) => {
           if (column) dbQuery.orderBy(column, dir || "asc");
         });
+      }
+
+      if (pagination == false) {
+        return await dbQuery.clone();
       }
 
       // Apply pagination

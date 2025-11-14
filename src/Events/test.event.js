@@ -1,6 +1,6 @@
 module.exports = class TestEvent{
 
-    constructor(eventEmitter){
+    constructor({eventEmitter}){
         this.eventEmitter = eventEmitter;
         this.events();
     }
