@@ -10,6 +10,7 @@ const ejs = require('ejs');
 const path = require('path');
 const { rateLimit } = require('express-rate-limit');
 const mqtt = require("mqtt");
+const socketIoClient = require("socket.io-client");
 
 // Routes
 const APIRoutes = require("./src/Routes/api.route");
@@ -19,9 +20,10 @@ const WebRoutes = require("./src/Routes/web.route");
 const TestCron = require("./src/Cron/test.cron");
 const DemoCron = require("./src/Cron/demo.cron");
 
-// Events and Sockets
+// Events and Sockets, Client
 const TestEvent = require("./src/Events/test.event");
 const TestSocket = require("./src/Socket/test.socket");
+const TestSocketClient = require("./src/SocketClient/test.socketclient");
 
 // MQTT
 const publishMqtt = require("./src/Mqtt/publish.mqtt");
@@ -34,11 +36,13 @@ class Main {
     this.PORT = process.env.PORT;
     this.eventEmitter = new EventEmitter();
     this.io = new Server(this.server);
+    this.socketClient = socketIoClient.io(process.env.SOCKET_CLIENT_URL);
     this.mqttUrl = `${process.env.mqttUrl}`;
 
     this.Config();
     this.Routes();
     this.Socket();
+    this.SocketClient();
     this.Events();
     this.Cron();
     this.Mqtt();
@@ -75,7 +79,11 @@ class Main {
   }
 
   Socket = () => {
-    this.io.of('/test').on('connection',(socket) => new TestSocket({io: this.io,socket}));
+    this.io.of('/').on('connection',(socket) => new TestSocket({io: this.io, socket, eventEmitter:this.eventEmitter}));
+  }
+
+  SocketClient = () => {
+    new TestSocketClient({socketClient:this.socketClient,eventEmitter:this.eventEmitter})
   }
 
   Mqtt = () => {
