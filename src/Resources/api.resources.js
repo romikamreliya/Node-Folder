@@ -1,4 +1,4 @@
-const Helper = require("../Utils/helper");
+const Helper = require("../Utils/helper.utils");
 
 class APIResources extends Helper{
 

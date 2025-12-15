@@ -1,5 +1,5 @@
 const cron = require("cron");
-const Logs = require("../Utils/logs");
+const Logs = require("../Utils/logger.utils");
 
 class DemoCron {
   
@@ -21,7 +21,7 @@ class DemoCron {
     }
   }
 
-  cronTask = async () => {
+  executeTask = async () => {
     try {
 
         console.log(`CronTask ${new Date()}`);
@@ -52,7 +52,7 @@ class DemoCron {
   Run = () => {
     this.cronRun = cron.CronJob.from({
       cronTime: this.schedule,
-      onTick: this.cronTask,
+      onTick: this.executeTask,
       onComplete: this.cronComplete,
       name: this.name,
       start: true,

@@ -1,20 +1,26 @@
-const Helper = require("../Utils/helper")
+const HelperUtils = require("../Utils/helper.utils");
+const LoggerUtils = require("../Utils/logger.utils");
+const AjvUtils = require("../Utils/ajv.utils");
 
-class subscribeMqtt extends Helper {
+class subscribeMqtt{
     constructor({conn}) {
-        super();
+
+        this.helper = HelperUtils;
+        this.logger = LoggerUtils;
+        this.ajv = AjvUtils;
+        
         this.mqtt = conn;
         this.subscribeMqttTopic();
         this.connection();
     }
 
-    subscribeMqttTopic = () => {
+    subscribeMqttTopic() {
         this.mqtt.subscribe(`bms/v1/+/telemetry/statistic`, (err) => {
             console.log('bms/v1/+/telemetry/statistic',err);
         })
     }
 
-    connection = () => {
+    connection() {
         this.mqtt.on("message", (topic, message) => {
 
             const topicKey = topic.match('bms\/v1\/([^\/]+)\/telemetry\/statistic')?.[1] ? 'telemetryStatistic': topic;
@@ -31,7 +37,7 @@ class subscribeMqtt extends Helper {
         });
     }
 
-    telemetryStatistic = async (data, serialNumber) => {
+    async telemetryStatistic(data, serialNumber) {
         try {
             
             console.log("data",data);

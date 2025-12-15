@@ -5,9 +5,14 @@ class ApiRoutes {
   constructor() {
     this.routes = express.Router();
     this.allRoutes();
+    this.registerRoutes();
   }
 
-  webRoutes = () => {
+  registerRoutes() {
+    this.webRoutes();
+  }
+
+  webRoutes() {
     this.routes.get("/", WebController.homeView);
   };
 

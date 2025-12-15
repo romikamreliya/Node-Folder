@@ -1,7 +1,8 @@
 const knex = require("knex");
 
 let DBKnex;
-if (process.env.DBTYPE == "sqlite") {
+
+if (process.env.DB_TYPE == "sqlite") {
   DBKnex = knex({
     client: 'sqlite3',
     connection: {
@@ -9,7 +10,7 @@ if (process.env.DBTYPE == "sqlite") {
     },
     useNullAsDefault: true,
   });
-} else if(process.env.DBTYPE == "mysql") {
+} else if(process.env.DB_TYPE == "mysql") {
   DBKnex = knex({
     client: "mysql",
     port: process.env.DBPORT,

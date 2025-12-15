@@ -1,17 +1,15 @@
 const fs = require("fs");
 
-class Logs{
+class LoggerUtils{
 
-    constructor(){
-        this.date = (new Date().toLocaleDateString()).replaceAll('/','_');
-    }
+    static date = (new Date().toLocaleDateString()).replaceAll('/','_');
 
-    fileCheck = () => {
+    static fileCheck() {
         const files = fs.readdirSync('./logs');
         return files.includes(`${this.date}.log`);
     }
 
-    extractLineNumber = (error) => {
+    static extractLineNumber(error) {
         
         const stackTrace = error.stack || '';
         const matches = stackTrace.match(/at\s+(.+)\s+\((.+):(\d+):(\d+)\)/);
@@ -27,7 +25,7 @@ class Logs{
         return error.message || "";
     }
 
-    createLog = (msg, name = "") => {
+    static createLog({msg, name = ""}) {
         
         if (process.env.DEBUG == "true") {
             console.log(`------------ ${name} -----------------`);
@@ -51,4 +49,4 @@ class Logs{
 
 }
 
-module.exports = new Logs();
+module.exports = LoggerUtils;

@@ -5,6 +5,7 @@ module.exports = {
   TOKEN_EXPIRED: "Token has expired",
   UNAUTHORIZED: "Unauthorized access",
   VALIDATION_ERROR: "Validation failed",
+  INVALID_API_VERSION: "Invalid API version",
 
   // CRUD
   CREATED: "Resource created successfully",

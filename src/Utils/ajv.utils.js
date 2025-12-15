@@ -1,19 +1,19 @@
 const Ajv = require("ajv");
 
-class Validation {
-  constructor() {
-    this.ajv = new Ajv({
-      allErrors: true,
-      useDefaults: true,
-    });
-    this.customKey();
-  }
 
-  customKey = () => {
+class ValidationUtils {
+
+  static ajv = new Ajv({
+    allErrors: true,
+    useDefaults: true,
+    verbose: true
+  });
+
+  static customKey() {
     this.ajv.addKeyword({
       keyword: "customEmail",
       type: "string",
-      error: { message: "Email is Wrong" },
+      error: { message: "ID is Wrong" },
       validate: (schema, data) => {
         if (!schema || !data) return true;
         return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,8}$/.test(data);
@@ -26,7 +26,7 @@ class Validation {
         if (!schema || !data) return true;
         return /^\+?[0-9]{7,15}$/.test(data); // e.g., +12345678900
       },
-      error: { message: "Phone Number is Wrong" },
+      error: { message: "Number is Wrong" },
     });
     this.ajv.addKeyword({
       keyword: "customWebsite",
@@ -35,11 +35,12 @@ class Validation {
         if (!schema || !data) return true;
         return /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[\w-./?%&=]*)?$/.test(data);
       },
-      error: { message: "Website URL is Wrong" },
+      error: { message: "URL is Wrong" },
     });
+    console.log('AJV Key Initialize Successfully');
   };
 
-  schemaGenerator = (schemaData, options) => {
+  static schemaGenerator(schemaData, options) {
     return {
       type: "object",
       properties: schemaData,
@@ -73,7 +74,7 @@ class Validation {
    * @property {"customEmail" | "customPhone" | "customWebsite" } [format] - Special format flag (e.g. "email", "date").
    * @property {boolean} [required] - Whether field is required.
    */
-  prop = (type, options = {}) => {
+  static prop(type, options = {}) {
     const propObj = { type };
 
     type.includes("number")
@@ -101,6 +102,7 @@ class Validation {
             )
             : null;
 
+    options.title !== undefined && (propObj.title = options.title);
     options.pattern !== undefined && (propObj.pattern = options.pattern);
     options.enum !== undefined && (propObj.enum = options.enum);
     options.default !== undefined && (propObj.default = options.default);
@@ -110,9 +112,16 @@ class Validation {
     return propObj;
   };
 
-  ajvChack = (schema, options = {}) => {
+  static ajvChack(schema, options = {}) {
     return this.ajv.compile(this.schemaGenerator(schema, options));
   };
-}
 
-module.exports = new Validation();
+  static errorMsg({error}) {
+    let field = error?.parentSchema?.title || error.params?.missingProperty || error.instancePath?.replace(/^\//, '') || '';
+    field = field ? `'${field}'` : 'this field';
+    let msg = error.message.replace(/'/g, '').replace(/must/, 'requires').trim();
+    return `Field ${field} ${msg}.`;
+  }
+}
+ValidationUtils.customKey();
+module.exports = ValidationUtils;
