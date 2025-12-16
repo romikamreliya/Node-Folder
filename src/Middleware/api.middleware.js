@@ -33,7 +33,7 @@ class ApiMiddleware {
     }
   };
 
-  static checkPermission = ({moduleName, actionName, roles = []}) => {
+  static checkPermission({moduleName, actionName, roles = []}) {
     // Validate required parameters
     if (!moduleName || !actionName) {
       throw new Error("checkPermission: Both moduleName and actionName are required");

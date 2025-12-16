@@ -6,7 +6,7 @@ class APIResources extends Helper{
         super();
     }
 
-    error = ({res, msg = "error", key = ""}) => {
+    error({res, msg = "error", key = ""}) {
         return res.send({
             res: false,
             key: key,
@@ -14,7 +14,7 @@ class APIResources extends Helper{
             data: []
         })
     }
-    success = ({res, msg = "success", data = [], key = ""}) => {
+    success({res, msg = "success", data = [], key = ""}) {
         return res.send({
             res: true,
             key: key,

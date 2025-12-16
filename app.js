@@ -35,13 +35,13 @@ class Main {
         this.mqtt = new MQTTConfig(process.env.mqttUrl, "demo").mqtt;
     }
 
-    Routes = () => {
+    Routes() {
         this.app.use("/", WebRoutes.allRoutes());
         this.app.use( /^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
         this.app.use("/", (req, res) => res.send("404 page not found"));
     };
 
-    Socket = () => {
+    Socket() {
         this.io.on("connection",(socket) => 
             new TestSocket({ 
                 io: this.io, 
@@ -51,14 +51,14 @@ class Main {
         );
     };
 
-    SocketClient = () => {
+    SocketClient() {
         new TestSocketClient({
             socketClient: this.socketClient,
             appEvent: this.appEvent,
         });
     };
 
-    Mqtt = () => {
+    Mqtt() {
         this.mqtt.on("connect", () => {
             console.log("✅ Connected to broker:", this.mqttUrl);
             new PublishMqtt({ conn: mqttConn, appEvent: this.appEvent });
@@ -66,12 +66,12 @@ class Main {
         });
     };
 
-    Cron = () => {
+    Cron() {
         // TestCron.Run();
         // DemoCron.Run();
     };
 
-    Initialize = () => {
+    Initialize() {
         this.Routes();
         this.Socket();
         this.SocketClient();
@@ -79,7 +79,7 @@ class Main {
         this.Mqtt();
     }
 
-    Start = () => {
+    Start() {
         this.Initialize();
         this.server.listen(this.PORT, () => {
             console.log(`Example app listening on port ${this.PORT}`);

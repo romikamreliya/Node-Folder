@@ -20,7 +20,7 @@ class MailService{
         }
     });
 
-    mailOption = (data) => {
+    mailOption(data) {
 
         return {
             from: data.from ?? this.auth.user,
@@ -36,7 +36,7 @@ class MailService{
 
     }
 
-    sendmail = async (data) => {
+    async sendmail(data) {
         this.MailConn.sendMail(this.mailOption(data), (error, info) => {
             if (error) {
                 console.error('Error sending email:', error);
