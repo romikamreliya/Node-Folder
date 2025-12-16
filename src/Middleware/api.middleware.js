@@ -29,11 +29,11 @@ class ApiMiddleware {
       next();
     } catch (error) {
       this.logger.createLog({msg:error,name:"ApiMiddleware-userLogin"});
-      return this.response.error({res, msg:'ERROR'});
+      return this.response.error({res, req, msg:'ERROR'});
     }
   };
 
-  static checkPermission({moduleName, actionName, roles = []}) {
+  static checkPermission({moduleName, actionName}) {
     // Validate required parameters
     if (!moduleName || !actionName) {
       throw new Error("checkPermission: Both moduleName and actionName are required");
@@ -45,9 +45,6 @@ class ApiMiddleware {
         if (!req.tokenData) {
           return this.response.error({req,res,key: "UNAUTHORIZED"});
         }
-
-        // TODO: Implement role-based permission check
-        // Example: Check if user role has permission for module.action
 
         next();
       } catch (error) {

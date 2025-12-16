@@ -18,7 +18,9 @@ class BaseModel {
 
     return Object.fromEntries(
       Object.entries(data)
-      .filter(([key, value]) => {return value !== undefined && validColumns.has(key);})
+      .filter(([key, value]) => {
+        return value !== undefined && validColumns.has(key);
+      })
       .map(([key, value]) => [key, this.sanitize(value)])
     )
   }
@@ -45,10 +47,27 @@ class BaseModel {
     }
 
     const injectionPatterns = [
-      /(\bOR\b|\bAND\b|\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b)/i,/['";]/,/--/,/\/\*/,/xp_/i,/sp_/i,
+      /(\bOR\b\s+\d+\s*=\s*\d+|\bOR\b\s+'[^']*'\s*=\s*'[^']*')/i,
+      /(\bAND\b\s+\d+\s*=\s*\d+|\bAND\b\s+'[^']*'\s*=\s*'[^']*')/i,
+      /\bUNION\b/i,
+      /\bSELECT\b/i,
+      /\bDROP\b/i,
+      /\bINSERT\b/i,
+      /\bUPDATE\b/i,
+      /\bDELETE\b/i,
+      /--/,
+      /\/\*/,
+      /;\s*(DROP|DELETE|UPDATE|INSERT)/i,
+      /xp_/i,
+      /sp_/i,
     ];
 
-    return !injectionPatterns.some(pattern => pattern.test(value));
+    // Check if value contains injection patterns
+    if (injectionPatterns.some(pattern => pattern.test(value))) {
+      throw new Error(`SQL injection attempt detected: ${value}`);
+    }
+
+    return value.trim().replace(/\0/g, '');
   }
 
   // BASIC CRUD
