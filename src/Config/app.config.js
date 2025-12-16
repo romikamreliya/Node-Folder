@@ -26,4 +26,4 @@ class AppConfig {
     }
 }
 
-module.exports = AppConfig;
+module.exports = new AppConfig();

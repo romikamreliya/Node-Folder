@@ -1,16 +1,14 @@
 const express = require("express");
 
 const ApiMiddleware = require("../Middleware/api.middleware");
-const permissionMiddleware = require("../Middleware/permission.middleware");
-const UserController = require("../Controllers/user.controller");
+const userController = require("../Controllers/user.controller");
 const HelperUtils = require("../Utils/helper.utils");
 
 class ApiRoutes {
   constructor() {
     this.routes = express.Router();
-    this.userController = new UserController();
+    this.userController = userController;
     this.apiMiddleware = ApiMiddleware;
-    this.permissionMiddleware = permissionMiddleware;
     this.helper = HelperUtils;
     this.registerRoutes();
   }
@@ -32,8 +30,8 @@ class ApiRoutes {
 
     // // --- Protected routes ---
     userRouter.use(this.apiMiddleware.userLogin.bind(this.apiMiddleware));
-    userRouter.get("/get", this.permissionMiddleware.checkPermission({moduleName: "user",actionName: "read"}), this.userController.getAllUser.bind(this.userController));
-    userRouter.post("/add", this.permissionMiddleware.checkPermission({moduleName: "user",actionName: "add"}), this.userController.addUser.bind(this.userController));
+    userRouter.get("/get", this.apiMiddleware.checkPermission({moduleName: "user",actionName: "read"}), this.userController.getAllUser.bind(this.userController));
+    userRouter.post("/add", this.apiMiddleware.checkPermission({moduleName: "user",actionName: "add"}), this.userController.addUser.bind(this.userController));
 
     this.routes.use("/user", userRouter);
   }
@@ -43,4 +41,4 @@ class ApiRoutes {
   }
 }
 
-module.exports = ApiRoutes;
+module.exports = new ApiRoutes();

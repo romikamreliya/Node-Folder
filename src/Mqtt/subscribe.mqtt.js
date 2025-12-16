@@ -2,7 +2,7 @@ const HelperUtils = require("../Utils/helper.utils");
 const LoggerUtils = require("../Utils/logger.utils");
 const AjvUtils = require("../Utils/ajv.utils");
 
-class subscribeMqtt{
+class SubscribeMqtt{
     constructor({conn}) {
 
         this.helper = HelperUtils;
@@ -49,4 +49,4 @@ class subscribeMqtt{
     }
 }
 
-module.exports = subscribeMqtt;
+module.exports = SubscribeMqtt;

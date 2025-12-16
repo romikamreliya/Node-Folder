@@ -2,15 +2,15 @@ require("dotenv").config();
 const http = require("http");
 
 // Config
-const AppConfig = require("./src/Config/app.config");
+const appConfig = require("./src/Config/app.config");
 const SocketConfig = require("./src/Config/socket.config");
-const SocketClientConfig = require("./src/Config/socketclient.config");
+const SocketClientConfig = require("./src/Config/socket-client.config");
 const MQTTConfig = require("./src/Config/mqtt.config");
 const RateLimitMiddleware = require("./src/Middleware/ratelimit.middleware");
 
 // Routes
-const APIRoutes = require("./src/Routes/api.route");
-const WebRoutes = require("./src/Routes/web.route");
+const apiRoutes = require("./src/Routes/api.routes");
+const WebRoutes = require("./src/Routes/web.routes");
 
 // Cron Jobs
 const TestCron = require("./src/Cron/test.cron");
@@ -21,13 +21,13 @@ const TestSocket = require("./src/Socket/Server/test.socket");
 const TestSocketClient = require("./src/Socket/Client/test.socketclient");
 
 // MQTT
-const publishMqtt = require("./src/Mqtt/publish.mqtt");
-const subscribeMqtt = require("./src/Mqtt/subscribe.mqtt");
+const PublishMqtt = require("./src/Mqtt/publish.mqtt");
+const SubscribeMqtt = require("./src/Mqtt/subscribe.mqtt");
 
 class Main {
     constructor() {
         this.PORT = process.env.PORT;
-        this.app = new AppConfig().app;
+        this.app = appConfig.app;
         this.server = http.createServer(this.app);
         this.appEvent = this.app.get("appEvent");
         this.io = new SocketConfig(this.server).io;
@@ -37,7 +37,7 @@ class Main {
 
     Routes = () => {
         this.app.use("/", WebRoutes.allRoutes());
-        this.app.use( /^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, new APIRoutes().getRoutes());
+        this.app.use( /^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
         this.app.use("/", (req, res) => res.send("404 page not found"));
     };
 
@@ -61,8 +61,8 @@ class Main {
     Mqtt = () => {
         this.mqtt.on("connect", () => {
             console.log("✅ Connected to broker:", this.mqttUrl);
-            new publishMqtt({ conn: mqttConn, appEvent: this.appEvent });
-            new subscribeMqtt({ conn: mqttConn });
+            new PublishMqtt({ conn: mqttConn, appEvent: this.appEvent });
+            new SubscribeMqtt({ conn: mqttConn });
         });
     };
 

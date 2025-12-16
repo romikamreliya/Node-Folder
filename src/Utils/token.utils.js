@@ -3,34 +3,32 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 class TokenService {
-  constructor() {
 
-    // JWT ACCESS TOKEN
-    this.jwtSecret = process.env.accessTokenKey;
-    this.jwtExpire = "15m";
+  // JWT ACCESS TOKEN
+  static jwtSecret = process.env.accessTokenKey;
+  static jwtExpire = "15m";
 
-    // Refresh Token
-    this.refreshBytes = parseInt(64, 10);
-    this.refreshSecret = process.env.refressTokenKey;
-    this.refreshExpireMs = parseInt(7 * 24 * 60 * 60 * 1000); // 7 days
+  // Refresh Token
+  static refreshBytes = parseInt(64, 10);
+  static refreshSecret = process.env.refressTokenKey;
+  static refreshExpireMs = parseInt(7 * 24 * 60 * 60 * 1000); // 7 days
 
-    // Custom AES Token
-    this.aesExpireMs = parseInt(24 * 60 * 60 * 1000); // 24 hours
-    this.aesKey = Buffer.concat([Buffer.from(process.env.accessTokenKey || "", "base64"),Buffer.alloc(32)]).subarray(0, 32);
-    this.algorithm = "aes-256-gcm";
-  }
+  // Custom AES Token
+  static aesExpireMs = parseInt(24 * 60 * 60 * 1000); // 24 hours
+  static aesKey = Buffer.concat([Buffer.from(process.env.accessTokenKey || "", "base64"),Buffer.alloc(32)]).subarray(0, 32);
+  static algorithm = "aes-256-gcm";
 
   // =========================================================
   //                    🔥 JWT ACCESS TOKEN
   // =========================================================
-  createJwtAccessToken(payload) {
+  static createJwtAccessToken(payload) {
     return jwt.sign(payload, this.jwtSecret, {
       expiresIn: this.jwtExpire,
       algorithm: "HS256",
     });
   }
 
-  verifyJwtAccessToken(token) {
+  static verifyJwtAccessToken(token) {
     try {
       return { ok: true, data: jwt.verify(token, this.jwtSecret) };
     } catch (err) {
@@ -41,7 +39,7 @@ class TokenService {
   // =========================================================
   //              🔥 CUSTOM AES ENCRYPTED TOKEN
   // =========================================================
-  createCustomToken(data) {
+  static createCustomToken(data) {
     const iv = crypto.randomBytes(12);
     const cipher = crypto.createCipheriv(this.algorithm, this.aesKey, iv);
 
@@ -61,7 +59,7 @@ class TokenService {
     return Buffer.concat([iv, tag, encrypted]).toString("base64");
   }
 
-  verifyCustomToken(token) {
+  static verifyCustomToken(token) {
     try {
       const raw = Buffer.from(token, "base64");
       const iv = raw.slice(0, 12);
@@ -90,7 +88,7 @@ class TokenService {
   // =========================================================
 
   // Create Token
-  createRefreshToken() {
+  static createRefreshToken() {
     const random = crypto.randomBytes(this.refreshBytes).toString("base64");
     const exp = Date.now() + this.refreshExpireMs;
 
@@ -103,7 +101,7 @@ class TokenService {
   }
 
   // Verify Token
-  verifyRefreshToken(refreshToken) {
+  static verifyRefreshToken(refreshToken) {
     try {
       const parts = refreshToken.split(".");
       if (parts.length !== 3)
@@ -134,4 +132,4 @@ class TokenService {
   }
 }
 
-module.exports = new TokenService();
+module.exports = TokenService;

@@ -1,31 +1,3 @@
-// const logs = require("../Utils/logs");
-// const { Worker } = require('worker_threads');
-
-// class mainWorker {
-
-//     testWorker = (data) => {
-//         try {
-//             const worker = new Worker('./test.worker.js', {
-//                 workerData: data
-//             });
-            
-//             worker.on('message', (result) => {
-//                 console.log('Result from worker:', result);
-//             });
-            
-//             worker.on('error', (err) => {
-//                 console.log('Worker error:', err);
-//             });
-//         } catch (error) {
-//             logs.createLog(error, 'test worker');
-//         }
-//     }
-  
-// }
-
-// module.exports = mainWorker;
-
-
 const { Worker } = require('worker_threads');
 const HelperUtils = require("../Utils/helper.utils");
 const LoggerUtils = require("../Utils/logger.utils");
@@ -37,7 +9,7 @@ class mainWorker {
         this.logger = LoggerUtils;
     }
 
-    testWorker = (data) => {
+    executeWorker(data) {
         return new Promise((resolve, reject) => {
             try {
                 const worker = new Worker(path.join(__dirname, 'test.worker.js'), {workerData: data});

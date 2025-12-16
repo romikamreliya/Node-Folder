@@ -2,7 +2,7 @@ const HelperUtils = require("../Utils/helper.utils");
 const LoggerUtils = require("../Utils/logger.utils");
 const AjvUtils = require("../Utils/ajv.utils");
 
-class publishMqtt {
+class PublishMqtt {
     constructor({conn, appEvent}) {
 
         this.helper = HelperUtils;
@@ -24,4 +24,4 @@ class publishMqtt {
     }
 }
 
-module.exports = publishMqtt;
+module.exports = PublishMqtt;

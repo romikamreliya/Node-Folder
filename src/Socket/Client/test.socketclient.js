@@ -1,7 +1,7 @@
-const HelperUtils = require("../Utils/helper.utils");
-const LoggerUtils = require("../Utils/logger.utils");
-const AjvUtils = require("../Utils/ajv.utils");
-const tokenUtils = require("../Utils/token.utils");
+const HelperUtils = require("../../Utils/helper.utils");
+const LoggerUtils = require("../../Utils/logger.utils");
+const AjvUtils = require("../../Utils/ajv.utils");
+const tokenUtils = require("../../Utils/token.utils");
 
 class TestSocketClient{
     constructor({socketClient,appEvent}){

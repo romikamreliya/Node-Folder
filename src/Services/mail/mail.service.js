@@ -1,6 +1,6 @@
 const NodeMailer = require('nodemailer');
 
-class Mail{
+class MailService{
 
     constructor(){
         this.auth = {
@@ -37,7 +37,7 @@ class Mail{
     }
 
     sendmail = async (data) => {
-        MailConn.sendMail(this.mailOption(data), (error, info) => {
+        this.MailConn.sendMail(this.mailOption(data), (error, info) => {
             if (error) {
                 console.error('Error sending email:', error);
                 return error;
@@ -50,4 +50,4 @@ class Mail{
 
 }
 
-module.exports = new Mail;
+module.exports = new MailService();

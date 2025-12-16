@@ -32,6 +32,36 @@ class ApiMiddleware {
       return this.response.error({res, msg:'ERROR'});
     }
   };
+
+  static checkPermission = ({moduleName, actionName, roles = []}) => {
+    // Validate required parameters
+    if (!moduleName || !actionName) {
+      throw new Error("checkPermission: Both moduleName and actionName are required");
+    }
+
+    return async (req, res, next) => {
+      try {
+        // Check if user is authenticated via token
+        if (!req.tokenData) {
+          return this.response.error({req,res,key: "UNAUTHORIZED"});
+        }
+
+        // TODO: Implement role-based permission check
+        // Example: Check if user role has permission for module.action
+        // const userRole = req.tokenData.role;
+        // const hasPermission = await PermissionService.checkPermission(userRole, moduleName, actionName);
+        // if (!hasPermission) {
+        //   return this.response.error({req, res, key: "FORBIDDEN", status: 403});
+        // }
+
+        next();
+      } catch (error) {
+        this.logger.createLog({msg: error.message,name: "PermissionMiddleware-checkPermission"});
+        return this.response.error({req,res,key: "INTERNAL_ERROR"});
+      }
+    };
+  };
+  
   
 }
 
