@@ -3,13 +3,15 @@ const LoggerUtils = require("../Utils/logger.utils");
 const AjvUtils = require("../Utils/ajv.utils");
 
 class SubscribeMqtt{
-    constructor({conn}) {
+    constructor({conn, appEvent}){
 
         this.helper = HelperUtils;
         this.logger = LoggerUtils;
         this.ajv = AjvUtils;
         
         this.mqtt = conn;
+        this.appEvent = appEvent;
+        
         this.subscribeMqttTopic();
         this.connection();
     }

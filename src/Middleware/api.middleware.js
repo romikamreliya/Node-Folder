@@ -48,11 +48,6 @@ class ApiMiddleware {
 
         // TODO: Implement role-based permission check
         // Example: Check if user role has permission for module.action
-        // const userRole = req.tokenData.role;
-        // const hasPermission = await PermissionService.checkPermission(userRole, moduleName, actionName);
-        // if (!hasPermission) {
-        //   return this.response.error({req, res, key: "FORBIDDEN", status: 403});
-        // }
 
         next();
       } catch (error) {

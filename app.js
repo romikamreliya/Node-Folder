@@ -32,7 +32,7 @@ class Main {
         this.appEvent = this.app.get("appEvent");
         this.io = new SocketConfig(this.server).io;
         this.socketClient = new SocketClientConfig({url: process.env.SOCKET_CLIENT_URL,name: "demo"}).client;
-        this.mqtt = new MQTTConfig(process.env.mqttUrl, "demo").mqtt;
+        this.mqtt = new MQTTConfig({url: process.env.MQTT_URL,name: "demo"}).mqtt;
     }
 
     Routes() {
@@ -60,9 +60,9 @@ class Main {
 
     Mqtt() {
         this.mqtt.on("connect", () => {
-            console.log("✅ Connected to broker:", this.mqttUrl);
-            new PublishMqtt({ conn: mqttConn, appEvent: this.appEvent });
-            new SubscribeMqtt({ conn: mqttConn });
+            console.log("✅ Connected to broker:", process.env.MQTT_URL);
+            new PublishMqtt({ conn: this.mqtt, appEvent: this.appEvent });
+            new SubscribeMqtt({ conn: this.mqtt, appEvent: this.appEvent });
         });
     };
 

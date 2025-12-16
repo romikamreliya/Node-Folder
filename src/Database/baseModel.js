@@ -10,9 +10,45 @@ class BaseModel {
   }
 
   clean(data) {
+    if (!data || typeof data !== 'object') {
+      return {};
+    }
+
+    const validColumns = new Set([...this.columns, this.hidden]);
+
     return Object.fromEntries(
-      Object.entries(data || {}).filter(([k, v]) => v !== undefined || ![...this.columns, this.hidden].includes(k))
-    );
+      Object.entries(data)
+      .filter(([key, value]) => {return value !== undefined && validColumns.has(key);})
+      .map(([key, value]) => [key, this.sanitize(value)])
+    )
+  }
+
+  sanitize(value) {
+    if (value === null) {
+      return null;
+    }
+
+    // Handle arrays
+    if (Array.isArray(value)) {
+      return value.map(item => this.sanitize(item));
+    }
+
+    // Handle Objects
+    if (typeof value === 'object') {
+      return Object.fromEntries(
+        Object.entries(value).map(([k, v]) => [k, this.sanitize(v)])
+      );
+    }
+
+    if (typeof value === 'string') {
+      return value.trim().replace(/\0/g, '');
+    }
+
+    const injectionPatterns = [
+      /(\bOR\b|\bAND\b|\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b)/i,/['";]/,/--/,/\/\*/,/xp_/i,/sp_/i,
+    ];
+
+    return !injectionPatterns.some(pattern => pattern.test(value));
   }
 
   // BASIC CRUD
