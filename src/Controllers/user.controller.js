@@ -5,7 +5,7 @@ const ResponseUtils = require("../Utils/response.utils");
 const LoggerUtils = require("../Utils/logger.utils");
 const AjvUtils = require("../Utils/ajv.utils");
 const TokenUtils = require("../Utils/token.utils");
-const ImageMulter = require("../Services/multer/image.multer");
+const UploadUtils = require("../Utils/upload.utils");
 
 class UserController {
   constructor() {
@@ -14,7 +14,7 @@ class UserController {
     this.logger = LoggerUtils;
     this.ajv = AjvUtils;
     this.token = TokenUtils;
-    this.upload = new ImageMulter();
+    this.upload = new UploadUtils();
   }
 
   async test(req, res) {
