@@ -10,7 +10,8 @@
     "migration": "node ./src/Config/migrations",
     "seeder": "node ./src/Config/seeder",
     "test": "jest",
-    "start": "node app.js"
+    "start": "node app.js",
+    "load-test": "artillery run test.yml"
   },
   "author": "",
   "license": "ISC",
