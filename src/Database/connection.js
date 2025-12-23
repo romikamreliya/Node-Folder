@@ -20,7 +20,16 @@ try {
         database: process.env.DBNAME,
         user: process.env.DBUSER,
         password: process.env.DBPASS
-      }
+      },
+      pool: { 
+        min: 2,
+        max: 10,
+        // Validate connections
+        validateConnection: (connection) => {
+          return connection.ping().then(() => connection);
+        }
+      },
+      acquireTimeoutMillis: 30000
     });
   } else {
     throw new Error(`Unsupported database type: ${process.env.DB_TYPE}`);

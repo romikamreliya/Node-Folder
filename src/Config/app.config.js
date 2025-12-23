@@ -61,8 +61,8 @@ class AppConfig {
 
     middlewares() {
         this.app.use(helmet(this.helmetConfig));
-        this.app.use(bodyParser.urlencoded({ extended: false }));
-        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: false, limit: '10mb' }));
+        this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use('/public', express.static('public'));
         this.app.use(cors(this.corsOptions));
         this.app.set('views', path.join(__dirname, "../Views"));

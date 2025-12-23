@@ -37,15 +37,13 @@ class MailService{
     }
 
     async sendmail(data) {
-        this.MailConn.sendMail(this.mailOption(data), (error, info) => {
-            if (error) {
-                console.error('Error sending email:', error);
-                return error;
-            } else {
-                console.log('Email sent:', info.response);
-                return info.response;
-            }
-        });
+        try {
+            const info = await this.MailConn.sendMail(this.mailOption(data));
+            return info;
+        } catch (error) {
+            console.error('Error sending email:', error);
+            throw error;
+        }
     }
 
 }

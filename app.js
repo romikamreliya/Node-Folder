@@ -70,9 +70,6 @@ class Main {
             new PublishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
             new SubscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
         });
-        this.mqttConnection.on("error", (err) => {
-            console.error("MQTT Connection Error:", err.message);
-        });
     }
 
     Cron() {
