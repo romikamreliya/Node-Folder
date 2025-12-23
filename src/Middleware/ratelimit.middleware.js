@@ -11,6 +11,7 @@ class RateLimitMiddleware {
         standardHeaders: 'draft-8',
         standardHeaders: true,
         legacyHeaders: false,
+        skipSuccessfulRequests: true
     })
 
 }

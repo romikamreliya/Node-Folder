@@ -15,7 +15,7 @@ class TokenService {
 
   // Custom AES Token
   static aesExpireMs = parseInt(24 * 60 * 60 * 1000); // 24 hours
-  static aesKey = Buffer.concat([Buffer.from(process.env.accessTokenKey || "", "base64"),Buffer.alloc(32)]).subarray(0, 32);
+  static aesKey = crypto.pbkdf2Sync(process.env.accessTokenKey, 'salt', 100000, 32, 'sha256');
   static algorithm = "aes-256-gcm";
 
   // =========================================================
