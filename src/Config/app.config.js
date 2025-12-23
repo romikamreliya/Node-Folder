@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const ejs = require('ejs');
 const helmet = require("helmet");
+const fs = require("fs");
 
 class AppConfig {
     constructor() {
@@ -11,6 +12,32 @@ class AppConfig {
         this.middlewares();
         this.allowedOrigins = (process.env.ALLOWED_ORIGINS).split(',').map(origin => origin.trim());
     }
+
+    crt = { 
+        key: fs.readFileSync("./crt/localhost.key", 'utf8'), 
+        cert: fs.readFileSync("./crt/localhost.crt", 'utf8') 
+    };
+
+    helmetConfig = {
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'"],
+                styleSrc: ["'self'", "'unsafe-inline'"],
+                imgSrc: ["'self'", 'data:', 'https:'],
+                connectSrc: ["'self'"],
+            },
+        },
+        hsts: {
+            maxAge: 31536000, // 1 year
+            includeSubDomains: true,
+            preload: true,
+        },
+        frameguard: { action: 'deny' },
+        referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+        xssFilter: true,
+        noSniff: true,
+    };
 
     corsOptions = {
         origin: (origin, callback) => {
@@ -30,7 +57,7 @@ class AppConfig {
     }
 
     middlewares() {
-        this.app.use(helmet());
+        this.app.use(helmet(this.helmetConfig));
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
         this.app.use('/public',express.static('public'));

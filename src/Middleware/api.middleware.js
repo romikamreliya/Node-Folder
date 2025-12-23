@@ -18,6 +18,8 @@ class ApiMiddleware {
         return this.response.error({req, res, key:"UNAUTHORIZED"});
       }
 
+      // No blacklist checking
+
       // check Token 
       const tokenCheck = this.token.verifyCustomToken(token)
       if (!tokenCheck.ok) {

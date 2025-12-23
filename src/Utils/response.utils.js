@@ -15,8 +15,8 @@ class ResponseUtils {
         INTERNAL_SERVER_ERROR: { code: 'INTERNAL_SERVER_ERROR', status: 500 },
     };
     
-    static success({req, res, key, code = null, data = {}}) {
-        return res.json({
+    static success({req, res, key, code = null, data = {}, status = 200}) {
+        return res.status(status).json({
             success: true,
             code: code,
             message: this.i18n.t({key, len:req.lang}),
@@ -24,7 +24,7 @@ class ResponseUtils {
         });
     }
     static error({req, res, key, code = null, status = 400}) {
-        return res.json({ 
+        return res.status(status).json({ 
             success: false, 
             code: code,
             message: this.i18n.t({key, len:req.lang}) 

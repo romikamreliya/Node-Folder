@@ -1,5 +1,6 @@
 require("dotenv").config();
 const http = require("http");
+const https = require("https");
 
 // Config
 const appConfig = require("./src/Config/app.config");
@@ -28,7 +29,13 @@ class Main {
     constructor() {
         this.PORT = process.env.PORT;
         this.app = appConfig.app;
-        this.server = http.createServer(this.app);
+
+        if (process.env.HTTPS_ENABLED == "true") {
+            this.server = https.createServer(appConfig.crt, this.app);   
+        } else {
+            this.server = http.createServer(this.app);
+        }
+
         this.appEvent = this.app.get("appEvent");
         this.io = new SocketConfig(this.server).io;
         this.socketClient = new SocketClientConfig({url: process.env.SOCKET_CLIENT_URL,name: "demo"}).client;
@@ -82,7 +89,7 @@ class Main {
     Start() {
         this.Initialize();
         this.server.listen(this.PORT, () => {
-            console.log(`Example app listening on port ${this.PORT}`);
+            console.log(`Example app listening on port ${this.PORT} - ${process.env.HTTPS_ENABLED == "true"? "https" : "http"}`);
         });
     };
 }
