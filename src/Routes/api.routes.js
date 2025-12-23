@@ -1,9 +1,11 @@
 const express = require("express");
-
 const ApiMiddleware = require("../Middleware/api.middleware");
 const userController = require("../Controllers/user.controller");
 const HelperUtils = require("../Utils/helper.utils");
 
+/**
+ * API routes handler
+ */
 class ApiRoutes {
   constructor() {
     this.routes = express.Router();
@@ -28,10 +30,10 @@ class ApiRoutes {
     userRouter.post("/tokenCheck", this.userController.tokenCheck.bind(this.userController));
     userRouter.post("/apiVersion", this.userController.apiVersion.bind(this.userController));
 
-    // // --- Protected routes ---
+    // --- Protected routes ---
     userRouter.use(this.apiMiddleware.userLogin.bind(this.apiMiddleware));
-    userRouter.get("/get", this.apiMiddleware.checkPermission({moduleName: "user",actionName: "read"}), this.userController.getAllUser.bind(this.userController));
-    userRouter.post("/add", this.apiMiddleware.checkPermission({moduleName: "user",actionName: "add"}), this.userController.addUser.bind(this.userController));
+    userRouter.get("/get", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "read" }), this.userController.getAllUser.bind(this.userController));
+    userRouter.post("/add", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "add" }), this.userController.addUser.bind(this.userController));
 
     this.routes.use("/user", userRouter);
   }

@@ -8,7 +8,7 @@ class MQTTConfig {
         this.setupErrorHandling();
     }
     initialize() {
-        console.log(`MQTT ${this.name} Config Successfully`);
+        console.log(`✓ App MQTT ${this.name} Config Initialized Successfully`);
     }
     setupErrorHandling() {
         this.mqtt.on('error', (error) => {

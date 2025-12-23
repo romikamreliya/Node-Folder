@@ -1,10 +1,12 @@
 const express = require("express");
 const WebController = require("../Controllers/web.controller");
 
-class ApiRoutes {
+/**
+ * Web routes handler
+ */
+class WebRoutes {
   constructor() {
     this.routes = express.Router();
-    this.allRoutes();
     this.registerRoutes();
   }
 
@@ -14,12 +16,11 @@ class ApiRoutes {
 
   webRoutes() {
     this.routes.get("/", WebController.homeView);
-  };
+  }
 
-  allRoutes = () => {
-    this.webRoutes();
+  allRoutes() {
     return this.routes;
-  };
+  }
 }
 
-module.exports = new ApiRoutes();
+module.exports = new WebRoutes();

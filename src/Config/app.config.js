@@ -6,16 +6,19 @@ const ejs = require('ejs');
 const helmet = require("helmet");
 const fs = require("fs");
 
+/**
+ * Express application configuration
+ */
 class AppConfig {
     constructor() {
         this.app = express();
+        this.allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(',').map(origin => origin.trim());
         this.middlewares();
-        this.allowedOrigins = (process.env.ALLOWED_ORIGINS).split(',').map(origin => origin.trim());
     }
 
-    crt = { 
-        key: fs.readFileSync("./crt/localhost.key", 'utf8'), 
-        cert: fs.readFileSync("./crt/localhost.crt", 'utf8') 
+    crt = {
+        key: fs.readFileSync("./crt/localhost.key", 'utf8'),
+        cert: fs.readFileSync("./crt/localhost.crt", 'utf8')
     };
 
     helmetConfig = {
@@ -25,18 +28,18 @@ class AppConfig {
                 scriptSrc: ["'self'"],
                 styleSrc: ["'self'", "'unsafe-inline'"],
                 imgSrc: ["'self'", 'data:', 'https:'],
-                connectSrc: ["'self'"],
-            },
+                connectSrc: ["'self'"]
+            }
         },
         hsts: {
             maxAge: 31536000, // 1 year
             includeSubDomains: true,
-            preload: true,
+            preload: true
         },
         frameguard: { action: 'deny' },
         referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
         xssFilter: true,
-        noSniff: true,
+        noSniff: true
     };
 
     corsOptions = {
@@ -54,20 +57,20 @@ class AppConfig {
         exposedHeaders: ['X-Request-ID'],
         maxAge: 86400, // 24 hours
         optionsSuccessStatus: 200
-    }
+    };
 
     middlewares() {
         this.app.use(helmet(this.helmetConfig));
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
-        this.app.use('/public',express.static('public'));
+        this.app.use('/public', express.static('public'));
         this.app.use(cors(this.corsOptions));
-        this.app.set('views',path.join(__dirname,"../Views"));
-        this.app.set('view engine', 'ejs')
-        this.app.set('appEvent', require("./event.config"))
+        this.app.set('views', path.join(__dirname, "../Views"));
+        this.app.set('view engine', 'ejs');
+        this.app.set('appEvent', require("./event.config"));
         // this.app.use((req,res,next)=>LanguageMiddleware.use(req,res,next));
 
-        console.log('App Config Successfully');
+        console.log('✓ App Config Initialized Successfully');
     }
 }
 

@@ -7,7 +7,7 @@ class SocketClientConfig {
         this.initialize();
     }
     initialize() {
-        console.log(`Socket Client ${this.name} Config Successfully`);
+        console.log(`✓ App Socket Client ${this.name} Config Initialized Successfully`);
     }
 }
 

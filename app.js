@@ -44,39 +44,41 @@ class Main {
 
     Routes() {
         this.app.use("/", WebRoutes.allRoutes());
-        this.app.use( /^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
-        this.app.use("/", (req, res) => res.send("404 page not found"));
-    };
+        this.app.use(/^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
+        this.app.use("/", (req, res) => res.status(404).json({ success: false, message: "404 page not found" }));
+    }
 
     Socket() {
-        this.io.on("connection",(socket) => 
-            new TestSocket({ 
-                io: this.io, 
-                socket, 
-                appEvent: this.appEvent 
-            })
-        );
-    };
+        this.io.on("connection", (socket) => {
+            new TestSocket({
+                io: this.io,
+                socket,
+                appEvent: this.appEvent
+            });
+        });
+    }
 
     SocketClient() {
         new TestSocketClient({
             socketClient: this.socketClient,
-            appEvent: this.appEvent,
+            appEvent: this.appEvent
         });
-    };
+    }
 
     Mqtt() {
         this.mqttConnection.on("connect", () => {
-            console.log("✅ Connected to broker:", process.env.MQTT_URL);
             new PublishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
             new SubscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
         });
-    };
+        this.mqttConnection.on("error", (err) => {
+            console.error("MQTT Connection Error:", err.message);
+        });
+    }
 
     Cron() {
         // TestCron.Run();
         // DemoCron.Run();
-    };
+    }
 
     Initialize() {
         this.Routes();
@@ -89,14 +91,15 @@ class Main {
     Start() {
         this.Initialize();
         this.server.listen(this.PORT, () => {
-            console.log(`Example app listening on port ${this.PORT} - ${process.env.HTTPS_ENABLED == "true"? "https" : "http"}`);
+            const protocol = process.env.HTTPS_ENABLED === "true" ? "https" : "http";
+            console.log(`Server listening on ${protocol}://localhost:${this.PORT}`);
         });
-    };
+    }
 }
 
 const main = new Main();
 
-if (process.env.NODE_APP_ENV != "test") {
+if (process.env.NODE_APP_ENV !== "test") {
     main.Start();
 }
 

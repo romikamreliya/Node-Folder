@@ -20,7 +20,7 @@ class SocketConfig {
         }
     }
     initialize() {
-        console.log('Socket Config Successfully');
+        console.log('✓ App Socket Config Initialized Successfully');
     }
 }
 

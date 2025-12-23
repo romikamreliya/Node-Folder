@@ -13,12 +13,13 @@ class ValidationUtils {
     this.ajv.addKeyword({
       keyword: "customEmail",
       type: "string",
-      error: { message: "ID is Wrong" },
+      error: { message: "Invalid email format" },
       validate: (schema, data) => {
         if (!schema || !data) return true;
         return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,8}$/.test(data);
-      },
+      }
     });
+
     this.ajv.addKeyword({
       keyword: "customPhone",
       type: "string",
@@ -26,8 +27,9 @@ class ValidationUtils {
         if (!schema || !data) return true;
         return /^\+?[0-9]{7,15}$/.test(data); // e.g., +12345678900
       },
-      error: { message: "Number is Wrong" },
+      error: { message: "Invalid phone format" }
     });
+
     this.ajv.addKeyword({
       keyword: "customWebsite",
       type: "string",
@@ -35,10 +37,9 @@ class ValidationUtils {
         if (!schema || !data) return true;
         return /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[\w-./?%&=]*)?$/.test(data);
       },
-      error: { message: "URL is Wrong" },
+      error: { message: "Invalid URL format" }
     });
-    console.log('AJV Key Initialize Successfully');
-  };
+  }
 
   static schemaGenerator(schemaData, options) {
     return {
@@ -52,11 +53,11 @@ class ValidationUtils {
 
   /**
    * Creates a schema property object.
-   * 
-   * @param { "number" | "string" | "array" | "object"} type - The type of the property ("number", "string", "array", "object").
+   *
+   * @param {"number" | "string" | "array" | "object"} type - The type of the property
    * @param {PropOptions} [options={}] - Additional property constraints.
    * @returns {Object} Schema-like property object.
-   * 
+   *
    * @typedef {Object} PropOptions
    * @property {number} [minimum] - Minimum value (for numbers).
    * @property {number} [maximum] - Maximum value (for numbers).
@@ -71,7 +72,7 @@ class ValidationUtils {
    * @property {Object} [properties] - Schema for object properties.
    * @property {string} [pattern] - Regex pattern (for strings).
    * @property {Array} [enum] - Allowed values.
-   * @property {"customEmail" | "customPhone" | "customWebsite" } [format] - Special format flag (e.g. "email", "date").
+   * @property {"customEmail" | "customPhone" | "customWebsite"} [format] - Special format flag.
    * @property {boolean} [required] - Whether field is required.
    */
   static prop(type, options = {}) {
@@ -112,16 +113,17 @@ class ValidationUtils {
     return propObj;
   };
 
-  static ajvChack(schema, options = {}) {
+  static ajvCheck(schema, options = {}) {
     return this.ajv.compile(this.schemaGenerator(schema, options));
-  };
+  }
 
-  static errorMsg({error}) {
+  static errorMsg({ error }) {
     let field = error?.parentSchema?.title || error.params?.missingProperty || error.instancePath?.replace(/^\//, '') || '';
     field = field ? `'${field}'` : 'this field';
-    let msg = error.message.replace(/'/g, '').replace(/must/, 'requires').trim();
+    const msg = error.message.replace(/'/g, '').replace(/must/, 'requires').trim();
     return `Field ${field} ${msg}.`;
   }
 }
+
 ValidationUtils.customKey();
 module.exports = ValidationUtils;
