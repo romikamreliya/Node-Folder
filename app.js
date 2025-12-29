@@ -25,6 +25,9 @@ const TestSocketClient = require("./src/Socket/Client/test.socketclient");
 const PublishMqtt = require("./src/Mqtt/publish.mqtt");
 const SubscribeMqtt = require("./src/Mqtt/subscribe.mqtt");
 
+// Utils
+const MemoryUtils = require("./src/Utils/memory.utils");
+
 class Main {
     constructor() {
         this.PORT = process.env.PORT;
@@ -37,7 +40,7 @@ class Main {
         }
 
         this.appEvent = this.app.get("appEvent");
-        this.io = new SocketConfig(this.server).io;
+        this.io = new SocketConfig({server:this.server}).io;
         this.socketClient = new SocketClientConfig({url: process.env.SOCKET_CLIENT_URL,name: "demo"}).client;
         this.mqttConnection = new MQTTConfig({url: process.env.MQTT_URL, name: "demo"}).mqtt;
     }
@@ -51,7 +54,6 @@ class Main {
     Socket() {
         this.io.on("connection", (socket) => {
             new TestSocket({
-                io: this.io,
                 socket,
                 appEvent: this.appEvent
             });
@@ -90,6 +92,12 @@ class Main {
         this.server.listen(this.PORT, () => {
             const protocol = process.env.HTTPS_ENABLED === "true" ? "https" : "http";
             console.log(`Server listening on ${protocol}://localhost:${this.PORT}`);
+            
+            // Start monitoring
+            MemoryUtils.logMemory("Server Started");
+            if (process.env.ENABLE_MEMORY_MONITORING === "true") {
+                MemoryUtils.startMonitoring(10000);
+            }
         });
     }
 }

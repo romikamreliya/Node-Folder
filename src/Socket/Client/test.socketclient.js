@@ -1,15 +1,11 @@
 const HelperUtils = require("../../Utils/helper.utils");
 const LoggerUtils = require("../../Utils/logger.utils");
-const AjvUtils = require("../../Utils/ajv.utils");
-const tokenUtils = require("../../Utils/token.utils");
 
 class TestSocketClient{
     constructor({socketClient,appEvent}){
 
         this.helper = HelperUtils;
         this.logger = LoggerUtils;
-        this.ajv = AjvUtils;
-        this.token = tokenUtils;
 
         this.socketClient = socketClient;
         this.appEvent = appEvent;
@@ -29,11 +25,23 @@ class TestSocketClient{
         this.socketClient.on('participants',(data)=>{
             console.log('participants',data)
         })
+
+        this.socketClient.on('disconnect',(reason)=>{
+            console.log('disconnect',reason)
+            this.appEventRemoveListeners();
+        })
     }
     setupAppEventListeners() {
-        this.appEvent.on('socketEmit', (data) => {
-            console.log('socket socketEmit', data);
-        })
+        this.socketClientEmit = (data) => {
+            console.log('socket socketClientEmit', data);
+        }
+        this.appEvent.on('socketClientEmit', this.socketClientEmit);
+    }
+
+    appEventRemoveListeners() {
+        if (this.socketClientEmit) {
+            this.appEvent.removeListener('socketClientEmit', this.socketClientEmit)   
+        }
     }
 }
 
