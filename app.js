@@ -33,7 +33,7 @@ class Main {
         this.PORT = process.env.PORT;
         this.app = appConfig.app;
 
-        if (process.env.HTTPS_ENABLED == "true") {
+        if (process.env.HTTPS_ENABLED === "true") {
             this.server = https.createServer(appConfig.crt, this.app);   
         } else {
             this.server = http.createServer(this.app);
