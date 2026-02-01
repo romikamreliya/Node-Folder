@@ -9,7 +9,7 @@ class UserResources {
         }
     }
 
-    fullDetails = (data = {}) => {
+    fullDetails(data = {}) {
         return {
             id : data.id ?? this.user.id,
             name : data.name ?? this.user.name,
@@ -19,7 +19,7 @@ class UserResources {
         }
     }
 
-    list = (data) => {
+    list(data) {
         return data?.map(item => this.fullDetails(item));
     }
 

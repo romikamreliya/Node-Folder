@@ -1,5 +1,5 @@
 const cron = require("cron");
-const Logs = require("../Utils/logs");
+const Logs = require("../Utils/logger.utils");
 
 class DemoCron {
   
@@ -11,7 +11,7 @@ class DemoCron {
     this.cronRun;
   }
 
-  datetimeExpression = (datetime = new Date()) => {
+  datetimeExpression(datetime = new Date()) {
     try {
         const d = new Date(new Date(datetime).getTime() + 5000);
         return `${d.getSeconds()} ${d.getMinutes()} ${d.getHours()} ${d.getDate()} ${d.getMonth() + 1} *`;
@@ -21,7 +21,7 @@ class DemoCron {
     }
   }
 
-  cronTask = async () => {
+  async executeTask() {
     try {
 
         console.log(`CronTask ${new Date()}`);
@@ -33,7 +33,7 @@ class DemoCron {
     }
   };
 
-  cronComplete = () => {
+  async cronComplete() {
     
     this.schedule = this.datetimeExpression();
     this.Run();
@@ -41,18 +41,18 @@ class DemoCron {
     Logs.createLog(`Cron Completed :- ${new Date()}`, this.name);
   }
 
-  nextCall = (next = 1) => {
+  nextCall(next = 1) {
     return this.cronRun.nextDates(next);
   }
   
-  cronStatus = () => {
+  cronStatus() {
     return this.cronRun.running?"running":"stopped";
   }
 
-  Run = () => {
+  Run() {
     this.cronRun = cron.CronJob.from({
       cronTime: this.schedule,
-      onTick: this.cronTask,
+      onTick: this.executeTask,
       onComplete: this.cronComplete,
       name: this.name,
       start: true,

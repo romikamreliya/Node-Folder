@@ -1,0 +1,76 @@
+const HelperUtils = require("../../Utils/helper.utils");
+const LoggerUtils = require("../../Utils/logger.utils");
+const tokenUtils = require("../../Utils/token.utils");
+
+class TestSocket {
+    constructor({ socket, appEvent }) {
+        this.helper = HelperUtils;
+        this.logger = LoggerUtils;
+        this.token = tokenUtils;
+
+        this.socket = socket;
+        this.appEvent = appEvent;
+        this.authenticate();
+    }
+
+    authenticate() {
+        try {
+            const token = this.socket.handshake.auth.token;
+
+            if (!token) {
+                this.socket.disconnect(true);
+                return;
+            }
+
+            // Verify JWT token
+            const decoded = this.token.verifyCustomToken(token);
+            this.user = decoded;
+
+            this.initialize();
+        } catch (error) {
+            this.socket.emit("auth_error", {
+                message: "Authentication failed",
+                error: error.message,
+            });
+            this.socket.disconnect(true);
+            this.appEventRemoveListeners();
+        }
+    }
+
+    initialize() {
+        this.setupSocketListeners();
+        this.setupAppEventListeners();
+    }
+
+    setupSocketListeners() {
+
+        this.socket.on("send", (data) => {
+            this.socket.emit("send", `${data} - server`);
+        });
+
+        this.socket.on("error", (error) => {
+            this.logger.error("Socket error:", error);
+        });
+
+        this.socket.on("disconnect", (reason) => {
+            console.log(`Socket disconnected: ${reason}`);
+            this.appEventRemoveListeners();
+        });
+    }
+
+    setupAppEventListeners() {
+        this.socketEmitHandler = (data) => {
+            console.log('socket socketEmit', data);
+            this.socket.emit('send', data);
+        };
+        this.appEvent.on('socketEmit', this.socketEmitHandler);
+    }
+
+    appEventRemoveListeners() {
+        if (this.socketEmitHandler) {
+            this.appEvent.removeListener('socketEmit', this.socketEmitHandler)   
+        }
+    }
+}
+
+module.exports = TestSocket;

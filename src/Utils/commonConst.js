@@ -1,14 +1,14 @@
 class commonConst{
     
-    pageLimit = 10;
-    commandLen = "en"
+    defaultPageLimit = 10;
+    defaultLanguage = "en"
 
     userType = {
         admin: "Admin",
         user: "User",
         publisher: "Publisher",
     };
-    resCode = {
+    statusCode = {
         success: 200,
         error: 500,
     }
@@ -18,4 +18,4 @@ class commonConst{
     }
 }
 
-module.exports = commonConst;
+module.exports = new commonConst();

@@ -1,8 +1,28 @@
-const { parentPort, workerData } = require('worker_threads');
+const { parentPort, workerData } = require("worker_threads");
+const HelperUtils = require("../Utils/helper.utils");
+const LoggerUtils = require("../Utils/logger.utils");
 
-function slowFib(n) {
-  return n <= 1 ? n : slowFib(n - 1) + slowFib(n - 2);
+class TestWorker {
+    constructor(data) {
+      this.helper = HelperUtils;
+      this.logger = LoggerUtils;
+      
+      this.data = data;
+    }
+
+    calculate(n) {
+        return n <= 1 ? n : this.calculate(n - 1) + this.calculate(n - 2);
+    }
+
+    execute() {
+        try {
+            const result = this.calculate(this.data);
+            parentPort.postMessage({ success: true, result });
+        } catch (error) {
+            parentPort.postMessage({ success: false, error: error.message });
+        }
+    }
 }
 
-const result = slowFib(workerData);
-parentPort.postMessage(result);
+const worker = new TestWorker(workerData);
+worker.execute();

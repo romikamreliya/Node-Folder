@@ -3,6 +3,7 @@ config:
   phases:
     - duration: 1    # run for 1 seconds
       arrivalRate: 5000 # 10 users per second
+      name: "Load test cluster"
 
 scenarios:
   - flow:

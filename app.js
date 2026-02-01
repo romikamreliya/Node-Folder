@@ -1,90 +1,112 @@
-require('dotenv').config();
-const http = require('http');
-const helmet = require('helmet');
-const express = require("express");
-const bodyParser = require('body-parser');
-const EventEmitter = require('events');
-const {Server} = require('socket.io');
-const cors = require('cors');
-const ejs = require('ejs');
-const path = require('path');
-const { rateLimit } = require('express-rate-limit');
+require("dotenv").config();
+const http = require("http");
+const https = require("https");
+
+// Config
+const appConfig = require("./src/Config/app.config");
+const SocketConfig = require("./src/Config/socket.config");
+const SocketClientConfig = require("./src/Config/socket-client.config");
+const MQTTConfig = require("./src/Config/mqtt.config");
+const RateLimitMiddleware = require("./src/Middleware/ratelimit.middleware");
 
 // Routes
-const APIRoutes = require("./src/Routes/api.route");
-const WebRoutes = require("./src/Routes/web.route");
+const apiRoutes = require("./src/Routes/api.routes");
+const WebRoutes = require("./src/Routes/web.routes");
 
 // Cron Jobs
 const TestCron = require("./src/Cron/test.cron");
 const DemoCron = require("./src/Cron/demo.cron");
 
-// Events and Sockets
-const TestEvent = require("./src/Events/test.event");
-const TestSocket = require("./src/Socket/test.socket");
+// Events and Sockets, Client
+const TestSocket = require("./src/Socket/Server/test.socket");
+const TestSocketClient = require("./src/Socket/Client/test.socketclient");
+
+// MQTT
+const PublishMqtt = require("./src/Mqtt/publish.mqtt");
+const SubscribeMqtt = require("./src/Mqtt/subscribe.mqtt");
+
+// Utils
+const MemoryUtils = require("./src/Utils/memory.utils");
 
 class Main {
-  constructor() {
-    this.app = express();
-    this.server = http.createServer(this.app);
-    this.PORT = process.env.PORT;
-    this.eventEmitter = new EventEmitter();
-    this.io = new Server(this.server);
+    constructor() {
+        this.PORT = process.env.PORT;
+        this.app = appConfig.app;
 
-    this.Config();
-    this.Routes();
-    this.Socket();
-    this.Events();
-    this.Cron();
-  }
+        if (process.env.HTTPS_ENABLED === "true") {
+            this.server = https.createServer(appConfig.crt, this.app);   
+        } else {
+            this.server = http.createServer(this.app);
+        }
 
-  Config = () => {
-    this.app.use(helmet());
-    this.app.use(bodyParser.urlencoded({ extended: false }))
-    this.app.use(bodyParser.json())
-    this.app.use(express.static('public'))
-    this.app.use(cors())
-    this.app.set('eventEmitter', this.eventEmitter)
-    this.app.set('views',path.join(__dirname,"./src/Views"));
-    this.app.set('view engine', 'ejs')
+        this.appEvent = this.app.get("appEvent");
+        this.io = new SocketConfig({server:this.server}).io;
+        this.socketClient = new SocketClientConfig({url: process.env.SOCKET_CLIENT_URL,name: "demo"}).client;
+        this.mqttConnection = new MQTTConfig({url: process.env.MQTT_URL, name: "demo"}).mqtt;
+    }
 
-    // set limit for API requests
-    this.app.use("/api",rateLimit({
-      windowMs: 1 * 60 * 1000, // 1 minutes
-      limit: 10,
-      standardHeaders: 'draft-8',
-      legacyHeaders: false,
-    }))
-  }
+    Routes() {
+        this.app.use("/", WebRoutes.allRoutes());
+        this.app.use(/^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
+        this.app.use("/", (req, res) => res.status(404).json({ success: false, message: "404 page not found" }));
+    }
 
-  Routes = () => {
-    this.app.use("/", WebRoutes.allRoutes());
-    this.app.use("/api/v1", APIRoutes.allRoutes());
-    this.app.use("/", (req, res) => res.send("404 page not found"));
-  };
+    Socket() {
+        this.io.on("connection", (socket) => {
+            new TestSocket({
+                socket,
+                appEvent: this.appEvent
+            });
+        });
+    }
 
-  Cron = () => {
-    // TestCron.Run();
-    // DemoCron.Run();
-  }
+    SocketClient() {
+        new TestSocketClient({
+            socketClient: this.socketClient,
+            appEvent: this.appEvent
+        });
+    }
 
-  Socket = () => {
-    this.io.of('/test').on('connection',(socket) => new TestSocket(socket,this.io));
-  }
+    Mqtt() {
+        this.mqttConnection.on("connect", () => {
+            new PublishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+            new SubscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+        });
+    }
 
-  Events = () => {
-    new TestEvent(this.eventEmitter);
-  }
+    Cron() {
+        // TestCron.Run();
+        // DemoCron.Run();
+    }
 
-  Start = () => {
-    this.server.listen(this.PORT, () => {
-      console.log(`Example app listening on port ${this.PORT}`);
-    });
-  };
+    Initialize() {
+        this.Routes();
+        this.Socket();
+        this.SocketClient();
+        this.Cron();
+        this.Mqtt();
+    }
+
+    Start() {
+        this.Initialize();
+        this.server.listen(this.PORT, () => {
+            const protocol = process.env.HTTPS_ENABLED === "true" ? "https" : "http";
+            console.log(`Server listening on ${protocol}://localhost:${this.PORT}`);
+            
+            // Start monitoring
+            MemoryUtils.logMemory("Server Started");
+            if (process.env.ENABLE_MEMORY_MONITORING === "true") {
+                MemoryUtils.startMonitoring(10000);
+            }
+        });
+    }
 }
 
 const main = new Main();
 
-if (process.env.NODE_APP_ENV != "test") {
-  main.Start();
+if (process.env.NODE_APP_ENV !== "test") {
+    main.Start();
 }
+
+// Run for jest Testing
 module.exports = { app: main.app, server: main.server };

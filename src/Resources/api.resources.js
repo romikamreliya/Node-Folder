@@ -1,4 +1,4 @@
-const Helper = require("../Utils/helper");
+const Helper = require("../Utils/helper.utils");
 
 class APIResources extends Helper{
 
@@ -6,16 +6,18 @@ class APIResources extends Helper{
         super();
     }
 
-    apiError = (res, msg = "error") => {
+    error({res, msg = "error", key = ""}) {
         return res.send({
             res: false,
+            key: key,
             msg: this.resMessage(msg),
             data: []
         })
     }
-    apiSuccess = (res, msg = "success", data = []) => {
+    success({res, msg = "success", data = [], key = ""}) {
         return res.send({
             res: true,
+            key: key,
             msg: this.resMessage(msg),
             data
         });

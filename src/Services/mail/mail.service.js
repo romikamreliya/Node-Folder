@@ -1,6 +1,6 @@
 const NodeMailer = require('nodemailer');
 
-class Mail{
+class MailService{
 
     constructor(){
         this.auth = {
@@ -20,7 +20,7 @@ class Mail{
         }
     });
 
-    mailOption = (data) => {
+    mailOption(data) {
 
         return {
             from: data.from ?? this.auth.user,
@@ -36,18 +36,16 @@ class Mail{
 
     }
 
-    sendmail = async (data) => {
-        MailConn.sendMail(this.mailOption(data), (error, info) => {
-            if (error) {
-                console.error('Error sending email:', error);
-                return error;
-            } else {
-                console.log('Email sent:', info.response);
-                return info.response;
-            }
-        });
+    async sendmail(data) {
+        try {
+            const info = await this.MailConn.sendMail(this.mailOption(data));
+            return info;
+        } catch (error) {
+            console.error('Error sending email:', error);
+            throw error;
+        }
     }
 
 }
 
-module.exports = new Mail;
+module.exports = new MailService();

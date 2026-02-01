@@ -1,6 +1,6 @@
 process.env.NODE_APP_ENV = "test";
 const request = require("supertest");
-const {app, server} = require('../app')
+const {app, server} = require('../../app')
 
 describe("GET /api/v1/user/get", () => {
   it("User Get", async () => {
