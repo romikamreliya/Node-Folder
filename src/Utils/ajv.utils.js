@@ -39,6 +39,18 @@ class ValidationUtils {
       },
       error: { message: "Invalid URL format" }
     });
+
+    this.ajv.addKeyword({
+      keyword: "customDate",
+      type: "string",
+      error: { message: "Invalid date format. Expected YYYY-MM-DD" },
+      validate: (schema, data) => {
+        if (!schema || !data) return true;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(data)) return false;
+        const date = new Date(data);
+        return !isNaN(date.getTime());
+      }
+    });
   }
 
   static schemaGenerator(schemaData, options) {

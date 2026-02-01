@@ -7,7 +7,7 @@ const AjvUtils = require("../Utils/ajv.utils");
 const TokenUtils = require("../Utils/token.utils");
 const UploadUtils = require("../Utils/upload.utils");
 
-class UserController {
+class TestController {
   constructor() {
     this.helper = HelperUtils;
     this.response = ResponseUtils;
@@ -278,4 +278,4 @@ class UserController {
     }
   }
 }
-module.exports = new UserController();
+module.exports = new TestController();

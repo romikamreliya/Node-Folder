@@ -137,7 +137,7 @@ class BaseModel {
     select = "*",
     order = [],
     pagination = true
-  }) {
+  } = {}) {
     let query = db(this.table).select(select);
 
     // FILTERS
