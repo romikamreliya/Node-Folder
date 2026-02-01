@@ -1,6 +1,6 @@
 const express = require("express");
 const ApiMiddleware = require("../Middleware/api.middleware");
-const userController = require("../Controllers/user.controller");
+const testController = require("../Controllers/test.controller");
 const HelperUtils = require("../Utils/helper.utils");
 
 /**
@@ -9,7 +9,7 @@ const HelperUtils = require("../Utils/helper.utils");
 class ApiRoutes {
   constructor() {
     this.routes = express.Router();
-    this.userController = userController;
+    this.testController = testController;
     this.apiMiddleware = ApiMiddleware;
     this.helper = HelperUtils;
     this.registerRoutes();
@@ -23,17 +23,17 @@ class ApiRoutes {
     const userRouter = express.Router();
 
     // --- Public routes ---
-    userRouter.get("/test", this.userController.test.bind(this.userController));
-    userRouter.post("/ajv", this.userController.ajvFun.bind(this.userController));
-    userRouter.post("/filter", this.userController.filter.bind(this.userController));
-    userRouter.post("/token", this.userController.tokenGen.bind(this.userController));
-    userRouter.post("/tokenCheck", this.userController.tokenCheck.bind(this.userController));
-    userRouter.post("/apiVersion", this.userController.apiVersion.bind(this.userController));
+    userRouter.get("/test", this.testController.test.bind(this.testController));
+    userRouter.post("/ajv", this.testController.ajvFun.bind(this.testController));
+    userRouter.post("/filter", this.testController.filter.bind(this.testController));
+    userRouter.post("/token", this.testController.tokenGen.bind(this.testController));
+    userRouter.post("/tokenCheck", this.testController.tokenCheck.bind(this.testController));
+    userRouter.post("/apiVersion", this.testController.apiVersion.bind(this.testController));
 
     // --- Protected routes ---
     userRouter.use(this.apiMiddleware.userLogin.bind(this.apiMiddleware));
-    userRouter.get("/get", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "read" }), this.userController.getAllUser.bind(this.userController));
-    userRouter.post("/add", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "add" }), this.userController.addUser.bind(this.userController));
+    userRouter.get("/get", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "read" }), this.testController.getAllUser.bind(this.testController));
+    userRouter.post("/add", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "add" }), this.testController.addUser.bind(this.testController));
 
     this.routes.use("/user", userRouter);
   }
