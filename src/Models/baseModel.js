@@ -67,7 +67,7 @@ class BaseModel {
       throw new Error(`SQL injection attempt detected: ${value}`);
     }
 
-    return value.trim().replace(/\0/g, '');
+    return value.toString().trim().replace(/\0/g, '');
   }
 
   // BASIC CRUD
