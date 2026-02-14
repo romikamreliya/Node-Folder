@@ -72,19 +72,19 @@ class BaseModel {
 
   // BASIC CRUD
   async get() {
-    return db(this.table);
+    return db(this.table).select(this.columns);
   }
 
   async find(query) {
-    return db(this.table).where(this.clean(query));
+    return db(this.table).where(this.clean(query)).select(this.columns);
   }
 
   async findOne(query) {
-    return db(this.table).where(this.clean(query)).first();
+    return db(this.table).where(this.clean(query)).select(this.columns).first();
   }
 
   async insert(data) {
-    return db(this.table).insert(this.clean(data));
+    return db(this.table).insert(this.clean(data)).select(this.columns);
   }
 
   async update(id, data) {
@@ -134,7 +134,7 @@ class BaseModel {
     page = 1,
     limit = this.pageLimit,
     filters = {},
-    select = "*",
+    select = this.columns,
     order = [],
     pagination = true
   } = {}) {
