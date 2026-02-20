@@ -1,49 +1,70 @@
-const I18nUtils = require("./i18n.utils");
+const i18n = require("./i18n.utils");
+const message = require("../language/en/message");
 
 /**
  * Response utility class for API responses
  */
 class ResponseUtils {
 
-    static i18n = I18nUtils;
+    static RES_CODES = {
+        // ✅ Success
+        SUCCESS: { status: 200, success: true },
+        CREATED: { status: 201, success: true },
+        UPDATE: { status: 204, success: true },
+        DELETE: { status: 204, success: true },
+        ACCEPTED: { status: 202, success: true },
+        NO_CONTENT: { status: 204, success: true },
 
-    static ERROR_CODES = {
-        // ✅ Success responses
-        SUCCESS: { code: 'SUCCESS', status: 200 },
-        CREATED: { code: 'CREATED', status: 201 },
-        UPDATE: { code: 'UPDATE', status: 204 },
-        DELETE: { code: 'DELETE', status: 204 },
-        ACCEPTED: { code: 'ACCEPTED', status: 202 },
-        NO_CONTENT: { code: 'NO_CONTENT', status: 204 },
+        // ❌ Client Errors
+        BAD_REQUEST: { status: 400, success: false },
+        UNAUTHORIZED: { status: 401, success: false },
+        PAYMENT_REQUIRED: { status: 402, success: false },
+        FORBIDDEN: { status: 403, success: false },
+        NOT_FOUND: { status: 404, success: false },
+        METHOD_NOT_ALLOWED: { status: 405, success: false },
+        NOT_ACCEPTABLE: { status: 406, success: false },
+        REQUEST_TIMEOUT: { status: 408, success: false },
+        CONFLICT: { status: 409, success: false },
+        UNPROCESSABLE_ENTITY: { status: 422, success: false },
+        TOO_MANY_REQUESTS: { status: 429, success: false },
 
-        // 🔁 Client request issues
-        BAD_REQUEST: { code: 'BAD_REQUEST', status: 400 },
-        UNAUTHORIZED: { code: 'UNAUTHORIZED', status: 401 },
-        PAYMENT_REQUIRED: { code: 'PAYMENT_REQUIRED', status: 402 },
-        FORBIDDEN: { code: 'FORBIDDEN', status: 403 },
-        NOT_FOUND: { code: 'NOT_FOUND', status: 404 },
-        METHOD_NOT_ALLOWED: { code: 'METHOD_NOT_ALLOWED', status: 405 },
-        NOT_ACCEPTABLE: { code: 'NOT_ACCEPTABLE', status: 406 },
-        REQUEST_TIMEOUT: { code: 'REQUEST_TIMEOUT', status: 408 },
-        CONFLICT: { code: 'CONFLICT', status: 409 },
-        GONE: { code: 'GONE', status: 410 },
-        PAYLOAD_TOO_LARGE: { code: 'PAYLOAD_TOO_LARGE', status: 413 },
-        UNSUPPORTED_MEDIA_TYPE: { code: 'UNSUPPORTED_MEDIA_TYPE', status: 415 },
-        UNPROCESSABLE_ENTITY: { code: 'UNPROCESSABLE_ENTITY', status: 422 },
-        TOO_MANY_REQUESTS: { code: 'TOO_MANY_REQUESTS', status: 429 },
+        // 💥 Server Errors
+        INTERNAL_SERVER_ERROR: { status: 500, success: false },
+        NOT_IMPLEMENTED: { status: 501, success: false },
+        BAD_GATEWAY: { status: 502, success: false },
+        SERVICE_UNAVAILABLE: { status: 503, success: false },
+        GATEWAY_TIMEOUT: { status: 504, success: false },
 
         // 🔒 Auth / token related
-        TOKEN_EXPIRED: { code: 'TOKEN_EXPIRED', status: 401 },
-        TOKEN_INVALID: { code: 'TOKEN_INVALID', status: 401 },
-        ACCESS_DENIED: { code: 'ACCESS_DENIED', status: 403 },
-
-        // 💥 Server errors
-        INTERNAL_SERVER_ERROR: { code: 'INTERNAL_SERVER_ERROR', status: 500 },
-        NOT_IMPLEMENTED: { code: 'NOT_IMPLEMENTED', status: 501 },
-        BAD_GATEWAY: { code: 'BAD_GATEWAY', status: 502 },
-        SERVICE_UNAVAILABLE: { code: 'SERVICE_UNAVAILABLE', status: 503 },
-        GATEWAY_TIMEOUT: { code: 'GATEWAY_TIMEOUT', status: 504 }
+        TOKEN_EXPIRED: { status: 401, success: false},
+        TOKEN_INVALID: { status: 401, success: false },
+        ACCESS_DENIED: { status: 403, success: false },
     };
+
+    /**
+     * Unified Response Sender
+     *
+     * @param {Object} options
+     * @param {Object} options.req - Express request
+     * @param {Object} options.res - Express response
+     * @param {keyof typeof ResponseUtils.RES_CODES} options.type - Response type (SUCCESS, CREATED, BAD_REQUEST...)
+     * @param {keyof typeof message} options.key - Translation key
+     * @param {Object} [options.data] - Response data
+     * @returns {Object}
+    */
+    static send({ req, res, type = "SUCCESS", key, data = null } = {}) {
+        if (!req || !res) throw new Error("Request and Response objects are required");
+        
+        const error = this.RES_CODES[type];
+        if (!error) {
+            return this.error({ req, res, key: key || type, status: 500 });
+        }
+        if (error.success) {
+            return this.success({ req, res, key: key || type, data, status: error.status });
+        } else {
+            return this.error({ req, res, key: key || type, status: error.status });
+        }
+    }
 
     /**
      * Send success response
@@ -60,7 +81,7 @@ class ResponseUtils {
         return res.status(status).json({
             success: true,
             code,
-            message: this.i18n.t({ key, len: req.lang }),
+            message: i18n.t({ key, len: req.lang }),
             data
         });
     }
@@ -79,7 +100,7 @@ class ResponseUtils {
         return res.status(status).json({
             success: false,
             code,
-            message: this.i18n.t({ key, len: req.lang })
+            message: i18n.t({ key, len: req.lang })
         });
     }
 }
