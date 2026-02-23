@@ -233,14 +233,15 @@ class TestController {
     }
   }
 
+  // CURD operations
   async getAllUser(req, res) {
     try {
       // get data with pagination
       const userdata = await UserModel.paginate({ page: 1, limit: 10 });
-      return this.response.success({ req, res, key: "SUCCESS", data: userdata });
+      return this.response.send({req, res, type:"SUCCESS", data: userdata, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "getAllUser" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
     }
   }
 
@@ -271,10 +272,67 @@ class TestController {
         return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
-      return this.response.success({ req, res, key: "SUCCESS", data });
+      return this.response.send({req, res, type:"CREATED", data: data, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "addUser" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+    }
+  }
+
+  async updateUser(req, res) {
+    try {
+
+      const payload = {
+        id: req.body?.id || "",
+        ...(req.body?.name && {name: req.body.name}),
+        ...(req.body?.email && {email: req.body.email})
+      };
+
+      // json validation
+      const validate = this.ajv.ajvCheck({
+        id: this.ajv.prop("number", { title: "User ID" }),
+        name: this.ajv.prop("string", { title: "Name" }),
+        email: this.ajv.prop("string", { title: "Email", format: "customEmail" })
+      },
+      {
+        required: ["id"]
+      });
+
+      if (!validate(payload)) {
+        return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      }
+      
+
+      return this.response.send({req, res, type:"UPDATE", key:"SUCCESS"});
+    } catch (error) {
+      this.logger.createLog({ msg: error, name: "updateUser" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+    }
+  }
+
+  async deleteUser(req, res) {
+    try {
+
+        const payload = {
+          id: req.body?.id || ""
+        }
+
+        // json validation
+        const validate = this.ajv.ajvCheck({
+          id: this.ajv.prop("number", { title: "User ID" })
+        },
+        {
+          required: ["id"]
+        });
+
+        if (!validate(payload)) {
+          return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+        }
+
+      return this.response.send({req, res, type:"DELETE", key:"SUCCESS"});
+    } catch (error) {
+      this.logger.createLog({ msg: error, name: "deleteUser" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
     }
   }
 }

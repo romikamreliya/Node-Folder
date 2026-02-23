@@ -39,6 +39,8 @@ class ApiRoutes {
 
     userRouter.get("/get", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "read" }), this.testController.getAllUser.bind(this.testController));
     userRouter.post("/add", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "add" }), this.testController.addUser.bind(this.testController));
+    userRouter.put("/update", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "update" }), this.testController.updateUser.bind(this.testController));
+    userRouter.delete("/delete", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "delete" }), this.testController.deleteUser.bind(this.testController));
 
     this.routes.use("/user", userRouter);
   }
