@@ -1,4 +1,4 @@
-const UserModel = require("../Models/user.model");
+const testServices = require("../services/test.services");
 
 const HelperUtils = require("../Utils/helper.utils");
 const ResponseUtils = require("../Utils/response.utils");
@@ -125,11 +125,7 @@ class TestController {
         return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
-      const filterUser = await UserModel.paginate({
-        filters: {
-          id: { not: data.id }
-        }
-      });
+      const filterUser = await testServices.filter(data);
 
       return this.response.success({ req, res, key: "SUCCESS", data: filterUser });
     } catch (error) {
@@ -236,9 +232,8 @@ class TestController {
   // CURD operations
   async getAllUser(req, res) {
     try {
-      // get data with pagination
-      const userdata = await UserModel.paginate({ page: 1, limit: 10 });
-      return this.response.send({req, res, type:"SUCCESS", data: userdata, key:"SUCCESS"});
+      const userData = await testServices.getList();
+      return this.response.send({req, res, type:"SUCCESS", data: userData, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "getAllUser" });
       return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
@@ -272,7 +267,9 @@ class TestController {
         return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
-      return this.response.send({req, res, type:"CREATED", data: data, key:"SUCCESS"});
+      const newUser = await testServices.create({ data });
+
+      return this.response.send({req, res, type:"CREATED", data: newUser, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "addUser" });
       return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
@@ -301,9 +298,10 @@ class TestController {
       if (!validate(payload)) {
         return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
-      
 
-      return this.response.send({req, res, type:"UPDATE", key:"SUCCESS"});
+      const updatedUser = await testServices.update({ id: payload.id, data: payload });
+
+      return this.response.send({req, res, type:"UPDATE", data: updatedUser, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "updateUser" });
       return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
@@ -329,7 +327,9 @@ class TestController {
           return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
         }
 
-      return this.response.send({req, res, type:"DELETE", key:"SUCCESS"});
+      const deletedUser = await testServices.delete({ id: payload.id });
+
+      return this.response.send({req, res, type:"DELETE", data: deletedUser, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "deleteUser" });
       return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
