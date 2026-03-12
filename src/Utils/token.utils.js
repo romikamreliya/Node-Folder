@@ -82,7 +82,7 @@ class TokenService {
   /**
    * Verify custom AES encrypted token
    * @param {string} token - Encrypted token to verify
-   * @returns {Object} Result object with ok flag and data/error
+   * @returns {{ ok: boolean, data?: any, error?: string }} Result object with ok flag and data/error
    */
   static verifyCustomToken(token) {
     try {
@@ -131,7 +131,7 @@ class TokenService {
   /**
    * Verify refresh token
    * @param {string} refreshToken - Refresh token to verify
-   * @returns {Object} Result object with ok flag and error message
+   * @returns {{ ok: boolean, data?: any, error?: string }} Result object with ok flag and data/error
    */
   static verifyRefreshToken(refreshToken) {
     try {

@@ -51,6 +51,22 @@ class ValidationUtils {
         return !isNaN(date.getTime());
       }
     });
+
+    this.ajv.addKeyword({
+      keyword: "customTime",
+      type: "string",
+      error: { message: "Invalid time format. Expected HH:mm or HH:mm:ss" },
+      validate: (schema, data) => {
+        if (!schema || !data) return true;
+
+        // Match HH:mm or HH:mm:ss (24-hour format)
+        if (!/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/.test(data)) {
+          return false;
+        }
+
+        return true;
+      }
+    });
   }
 
   static schemaGenerator(schemaData, options) {

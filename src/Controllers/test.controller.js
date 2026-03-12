@@ -1,4 +1,4 @@
-const UserModel = require("../Models/user.model");
+const testServices = require("../services/test.services");
 
 const HelperUtils = require("../Utils/helper.utils");
 const ResponseUtils = require("../Utils/response.utils");
@@ -125,11 +125,7 @@ class TestController {
         return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
-      const filterUser = await UserModel.paginate({
-        filters: {
-          id: { not: data.id }
-        }
-      });
+      const filterUser = await testServices.filter(data);
 
       return this.response.success({ req, res, key: "SUCCESS", data: filterUser });
     } catch (error) {
@@ -233,14 +229,14 @@ class TestController {
     }
   }
 
+  // CURD operations
   async getAllUser(req, res) {
     try {
-      // get data with pagination
-      const userdata = await UserModel.paginate({ page: 1, limit: 10 });
-      return this.response.success({ req, res, key: "SUCCESS", data: userdata });
+      const userData = await testServices.getList();
+      return this.response.send({req, res, type:"SUCCESS", data: userData, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "getAllUser" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
     }
   }
 
@@ -250,7 +246,7 @@ class TestController {
       await new Promise((resolve, reject) => {
         this.upload.getUploadMiddleware().single("reviewProfile")(req, res, (err) => {
           if (err) {
-            return reject(new Error(err.message));
+            return this.response.error({ req, res, key: err.message });
           }
           return resolve();
         });
@@ -271,10 +267,72 @@ class TestController {
         return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
-      return this.response.success({ req, res, key: "SUCCESS", data });
+      const newUser = await testServices.create({ data });
+
+      return this.response.send({req, res, type:"CREATED", data: newUser, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "addUser" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+    }
+  }
+
+  async updateUser(req, res) {
+    try {
+
+      const payload = {
+        id: req.body?.id || "",
+        ...(req.body?.name && {name: req.body.name}),
+        ...(req.body?.email && {email: req.body.email})
+      };
+
+      // json validation
+      const validate = this.ajv.ajvCheck({
+        id: this.ajv.prop("number", { title: "User ID" }),
+        name: this.ajv.prop("string", { title: "Name" }),
+        email: this.ajv.prop("string", { title: "Email", format: "customEmail" })
+      },
+      {
+        required: ["id"]
+      });
+
+      if (!validate(payload)) {
+        return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      }
+
+      const updatedUser = await testServices.update({ id: payload.id, data: payload });
+
+      return this.response.send({req, res, type:"UPDATE", data: updatedUser, key:"SUCCESS"});
+    } catch (error) {
+      this.logger.createLog({ msg: error, name: "updateUser" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+    }
+  }
+
+  async deleteUser(req, res) {
+    try {
+
+        const payload = {
+          id: req.body?.id || ""
+        }
+
+        // json validation
+        const validate = this.ajv.ajvCheck({
+          id: this.ajv.prop("number", { title: "User ID" })
+        },
+        {
+          required: ["id"]
+        });
+
+        if (!validate(payload)) {
+          return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+        }
+
+      const deletedUser = await testServices.delete({ id: payload.id });
+
+      return this.response.send({req, res, type:"DELETE", data: deletedUser, key:"SUCCESS"});
+    } catch (error) {
+      this.logger.createLog({ msg: error, name: "deleteUser" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
     }
   }
 }
