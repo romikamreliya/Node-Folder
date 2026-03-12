@@ -35,12 +35,12 @@ class ApiRoutes {
 
   userRoutes() {
     const userRouter = express.Router();
-    userRouter.use(this.apiMiddleware.userLogin.bind(this.apiMiddleware));
+    userRouter.use(this.apiMiddleware.authenticateToken.bind(this.apiMiddleware)); // Token validation
 
-    userRouter.get("/get", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "read" }), this.testController.getAllUser.bind(this.testController));
-    userRouter.post("/add", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "add" }), this.testController.addUser.bind(this.testController));
-    userRouter.put("/update", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "update" }), this.testController.updateUser.bind(this.testController));
-    userRouter.delete("/delete", this.apiMiddleware.checkPermission({ moduleName: "user", actionName: "delete" }), this.testController.deleteUser.bind(this.testController));
+    userRouter.get("/get", this.apiMiddleware.authorize({"user":["read"]}), this.testController.getAllUser.bind(this.testController));
+    userRouter.post("/add", this.apiMiddleware.authorize({"user":["add"]}), this.testController.addUser.bind(this.testController));
+    userRouter.put("/update", this.apiMiddleware.authorize({"user":["update"]}), this.testController.updateUser.bind(this.testController));
+    userRouter.delete("/delete", this.apiMiddleware.authorize({"user":["delete"]}), this.testController.deleteUser.bind(this.testController));
 
     this.routes.use("/user", userRouter);
   }

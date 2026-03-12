@@ -6,6 +6,8 @@ const ejs = require('ejs');
 const helmet = require("helmet");
 const fs = require("fs");
 
+const RequestLoggerMiddleware = require("../Middleware/request-logger.middleware");
+
 /**
  * Express application configuration
  */
@@ -68,7 +70,11 @@ class AppConfig {
         this.app.set('views', path.join(__dirname, "../Views"));
         this.app.set('view engine', 'ejs');
         this.app.set('appEvent', require("./event.config"));
-        // this.app.use((req,res,next)=>LanguageMiddleware.use(req,res,next));
+        // this.app.use((req,res,next)=>LanguageMiddleware.use(req,res,next)); // for multi language support
+
+        if (process.env.REQUEST_LOGGER_ENABLED === "true") {
+            this.app.use(RequestLoggerMiddleware.skip(["/health", "/public"]));
+        }
 
         console.log('✓ App Config Initialized Successfully');
     }

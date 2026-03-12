@@ -16,7 +16,7 @@ class ApiMiddleware {
    * @param {Object} res - Express response object
    * @param {Function} next - Express next function
    */
-  static userLogin(req, res, next) {
+  static authenticateToken(req, res, next) {
     try {
       const token = req.headers['authorization']?.replace('Bearer ', '');
 
@@ -30,7 +30,7 @@ class ApiMiddleware {
         return this.response.error({ req, res, key: tokenCheck.error });
       }
 
-      req.tokenData = tokenCheck.data;
+      req.currentUser = tokenCheck.data;
       next();
     } catch (error) {
       this.logger.createLog({ msg: error, name: "ApiMiddleware-userLogin" });
@@ -45,17 +45,29 @@ class ApiMiddleware {
    * @param {string} options.actionName - Action name for permission check
    * @returns {Function} Express middleware function
    */
-  static checkPermission({ moduleName, actionName }) {
+  static authorize(permissions = {}) {
     // Validate required parameters
-    if (!moduleName || !actionName) {
-      throw new Error("checkPermission: Both moduleName and actionName are required");
+    if (!permissions || Object.keys(permissions).length === 0) {
+      throw new Error("authorize: Permissions object is required");
     }
 
     return async (req, res, next) => {
       try {
         // Check if user is authenticated via token
-        if (!req.tokenData) {
+        if (!req.currentUser) {
           return this.response.error({ req, res, key: "UNAUTHORIZED" });
+        }
+
+        // check Permission logic
+        const userPermissions = req.currentUser?.permissions || {};
+        const allowed = Object.entries(permissions).some(
+          ([module, actions]) => {
+            if (!userPermissions[module]) return false;
+            return actions.some(action => userPermissions[module].includes(action));
+          }
+        );
+        if (!allowed) {
+          return this.response.error({ req, res, key: "FORBIDDEN" });
         }
 
         next();
