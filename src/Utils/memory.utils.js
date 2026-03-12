@@ -36,7 +36,7 @@ class MemoryUtils {
     static startMonitoring(intervalMs = 10000) {
         setInterval(() => {
             const memory = this.getFormattedMemory();
-            console.log(`[Memory Monitor] RSS: ${memory.rss}, Heap: ${memory.heapUsed}/${memory.heapTotal}`);
+            console.log(`[Memory Monitor ${new Date().toISOString()} ] RSS: ${memory.rss}, Heap: ${memory.heapUsed}/${memory.heapTotal}`);
         }, intervalMs);
     }
 }

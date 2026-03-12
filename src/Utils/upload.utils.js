@@ -6,11 +6,13 @@ class UploadUtility {
   constructor(uploadDir = "public/upload") {
     this.uploadDir = path.join(process.cwd(), uploadDir);
     this.allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
-    this.maxFileSize = 5 * 1024 * 1024; // 5MB
+    this.fileSize = 5; // 5MB
+    this.maxFileSize = this.fileSize * 1024;
     this.allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
   }
 
-  initializeUploadDir() {
+  // ===>  Multer configuration
+  _initializeUploadDir() {
     if (!fs.existsSync(this.uploadDir)) {
       fs.mkdirSync(this.uploadDir, { recursive: true });
     }
@@ -19,7 +21,7 @@ class UploadUtility {
   storage = multer.diskStorage({
     destination: (req, file, cb) => {
       try {
-        this.initializeUploadDir();
+        this._initializeUploadDir();
         cb(null, this.uploadDir);
       } catch (err) {
         cb(new Error(`Failed to create upload directory: ${err.message}`));
@@ -33,7 +35,7 @@ class UploadUtility {
     },
   });
 
-  fileFilter = (req, file, cb) => {
+  _fileFilter = (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
 
     // Check MIME type
@@ -48,15 +50,37 @@ class UploadUtility {
     cb(null, true);
   };
 
-  getUploadMiddleware() {
-    return multer({
-      storage: this.storage,
-      fileFilter: this.fileFilter,
-      limits: { fileSize: this.maxFileSize },
-    });
+  _handleMulterError(err, next) {
+    if (err?.code === "LIMIT_FILE_SIZE") {
+      return next(new Error(`File size exceeds the ${this.fileSize}MB limit.`));
+    }
+    return next(err);
   }
 
-  // ===>  Utility method 
+  _wrapUpload(uploadFn) {
+    return (req, res, next) => {
+      uploadFn(req, res, (err) => this._handleMulterError(err, next));
+    };
+  }
+
+
+  // ===> Get multer upload middleware configured with storage, file filter, and size limits
+  getUploadMiddleware() {
+    const upload = multer({
+      storage: this.storage,
+      fileFilter: this._fileFilter,
+      limits: { fileSize: this.maxFileSize },
+    });
+
+    return {
+      single: (fieldName) => this._wrapUpload(upload.single(fieldName)),
+      array: (fieldName, maxCount) => this._wrapUpload(upload.array(fieldName, maxCount)),
+      fields: (fields) => this._wrapUpload(upload.fields(fields)),
+      any: () => this._wrapUpload(upload.any()),
+    };
+  }
+
+  // ===>  Utility methods 
 
   // delete uploaded file
   deleteFile(filename) {

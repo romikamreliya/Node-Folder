@@ -251,7 +251,7 @@ class TestController {
       await new Promise((resolve, reject) => {
         this.upload.getUploadMiddleware().single("reviewProfile")(req, res, (err) => {
           if (err) {
-            return reject(new Error(err.message));
+            return this.response.error({ req, res, key: err.message });
           }
           return resolve();
         });
