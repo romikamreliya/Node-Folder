@@ -1,5 +1,6 @@
 const db = require("../Database/connection");
 const BaseModel = require("./baseModel");
+const userResources = require("../Resources/user.resources");
 
 class UserModel extends BaseModel {
   constructor() {
@@ -10,6 +11,7 @@ class UserModel extends BaseModel {
       primaryKey: "id",
       limit: 20,
     });
+    this.resources = userResources;
   }
 
 }

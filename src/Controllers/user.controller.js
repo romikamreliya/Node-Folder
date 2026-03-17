@@ -50,11 +50,11 @@ class UserController {
         name: this.ajv.prop("string"),
         email: this.ajv.prop("string", { format: "customEmail" })
       });
-
       if (!validate(data)) {
         return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
+      // main logic
       const newUser = await userServices.create({ data });
 
       return this.response.send({req, res, type:"CREATED", data: newUser, key:"SUCCESS"});
@@ -82,11 +82,11 @@ class UserController {
       {
         required: ["id"]
       });
-
       if (!validate(payload)) {
         return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
+      // main logic
       const updatedUser = await userServices.update({ id: payload.id, data: payload });
 
       return this.response.send({req, res, type:"UPDATE", data: updatedUser, key:"SUCCESS"});
@@ -99,27 +99,41 @@ class UserController {
   async deleteUser(req, res) {
     try {
 
-        const payload = {
-          id: req.body?.id || ""
-        }
+      const payload = {
+        id: req.body?.id || ""
+      }
 
-        // json validation
-        const validate = this.ajv.ajvCheck({
-          id: this.ajv.prop("number", { title: "User ID" })
-        },
-        {
-          required: ["id"]
-        });
+      // json validation
+      const validate = this.ajv.ajvCheck({
+        id: this.ajv.prop("number", { title: "User ID" })
+      },
+      {
+        required: ["id"]
+      });
+      if (!validate(payload)) {
+        return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      }
 
-        if (!validate(payload)) {
-          return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
-        }
-
+      // main logic
       const deletedUser = await userServices.delete({ id: payload.id });
 
       return this.response.send({req, res, type:"DELETE", data: deletedUser, key:"SUCCESS"});
     } catch (error) {
       this.logger.createLog({ msg: error, name: "deleteUser" });
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+    }
+  }
+
+  async filter(req, res) {
+    try {
+      const name = req.body?.name || "";
+
+      // main logic
+      const demos = await userServices.filter({ name });
+
+      return this.response.send({req, res, type:"SUCCESS", data: demos, key:"SUCCESS"});
+    } catch (error) {
+      this.logger.createLog({ msg: error, name: "filter" });
       return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
     }
   }

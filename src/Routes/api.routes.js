@@ -44,6 +44,7 @@ class ApiRoutes {
     userRouter.post("/add", this.apiMiddleware.authorize({"user":["add"]}), this.userController.addUser.bind(this.userController));
     userRouter.put("/update", this.apiMiddleware.authorize({"user":["update"]}), this.userController.updateUser.bind(this.userController));
     userRouter.delete("/delete", this.apiMiddleware.authorize({"user":["delete"]}), this.userController.deleteUser.bind(this.userController));
+    userRouter.post("/filter", this.userController.filter.bind(this.userController));
 
     this.routes.use("/user", userRouter);
   }

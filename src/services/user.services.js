@@ -8,7 +8,7 @@ class userService {
    */
   static async getList() {
     const demos = await userModel.get();
-    return demos;
+    return userModel.resources.collection(demos, userModel.resources.toJSON);
   }
 
   /**
@@ -19,7 +19,7 @@ class userService {
     if (!demo) {
       throw new Error("DEMO_NOT_FOUND");
     }
-    return demo;
+    return userModel.resources.toJSON(demo);
   }
 
   /**
@@ -34,7 +34,7 @@ class userService {
 
     const demo = await userModel.insert(payload);
 
-    return demo;
+    return userModel.resources.toJSON(demo);
   }
 
   /**
@@ -52,9 +52,9 @@ class userService {
       phone: data.phone
     };
 
-    await UserModel.update(id, payload);
+    await userModel.update(id, payload);
 
-    return { success: true };
+    return { success: true, data: userModel.resources.toJSON({ id, ...payload })};
   }
 
   /**
@@ -67,7 +67,7 @@ class userService {
     }
 
     await UserModel.delete({id});
-
+    
     return { success: true };
   }
 
@@ -80,7 +80,7 @@ class userService {
         name: { like: name }
       }
     });
-    return demos;
+    return userModel.resources.paginate(demos.data, demos.pagination, userModel.resources.toJSON);
   }
 }
 
