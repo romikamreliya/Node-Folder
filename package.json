@@ -7,8 +7,8 @@
     "node": "22.x"
   },
   "scripts": {
-    "migration": "node ./src/Config/migrations",
-    "seeder": "node ./src/Config/seeder",
+    "migration": "node ./src/database/migrations",
+    "seeder": "node ./src/database/seeder",
     "test": "jest",
     "start": "node app.js",
     "load-test": "artillery run test.yml"

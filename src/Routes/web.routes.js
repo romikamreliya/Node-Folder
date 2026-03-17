@@ -1,5 +1,5 @@
 const express = require("express");
-const WebController = require("../Controllers/web.controller");
+const WebController = require("../controllers/web.controller");
 
 /**
  * Web routes handler

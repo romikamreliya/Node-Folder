@@ -1,9 +1,9 @@
 const express = require("express");
-const ApiMiddleware = require("../Middleware/api.middleware");
-const HelperUtils = require("../Utils/helper.utils");
+const ApiMiddleware = require("../middleware/api.middleware");
+const HelperUtils = require("../utils/helper.utils");
 
-const testController = require("../Controllers/test.controller");
-const userController = require("../Controllers/user.controller");
+const testController = require("../controllers/test.controller");
+const userController = require("../controllers/user.controller");
 
 /**
  * API routes handler

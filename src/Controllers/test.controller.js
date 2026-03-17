@@ -1,9 +1,9 @@
-const HelperUtils = require("../Utils/helper.utils");
-const ResponseUtils = require("../Utils/response.utils");
-const LoggerUtils = require("../Utils/logger.utils");
-const AjvUtils = require("../Utils/ajv.utils");
-const TokenUtils = require("../Utils/token.utils");
-const UploadUtils = require("../Utils/upload.utils");
+const HelperUtils = require("../utils/helper.utils");
+const ResponseUtils = require("../utils/response.utils");
+const LoggerUtils = require("../utils/logger.utils");
+const AjvUtils = require("../utils/ajv.utils");
+const TokenUtils = require("../utils/token.utils");
+const UploadUtils = require("../utils/upload.utils");
 
 class TestController {
   constructor() {

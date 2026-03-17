@@ -1,5 +1,5 @@
 const cron = require("cron");
-const Logs = require("../Utils/logger.utils");
+const Logs = require("../utils/logger.utils");
 
 class DemoCron {
   

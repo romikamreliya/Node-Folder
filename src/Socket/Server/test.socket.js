@@ -1,6 +1,6 @@
-const HelperUtils = require("../../Utils/helper.utils");
-const LoggerUtils = require("../../Utils/logger.utils");
-const tokenUtils = require("../../Utils/token.utils");
+const HelperUtils = require("../../utils/helper.utils");
+const LoggerUtils = require("../../utils/logger.utils");
+const tokenUtils = require("../../utils/token.utils");
 
 class TestSocket {
     constructor({ socket, appEvent }) {

@@ -6,7 +6,7 @@ const ejs = require('ejs');
 const helmet = require("helmet");
 const fs = require("fs");
 
-const RequestLoggerMiddleware = require("../Middleware/request-logger.middleware");
+const RequestLoggerMiddleware = require("../middleware/request-logger.middleware");
 
 /**
  * Express application configuration

@@ -777,7 +777,7 @@ npm test -- --coverage
 ### Unit Test Example
 ```javascript
 // tests/unit/user.controller.test.js
-const UserController = require('../../src/Controllers/user.controller');
+const UserController = require('../../src/controllers/user.controller');
 
 describe('UserController', () => {
   let controller;
@@ -830,7 +830,7 @@ logs/
 
 ### Using Logger
 ```javascript
-const LoggerUtils = require('./src/Utils/logger.utils');
+const LoggerUtils = require('./src/utils/logger.utils');
 
 LoggerUtils.createLog({
   msg: 'Your message',

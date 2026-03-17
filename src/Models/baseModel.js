@@ -1,4 +1,4 @@
-const db = require("../Database/connection");
+const db = require("../database/connection");
 
 class BaseModel {
   constructor({ table, columns = [], hidden = [], primaryKey = "id", limit = 10 }) {

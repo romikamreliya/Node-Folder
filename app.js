@@ -3,30 +3,30 @@ const http = require("http");
 const https = require("https");
 
 // Config
-const appConfig = require("./src/Config/app.config");
-const SocketConfig = require("./src/Config/socket.config");
-const SocketClientConfig = require("./src/Config/socket-client.config");
-const MQTTConfig = require("./src/Config/mqtt.config");
-const RateLimitMiddleware = require("./src/Middleware/ratelimit.middleware");
+const appConfig = require("./src/config/app.config");
+const SocketConfig = require("./src/config/socket.config");
+const SocketClientConfig = require("./src/config/socket-client.config");
+const MQTTConfig = require("./src/config/mqtt.config");
+const RateLimitMiddleware = require("./src/middleware/ratelimit.middleware");
 
 // Routes
-const apiRoutes = require("./src/Routes/api.routes");
-const WebRoutes = require("./src/Routes/web.routes");
+const apiRoutes = require("./src/routes/api.routes");
+const WebRoutes = require("./src/routes/web.routes");
 
 // Cron Jobs
-const TestCron = require("./src/Cron/test.cron");
-const DemoCron = require("./src/Cron/demo.cron");
+const TestCron = require("./src/cron/test.cron");
+const DemoCron = require("./src/cron/demo.cron");
 
 // Events and Sockets, Client
-const TestSocket = require("./src/Socket/Server/test.socket");
-const TestSocketClient = require("./src/Socket/Client/test.socketclient");
+const TestSocket = require("./src/socket/server/test.socket");
+const TestSocketClient = require("./src/socket/client/test.socketclient");
 
 // MQTT
-const PublishMqtt = require("./src/Mqtt/publish.mqtt");
-const SubscribeMqtt = require("./src/Mqtt/subscribe.mqtt");
+const PublishMqtt = require("./src/mqtt/publish.mqtt");
+const SubscribeMqtt = require("./src/mqtt/subscribe.mqtt");
 
 // Utils
-const MemoryUtils = require("./src/Utils/memory.utils");
+const MemoryUtils = require("./src/utils/memory.utils");
 
 class Main {
     constructor() {

@@ -1,6 +1,6 @@
-const db = require("../Database/connection");
+const db = require("../database/connection");
 const BaseModel = require("./baseModel");
-const userResources = require("../Resources/user.resources");
+const userResources = require("../resources/user.resources");
 
 class UserModel extends BaseModel {
   constructor() {
