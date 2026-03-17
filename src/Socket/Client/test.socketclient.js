@@ -1,11 +1,11 @@
-const HelperUtils = require("../../utils/helper.utils");
-const LoggerUtils = require("../../utils/logger.utils");
+const helperUtils = require("../../utils/helper.utils");
+const loggerUtils = require("../../utils/logger.utils");
 
-class TestSocketClient{
+class testSocketClient{
     constructor({socketClient,appEvent}){
 
-        this.helper = HelperUtils;
-        this.logger = LoggerUtils;
+        this.helper = helperUtils;
+        this.logger = loggerUtils;
 
         this.socketClient = socketClient;
         this.appEvent = appEvent;
@@ -45,4 +45,4 @@ class TestSocketClient{
     }
 }
 
-module.exports = TestSocketClient;
+module.exports = testSocketClient;

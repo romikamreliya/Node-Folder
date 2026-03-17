@@ -1,11 +1,11 @@
-const HelperUtils = require("../../utils/helper.utils");
-const LoggerUtils = require("../../utils/logger.utils");
+const helperUtils = require("../../utils/helper.utils");
+const loggerUtils = require("../../utils/logger.utils");
 const tokenUtils = require("../../utils/token.utils");
 
-class TestSocket {
+class testSocket {
     constructor({ socket, appEvent }) {
-        this.helper = HelperUtils;
-        this.logger = LoggerUtils;
+        this.helper = helperUtils;
+        this.logger = loggerUtils;
         this.token = tokenUtils;
 
         this.socket = socket;
@@ -73,4 +73,4 @@ class TestSocket {
     }
 }
 
-module.exports = TestSocket;
+module.exports = testSocket;

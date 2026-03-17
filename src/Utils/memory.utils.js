@@ -3,7 +3,7 @@
  * Tracks and logs memory usage for performance analysis
  */
 
-class MemoryUtils {
+class memoryUtils {
     static getMemoryUsage() {
         const used = process.memoryUsage();
         return {
@@ -41,4 +41,4 @@ class MemoryUtils {
     }
 }
 
-module.exports = MemoryUtils;
+module.exports = memoryUtils;

@@ -1,4 +1,4 @@
-class CommonResources {
+class commonResources {
 
     /**
      * Apply format() to an array of items.
@@ -34,4 +34,4 @@ class CommonResources {
     }
 }
 
-module.exports = CommonResources;
+module.exports = commonResources;

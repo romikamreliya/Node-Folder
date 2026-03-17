@@ -1,20 +1,20 @@
 const userServices = require("../services/user.services");
 
-const HelperUtils = require("../utils/helper.utils");
-const ResponseUtils = require("../utils/response.utils");
-const LoggerUtils = require("../utils/logger.utils");
-const AjvUtils = require("../utils/ajv.utils");
-const TokenUtils = require("../utils/token.utils");
-const UploadUtils = require("../utils/upload.utils");
+const helperUtils = require("../utils/helper.utils");
+const responseUtils = require("../utils/response.utils");
+const loggerUtils = require("../utils/logger.utils");
+const ajvUtils = require("../utils/ajv.utils");
+const tokenUtils = require("../utils/token.utils");
+const uploadUtility = require("../utils/upload.utils");
 
-class UserController {
+class userController {
   constructor() {
-    this.helper = HelperUtils;
-    this.response = ResponseUtils;
-    this.logger = LoggerUtils;
-    this.ajv = AjvUtils;
-    this.token = TokenUtils;
-    this.upload = new UploadUtils();
+    this.helper = helperUtils;
+    this.response = responseUtils;
+    this.logger = loggerUtils;
+    this.ajv = ajvUtils;
+    this.token = tokenUtils;
+    this.upload = new uploadUtility();
   }
 
   // CRUD operations
@@ -138,4 +138,4 @@ class UserController {
     }
   }
 }
-module.exports = new UserController();
+module.exports = new userController();

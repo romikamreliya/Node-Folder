@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 
-class SocketConfig {
+class socketConfig {
     constructor({ server }) {
         this.io = new Server(server, this.config).of("/");
         this.initialize();
@@ -17,4 +17,4 @@ class SocketConfig {
     }
 }
 
-module.exports = SocketConfig;
+module.exports = socketConfig;

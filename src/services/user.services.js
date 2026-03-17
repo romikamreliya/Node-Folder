@@ -1,4 +1,4 @@
-const userModel = require("../Models/user.model");
+const userModel = require("../models/user.model");
 
 class userService {
   constructor() {}
@@ -66,7 +66,7 @@ class userService {
       throw new Error("DEMO_NOT_FOUND");
     }
 
-    await UserModel.delete({id});
+    await userModel.delete({id});
     
     return { success: true };
   }

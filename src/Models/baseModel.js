@@ -1,6 +1,6 @@
 const db = require("../database/connection");
 
-class BaseModel {
+class baseModel {
   constructor({ table, columns = [], hidden = [], primaryKey = "id", limit = 10 }) {
     this.table = table;
     this.columns = columns;
@@ -183,4 +183,4 @@ class BaseModel {
   }
 }
 
-module.exports = BaseModel;
+module.exports = baseModel;

@@ -4,7 +4,7 @@ const path = require("path");
 /**
  * Logger utility using Winston for file and console logging
  */
-class LoggerUtils {
+class loggerUtils {
     static logger = null;
 
     /**
@@ -135,6 +135,6 @@ class LoggerUtils {
 }
 
 // Initialize logger on module load
-LoggerUtils.initialize();
+loggerUtils.initialize();
 
-module.exports = LoggerUtils;
+module.exports = loggerUtils;

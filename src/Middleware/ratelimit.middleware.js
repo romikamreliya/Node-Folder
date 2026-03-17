@@ -1,6 +1,6 @@
 const { rateLimit } = require("express-rate-limit");
 
-class RateLimitMiddleware {
+class rateLimitMiddleware {
 
     static defaultLimiter = rateLimit({
         windowMs: 1 * 60 * 1000, // 1 minute
@@ -15,4 +15,4 @@ class RateLimitMiddleware {
 
 }
 
-module.exports = RateLimitMiddleware;
+module.exports = rateLimitMiddleware;

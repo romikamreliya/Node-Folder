@@ -1,7 +1,7 @@
 const Ajv = require("ajv");
 
 
-class ValidationUtils {
+class validationUtils {
 
   static ajv = new Ajv({
     allErrors: true,
@@ -153,5 +153,5 @@ class ValidationUtils {
   }
 }
 
-ValidationUtils.customKey();
-module.exports = ValidationUtils;
+validationUtils.customKey();
+module.exports = validationUtils;

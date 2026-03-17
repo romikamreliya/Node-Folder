@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-class UploadUtility {
+class uploadUtility {
   constructor(uploadDir = "public/upload") {
     this.uploadDir = path.join(process.cwd(), uploadDir);
     this.allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
@@ -115,4 +115,4 @@ class UploadUtility {
     }
   }
 }
-module.exports = UploadUtility;
+module.exports = uploadUtility;

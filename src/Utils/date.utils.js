@@ -3,7 +3,7 @@
  * Provides comprehensive date manipulation and formatting functions
  */
 
-class DateUtils {
+class dateUtils {
     constructor() {
         this.formats = {
             ISO: 'YYYY-MM-DDTHH:mm:ss.SSSZ',

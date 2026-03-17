@@ -4,7 +4,7 @@ const message = require("../language/en/message");
 /**
  * Response utility class for API responses
  */
-class ResponseUtils {
+class responseUtils {
 
     static RES_CODES = {
         // ✅ Success
@@ -105,4 +105,4 @@ class ResponseUtils {
     }
 }
 
-module.exports = ResponseUtils;
+module.exports = responseUtils;

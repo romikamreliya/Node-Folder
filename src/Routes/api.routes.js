@@ -1,6 +1,6 @@
 const express = require("express");
-const ApiMiddleware = require("../middleware/api.middleware");
-const HelperUtils = require("../utils/helper.utils");
+const apiMiddleware = require("../middleware/api.middleware");
+const helperUtils = require("../utils/helper.utils");
 
 const testController = require("../controllers/test.controller");
 const userController = require("../controllers/user.controller");
@@ -8,13 +8,13 @@ const userController = require("../controllers/user.controller");
 /**
  * API routes handler
  */
-class ApiRoutes {
+class apiRoutes {
   constructor() {
     this.routes = express.Router();
     this.testController = testController;
     this.userController = userController;
-    this.apiMiddleware = ApiMiddleware;
-    this.helper = HelperUtils;
+    this.apiMiddleware = apiMiddleware;
+    this.helper = helperUtils;
     this.registerRoutes();
   }
 
@@ -54,4 +54,4 @@ class ApiRoutes {
   }
 }
 
-module.exports = new ApiRoutes();
+module.exports = new apiRoutes();

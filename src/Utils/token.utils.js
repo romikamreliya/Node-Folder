@@ -1,12 +1,11 @@
-// TokenService.js
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 /**
  * Token service for managing JWT, custom AES, and refresh tokens
  */
-class TokenService {
-
+class tokenService {
+  
   // JWT ACCESS TOKEN
   static jwtSecret = process.env.accessTokenKey;
   static jwtExpire = "15m";
@@ -166,4 +165,4 @@ class TokenService {
   }
 }
 
-module.exports = TokenService;
+module.exports = tokenService;

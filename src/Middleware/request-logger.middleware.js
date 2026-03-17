@@ -1,4 +1,4 @@
-class RequestLoggerMiddleware {
+class requestLoggerMiddleware {
 
     /**
      * Logs every incoming request with method, URL, IP, status, and response time.
@@ -36,4 +36,4 @@ class RequestLoggerMiddleware {
     }
 }
 
-module.exports = RequestLoggerMiddleware;
+module.exports = requestLoggerMiddleware;

@@ -4,31 +4,31 @@ const https = require("https");
 
 // Config
 const appConfig = require("./src/config/app.config");
-const SocketConfig = require("./src/config/socket.config");
-const SocketClientConfig = require("./src/config/socket-client.config");
-const MQTTConfig = require("./src/config/mqtt.config");
-const RateLimitMiddleware = require("./src/middleware/ratelimit.middleware");
+const socketConfig = require("./src/config/socket.config");
+const socketClientConfig = require("./src/config/socket-client.config");
+const mqttConfig = require("./src/config/mqtt.config");
+const rateLimitMiddleware = require("./src/middleware/ratelimit.middleware");
 
 // Routes
 const apiRoutes = require("./src/routes/api.routes");
-const WebRoutes = require("./src/routes/web.routes");
+const webRoutes = require("./src/routes/web.routes");
 
 // Cron Jobs
-const TestCron = require("./src/cron/test.cron");
-const DemoCron = require("./src/cron/demo.cron");
+const testCron = require("./src/cron/test.cron");
+const demoCron = require("./src/cron/demo.cron");
 
 // Events and Sockets, Client
-const TestSocket = require("./src/socket/server/test.socket");
-const TestSocketClient = require("./src/socket/client/test.socketclient");
+const testSocket = require("./src/socket/server/test.socket");
+const testSocketClient = require("./src/socket/client/test.socketclient");
 
 // MQTT
-const PublishMqtt = require("./src/mqtt/publish.mqtt");
-const SubscribeMqtt = require("./src/mqtt/subscribe.mqtt");
+const publishMqtt = require("./src/mqtt/publish.mqtt");
+const subscribeMqtt = require("./src/mqtt/subscribe.mqtt");
 
 // Utils
-const MemoryUtils = require("./src/utils/memory.utils");
+const memoryUtils = require("./src/utils/memory.utils");
 
-class Main {
+class main {
     constructor() {
         this.PORT = process.env.PORT;
         this.app = appConfig.app;
@@ -40,20 +40,20 @@ class Main {
         }
 
         this.appEvent = this.app.get("appEvent");
-        this.io = new SocketConfig({server:this.server}).io;
-        this.socketClient = new SocketClientConfig({url: process.env.SOCKET_CLIENT_URL,name: "demo"}).client;
-        this.mqttConnection = new MQTTConfig({url: process.env.MQTT_URL, name: "demo"}).mqtt;
+        this.io = new socketConfig({server:this.server}).io;
+        this.socketClient = new socketClientConfig({url: process.env.SOCKET_CLIENT_URL,name: "demo"}).client;
+        this.mqttConnection = new mqttConfig({url: process.env.MQTT_URL, name: "demo"}).mqtt;
     }
 
     Routes() {
-        this.app.use("/", WebRoutes.allRoutes());
-        this.app.use(/^\/api\/(v1|v2)/, RateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
+        this.app.use("/", webRoutes.allRoutes());
+        this.app.use(/^\/api\/(v1|v2)/, rateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
         this.app.use("/", (req, res) => res.status(404).json({ success: false, message: "404 page not found" }));
     }
 
     Socket() {
         this.io.on("connection", (socket) => {
-            new TestSocket({
+            new testSocket({
                 socket,
                 appEvent: this.appEvent
             });
@@ -61,7 +61,7 @@ class Main {
     }
 
     SocketClient() {
-        new TestSocketClient({
+        new testSocketClient({
             socketClient: this.socketClient,
             appEvent: this.appEvent
         });
@@ -69,14 +69,14 @@ class Main {
 
     Mqtt() {
         this.mqttConnection.on("connect", () => {
-            new PublishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
-            new SubscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+            new publishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+            new subscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
         });
     }
 
     Cron() {
-        // TestCron.Run();
-        // DemoCron.Run();
+        // testCron.Run();
+        // demoCron.Run();
     }
 
     Initialize() {
@@ -94,19 +94,19 @@ class Main {
             console.log(`Server listening on ${protocol}://localhost:${this.PORT}`);
             
             // Start monitoring
-            MemoryUtils.logMemory("Server Started");
+            memoryUtils.logMemory("Server Started");
             if (process.env.ENABLE_MEMORY_MONITORING === "true") {
-                MemoryUtils.startMonitoring(10000);
+                memoryUtils.startMonitoring(10000);
             }
         });
     }
 }
 
-const main = new Main();
+const main_app = new main();
 
 if (process.env.NODE_APP_ENV !== "test") {
-    main.Start();
+    main_app.Start();
 }
 
 // Run for jest Testing
-module.exports = { app: main.app, server: main.server };
+module.exports = { app: main_app.app, server: main_app.server };

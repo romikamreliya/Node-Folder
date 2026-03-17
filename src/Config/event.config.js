@@ -1,9 +1,9 @@
 const EventEmitter = require("events");
 
-class AppEventEmitter extends EventEmitter {
+class appEventEmitter extends EventEmitter {
   constructor() {
     super();
   }
 }
 
-module.exports = new AppEventEmitter(); // singleton
+module.exports = new appEventEmitter();

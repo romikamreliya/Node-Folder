@@ -1,8 +1,8 @@
 const db = require("../database/connection");
-const BaseModel = require("./baseModel");
+const baseModel = require("./baseModel");
 const userResources = require("../resources/user.resources");
 
-class UserModel extends BaseModel {
+class userModel extends baseModel {
   constructor() {
     super({
       table: "user",
@@ -15,4 +15,4 @@ class UserModel extends BaseModel {
   }
 
 }
-module.exports = new UserModel();
+module.exports = new userModel();

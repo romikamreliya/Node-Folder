@@ -783,7 +783,7 @@ describe('UserController', () => {
   let controller;
 
   beforeEach(() => {
-    controller = new UserController();
+    controller = new userController();
   });
 
   test('should get all users', async () => {

@@ -1,6 +1,6 @@
 const socketClient = require("socket.io-client");
 
-class SocketClientConfig {
+class socketClientConfig {
     constructor({ url, name }) {
         this.name = name;
         this.client = socketClient.io(url);
@@ -11,4 +11,4 @@ class SocketClientConfig {
     }
 }
 
-module.exports = SocketClientConfig;
+module.exports = socketClientConfig;

@@ -1,10 +1,10 @@
 const express = require("express");
-const WebController = require("../controllers/web.controller");
+const webController = require("../controllers/web.controller");
 
 /**
  * Web routes handler
  */
-class WebRoutes {
+class webRoutes {
   constructor() {
     this.routes = express.Router();
     this.registerRoutes();
@@ -15,7 +15,7 @@ class WebRoutes {
   }
 
   webRoutes() {
-    this.routes.get("/", WebController.homeView);
+    this.routes.get("/", webController.homeView);
   }
 
   allRoutes() {
@@ -23,4 +23,4 @@ class WebRoutes {
   }
 }
 
-module.exports = new WebRoutes();
+module.exports = new webRoutes();

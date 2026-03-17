@@ -1,13 +1,13 @@
-const HelperUtils = require("../utils/helper.utils");
-const LoggerUtils = require("../utils/logger.utils");
-const AjvUtils = require("../utils/ajv.utils");
+const helperUtils = require("../utils/helper.utils");
+const loggerUtils = require("../utils/logger.utils");
+const ajvUtils = require("../utils/ajv.utils");
 
-class SubscribeMqtt{
+class subscribeMqtt{
     constructor({conn, appEvent}){
 
-        this.helper = HelperUtils;
-        this.logger = LoggerUtils;
-        this.ajv = AjvUtils;
+        this.helper = helperUtils;
+        this.logger = loggerUtils;
+        this.ajv = ajvUtils;
         
         this.mqtt = conn;
         this.appEvent = appEvent;
@@ -51,4 +51,4 @@ class SubscribeMqtt{
     }
 }
 
-module.exports = SubscribeMqtt;
+module.exports = subscribeMqtt;

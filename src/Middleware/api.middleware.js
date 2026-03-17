@@ -1,14 +1,14 @@
-const HelperUtils = require("../utils/helper.utils");
-const ResponseUtils = require("../utils/response.utils");
-const LoggerUtils = require("../utils/logger.utils");
-const TokenUtils = require("../utils/token.utils");
+const helperUtils = require("../utils/helper.utils");
+const responseUtils = require("../utils/response.utils");
+const loggerUtils = require("../utils/logger.utils");
+const tokenUtils = require("../utils/token.utils");
 
-class ApiMiddleware {
+class apiMiddleware {
 
-  static helper = HelperUtils;
-  static response = ResponseUtils;
-  static logger = LoggerUtils;
-  static token = TokenUtils;
+  static helper = helperUtils;
+  static response = responseUtils;
+  static logger = loggerUtils;
+  static token = tokenUtils;
 
   /**
    * Middleware to check user login and verify token
@@ -79,4 +79,4 @@ class ApiMiddleware {
   }
 }
 
-module.exports = ApiMiddleware;
+module.exports = apiMiddleware;

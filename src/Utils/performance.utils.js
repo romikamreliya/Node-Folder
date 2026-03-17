@@ -1,4 +1,4 @@
-class PerformanceMonitor {
+class performanceMonitor {
   static async measure(fn, fnName = 'Function', iterations = 1) {
     try {
       if (typeof fn !== 'function') {

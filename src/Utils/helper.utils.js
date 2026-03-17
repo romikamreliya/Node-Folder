@@ -3,7 +3,7 @@ const commonConst = require("./commonConst");
 /**
  * Helper utilities for common operations
  */
-class HelperUtils {
+class helperUtils {
 
   static commonConst = commonConst;
 
@@ -19,4 +19,4 @@ class HelperUtils {
   }
 }
 
-module.exports = HelperUtils;
+module.exports = helperUtils;
