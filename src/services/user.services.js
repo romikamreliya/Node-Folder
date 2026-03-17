@@ -1,6 +1,6 @@
 const userModel = require("../Models/user.model");
 
-class testService {
+class userService {
   constructor() {}
 
   /**
@@ -84,4 +84,4 @@ class testService {
   }
 }
 
-module.exports = testService;
+module.exports = userService;
