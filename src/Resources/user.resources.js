@@ -1,4 +1,4 @@
-const commonResources = require('./common.resources');
+const commonResources = require('../common/commonResources');
 
 class userResources extends commonResources {
     constructor() {

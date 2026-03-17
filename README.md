@@ -139,13 +139,16 @@ Node-Folder/
 │   │   ├── migrations.js           # Database migrations
 │   │   └── seeder.js               # Database seeding
 │   │
+│   ├── Common/              # Shared base classes
+│   │   ├── baseModel.js            # Base model for database operations
+│   │   └── commonResources.js      # Base resource formatter
+│   │
 │   ├── Controllers/         # Request handlers
 │   │   ├── user.controller.js      # User operations
 │   │   └── web.controller.js       # Web page rendering
 │   │
 │   ├── Models/              # Database models
-│   │   ├── user.model.js           # User data model
-│   │   └── baseModel.js            # Base model for shared logic
+│   │   └── user.model.js           # User data model
 │   │
 │   ├── Routes/              # API routes
 │   │   ├── api.routes.js           # API v1/v2 routes
@@ -163,7 +166,6 @@ Node-Folder/
 │   │
 │   ├── Database/            # Database layer
 │   │   ├── connection.js           # DB connection setup
-│   │   ├── baseModel.js            # Base model class
 │   │   ├── migrations.js           # Migration runner
 │   │   └── seeder.js               # Data seeding
 │   │
