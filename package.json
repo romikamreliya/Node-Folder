@@ -7,8 +7,19 @@
     "node": "22.x"
   },
   "scripts": {
-    "migration": "node ./src/database/migrations",
-    "seeder": "node ./src/database/seeder",
+    "db:setup": "npm run db:migrate && npm run db:seeder",
+    "db:connection": "node ./src/database/migrations db:connection",
+    "db:migrate": "node ./src/database/migrations db:migrate",
+    "db:seeder": "node ./src/database/seeder db:seeder",
+    "db:reset": "node ./src/database/migrations db:reset",
+
+    "migration:create": "node ./src/database/migrations migration:create",
+    "migration:rollback": "node ./src/database/migrations migration:rollback",
+    "migration:status": "node ./src/database/migrations migration:status",
+
+    "seeder:create": "node ./src/database/seeder seeder:create",
+    "seeder:reset": "node ./src/database/seeder seeder:reset",
+
     "test": "jest",
     "start": "node app.js",
     "load-test": "artillery run test.yml"
