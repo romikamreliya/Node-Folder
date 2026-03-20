@@ -1,4 +1,4 @@
-const db = require("../common/connection");
+const db = require("../common/baseConnection");
 const baseModel = require("../common/baseModel");
 const userResources = require("../resources/user.resources");
 

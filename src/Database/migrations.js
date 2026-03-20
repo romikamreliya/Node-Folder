@@ -1,7 +1,7 @@
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
-const DBknex = require("../common/connection");
+const DBknex = require("../common/baseConnection");
 const loggerUtils = require("../utils/logger.utils");
 
 const MIGRATIONS_DIR = path.join(__dirname, "migrations_files");

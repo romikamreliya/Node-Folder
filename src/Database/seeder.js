@@ -1,7 +1,7 @@
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
-const DBknex = require("../common/connection");
+const DBknex = require("../common/baseConnection");
 const loggerUtils = require("../utils/logger.utils");
 
 const SEEDS_DIR = path.join(__dirname, "seeds");
