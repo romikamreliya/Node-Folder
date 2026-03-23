@@ -31,7 +31,7 @@ class requestLoggerMiddleware {
             if (paths.some((p) => req.originalUrl.startsWith(p))) {
                 return next();
             }
-            return RequestLoggerMiddleware.handle(req, res, next);
+            return requestLoggerMiddleware.handle(req, res, next);
         };
     }
 }

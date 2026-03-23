@@ -65,4 +65,4 @@ class performanceMonitor {
   }
 }
 
-module.exports = PerformanceMonitor;
+module.exports = performanceMonitor;
