@@ -1,6 +1,6 @@
-const commonResources = require('../common/commonResources');
+const baseResources = require('../common/baseResources');
 
-class userResources extends commonResources {
+class userResources extends baseResources {
     constructor() {
         super();
     }

@@ -1,13 +1,14 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { log } = require("winston");
 
 class uploadUtility {
   constructor(uploadDir = "public/upload") {
     this.uploadDir = path.join(process.cwd(), uploadDir);
     this.allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
     this.fileSize = 5; // 5MB
-    this.maxFileSize = this.fileSize * 1024;
+    this.maxFileSize = this.fileSize * 1024 * 1024;
     this.allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
   }
 

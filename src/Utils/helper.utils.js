@@ -1,12 +1,7 @@
-const commonConst = require("./commonConst");
-
 /**
  * Helper utilities for common operations
  */
 class helperUtils {
-
-  static commonConst = commonConst;
-
   /**
    * Extract API version from URL
    * @param {Object} options - Options object

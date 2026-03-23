@@ -48,21 +48,21 @@ class responseUtils {
      * @param {Object} options.req - Express request
      * @param {Object} options.res - Express response
      * @param {keyof typeof ResponseUtils.RES_CODES} options.type - Response type (SUCCESS, CREATED, BAD_REQUEST...)
-     * @param {keyof typeof message} options.key - Translation key
+     * @param {keyof typeof message} options.message - Translation key
      * @param {Object} [options.data] - Response data
      * @returns {Object}
     */
-    static send({ req, res, type = "SUCCESS", key, data = null } = {}) {
+    static send({ req, res, type = "SUCCESS", message, data = null } = {}) {
         if (!req || !res) throw new Error("Request and Response objects are required");
         
         const error = this.RES_CODES[type];
         if (!error) {
-            return this.error({ req, res, key: key || type, status: 500 });
+            return this.error({ req, res, key: message || type, status: 500 });
         }
         if (error.success) {
-            return this.success({ req, res, key: key || type, data, status: error.status });
+            return this.success({ req, res, key: message || type, data, status: error.status });
         } else {
-            return this.error({ req, res, key: key || type, status: error.status });
+            return this.error({ req, res, key: message || type, status: error.status });
         }
     }
 
@@ -71,7 +71,7 @@ class responseUtils {
      * @param {Object} options - Response options
      * @param {Object} options.req - Express request object
      * @param {Object} options.res - Express response object
-     * @param {string} options.key - Translation key for message
+     * @param {string} options.message - Translation key for message
      * @param {string} [options.code=null] - Response code
      * @param {Object} [options.data={}] - Response data
      * @param {number} [options.status=200] - HTTP status code

@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const appError = require("../utils/appError.utils");
 
 class userService {
   constructor() {}
@@ -15,11 +16,11 @@ class userService {
    * Get by id
    */
   static async getById({ id }) {
-    const demo = await userModel.findOne({id});
-    if (!demo) {
-      throw new Error("DEMO_NOT_FOUND");
+    const findRecord = await userModel.findOne({id});
+    if (!findRecord) {
+      throw new appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
     }
-    return userModel.resources.toJSON(demo);
+    return userModel.resources.toJSON(findRecord);
   }
 
   /**
@@ -41,29 +42,30 @@ class userService {
    * Update
    */
   static async update({ id, data }) {
-    const demo =  await userModel.findOne({id});
-    if (!demo) {
-      throw new Error("DEMO_NOT_FOUND");
+    const findRecord =  await userModel.findOne({id});
+    if (!findRecord) {
+      throw new appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
     }
 
     const payload = {
       name: data.name,
       email: data.email,
-      phone: data.phone
+      phone: data.phone,
+      note: data.note
     };
 
     await userModel.update(id, payload);
 
-    return { success: true, data: userModel.resources.toJSON({ id, ...payload })};
+    return userModel.resources.toJSON({ id, ...payload });
   }
 
   /**
    * Delete
    */
   static async delete({ id }) {
-    const demo = await userModel.findOne({id});
-    if (!demo) {
-      throw new Error("DEMO_NOT_FOUND");
+    const findRecord = await userModel.findOne({id});
+    if (!findRecord) {
+      throw new appError({message: "DATA_NOT_FOUND", type: "NOT_FOUND"});
     }
 
     await userModel.delete({id});

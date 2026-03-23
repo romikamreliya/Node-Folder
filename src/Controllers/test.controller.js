@@ -1,27 +1,21 @@
-const helperUtils = require("../utils/helper.utils");
-const responseUtils = require("../utils/response.utils");
-const loggerUtils = require("../utils/logger.utils");
-const ajvUtils = require("../utils/ajv.utils");
-const tokenUtils = require("../utils/token.utils");
-const uploadUtility = require("../utils/upload.utils");
+const BaseController = require("../common/baseController");
+const userValidationSchemas = require("../validations/user.schemas");
 
-class testController {
+class testController extends BaseController {
   constructor() {
-    this.helper = helperUtils;
-    this.response = responseUtils;
-    this.logger = loggerUtils;
-    this.ajv = ajvUtils;
-    this.token = tokenUtils;
-    this.upload = new uploadUtility();
+    super();
   }
 
   async test(req, res) {
     try {
       const apiVersion = this.helper.getVersion({ url: req.baseUrl });
-      return this.response.success({ req, res, key: "SUCCESS", data: apiVersion });
+      return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: apiVersion });
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "test" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
     }
   }
 
@@ -39,65 +33,19 @@ class testController {
         object: req.body?.object
       };
 
-      // json validation
-      const validate = this.ajv.ajvCheck({
-        type: this.ajv.prop("string", { title: "User Type", minLength: 2 }),
-        name: this.ajv.prop("string", { title: "Name", minLength: 2 }),
-        email: this.ajv.prop("string", { title: "user email", format: "customEmail" }),
-        email_two: this.ajv.prop("string", { title: "Email Two", format: "customEmail" }),
-        phone: this.ajv.prop("string", { title: "Phone", format: "customPhone" }),
-        website: this.ajv.prop("string", { title: "Website", format: "customWebsite" }),
-        demoTemp: this.ajv.prop("string", { title: "Name" }),
-        array: this.ajv.prop("array", {
-          title: "User List",
-          items: this.ajv.prop("object", {
-            title: "User List Array",
-            properties: {
-              name: this.ajv.prop("string", { title: "User List Name", minLength: 2 }),
-              email: this.ajv.prop(["string", "null"], { title: "User List Email", format: "customEmail" })
-            },
-            minProperties: 2,
-            required: ["name", "email"]
-          }),
-          minItems: 2,
-          uniqueItems: true
-        }),
-        object: this.ajv.prop("object", {
-          title: "User Object",
-          properties: {
-            name: this.ajv.prop("string"),
-            email: this.ajv.prop(["string", "null"], { format: "customEmail" }),
-            newTemp: this.ajv.prop(["string", "null"])
-          },
-          minProperties: 2,
-          required: ["name"]
-        })
-      },
-      {
-        required: ["type", "name", "email", "array", "object", "email_two"],
-        allOf: [
-          {
-            if: {
-              properties: { type: { const: "admin" } }
-            },
-            then: {
-              required: ["demoTemp"],
-              properties: {
-                demoTemp: this.ajv.prop("string", { minLength: 2 })
-              }
-            }
-          }
-        ]
-      });
-
-      if (!validate(data)) {
-        return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      // Use centralized schema validation via class method
+      const validation = userValidationSchemas.validate(data, "ajvFunSchema");
+      if (!validation.isValid) {
+        return this.response.send({ req, res, type: "BAD_REQUEST", message: this.ajv.errorMsg({ error: validation.errors[0] }) });
       }
 
-      return this.response.success({ req, res, key: "SUCCESS", data: "valid" });
+      return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: "valid" });
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "ajvFun" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
     }
   }
 
@@ -109,26 +57,21 @@ class testController {
         range: req.body?.range
       };
 
-      // json validation
-      const validate = this.ajv.ajvCheck({
-        name: this.ajv.prop("string", {}),
-        id: this.ajv.prop("number"),
-        range: this.ajv.prop("array", { items: this.ajv.prop("number"), minItems: 2, maxItems: 2 })
-      },
-      {
-        required: []
-      });
-
-      if (!validate(data)) {
-        return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      // Use centralized schema validation via class method
+      const validation = userValidationSchemas.validate(data, "filterSchema");
+      if (!validation.isValid) {
+        return this.response.send({ req, res, type: "BAD_REQUEST", message: this.ajv.errorMsg({ error: validation.errors[0] }) });
       }
 
-      const filterUser = await testServices.filter(data);
-
-      return this.response.success({ req, res, key: "SUCCESS", data: filterUser });
+      // TODO: Implement filter logic - require userServices
+      // const filterUser = await userServices.filter(data);
+      return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: "filterUser" });
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "filter" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
     }
   }
 
@@ -139,19 +82,18 @@ class testController {
       const jwtAccessToken = this.token.createJwtAccessToken(userData);
       const customRefreshToken = this.token.createRefreshToken();
 
-      return this.response.success({
-        req,
-        res,
-        key: "SUCCESS",
-        data: {
+      return this.response.send({req, res, type: "SUCCESS", message: "SUCCESS", data: {
           customAccessToken,
           jwtAccessToken,
           customRefreshToken
         }
       });
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "tokenGen" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
     }
   }
 
@@ -171,40 +113,39 @@ class testController {
       });
 
       if (!validate(data)) {
-        return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+        return this.response.send({ req, res, type: "BAD_REQUEST", message: this.ajv.errorMsg({ error: validate.errors[0] }) });
       }
 
       // check JWT Access Token
       const jwtAccessTokenCheck = this.token.verifyJwtAccessToken(data.jwtAccessToken);
       if (!jwtAccessTokenCheck.ok) {
-        return this.response.error({ req, res, key: "UNAUTHORIZED" });
+        return this.response.send({ req, res, type: "UNAUTHORIZED", message: "UNAUTHORIZED" });
       }
 
       // check Custom Access Token
       const customAccessTokenCheck = this.token.verifyCustomToken(data.customAccessToken);
       if (!customAccessTokenCheck.ok) {
-        return this.response.error({ req, res, key: "UNAUTHORIZED" });
+        return this.response.send({ req, res, type: "UNAUTHORIZED", message: "UNAUTHORIZED" });
       }
 
       // check Custom Refresh Token
       const customRefreshTokenCheck = this.token.verifyRefreshToken(data.customRefreshToken);
       if (!customRefreshTokenCheck.ok) {
-        return this.response.error({ req, res, key: "UNAUTHORIZED" });
+        return this.response.send({ req, res, type: "UNAUTHORIZED", message: "UNAUTHORIZED" });
       }
 
-      return this.response.success({
-        req,
-        res,
-        key: "SUCCESS",
-        data: {
+      return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: {
           customAccessToken: customAccessTokenCheck,
           jwtAccessToken: jwtAccessTokenCheck,
           customRefreshToken: customRefreshTokenCheck
         }
       });
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "tokenCheck" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
     }
   }
 
@@ -217,15 +158,40 @@ class testController {
       } else if (apiVersion === "v2") {
         // code for v2
       } else {
-        return this.response.error({ req, res, key: "INVALID_API_VERSION" });
+        return this.response.send({ req, res, type: "BAD_REQUEST", message: "INVALID_API_VERSION" });
       }
 
-      return this.response.success({ req, res, key: "SUCCESS", data: { apiVersion } });
+      return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: { apiVersion } });
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "apiVersion" });
-      return this.response.error({ req, res, key: "ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
     }
   }
 
+  async uploadFile(req, res) {
+    try {
+      // upload images
+      await new Promise((resolve, reject) => {
+        this.upload.getUploadMiddleware().single("reviewProfile")(req, res, (err) => {
+          if (err) {
+            return this.response.send({ req, res, type: "BAD_REQUEST", message: err.message });
+          }
+          return resolve();
+        });
+      });
+
+      return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS" });
+    } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
+      this.logger.createLog({ msg: error, name: "uploadFile" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "ERROR" });
+    }
+  }
 }
+
 module.exports = new testController();

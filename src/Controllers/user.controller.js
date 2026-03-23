@@ -1,66 +1,54 @@
+const BaseController = require("../common/baseController");
+const userValidationSchemas = require("../validations/user.schemas");
 const userServices = require("../services/user.services");
 
-const helperUtils = require("../utils/helper.utils");
-const responseUtils = require("../utils/response.utils");
-const loggerUtils = require("../utils/logger.utils");
-const ajvUtils = require("../utils/ajv.utils");
-const tokenUtils = require("../utils/token.utils");
-const uploadUtility = require("../utils/upload.utils");
-
-class userController {
+class userController extends BaseController {
   constructor() {
-    this.helper = helperUtils;
-    this.response = responseUtils;
-    this.logger = loggerUtils;
-    this.ajv = ajvUtils;
-    this.token = tokenUtils;
-    this.upload = new uploadUtility();
+    super();
   }
 
   // CRUD operations
   async getAllUser(req, res) {
     try {
       const userData = await userServices.getList();
-      return this.response.send({req, res, type:"SUCCESS", data: userData, key:"SUCCESS"});
+      return this.response.send({req, res, type:"SUCCESS", data: userData, message:"SUCCESS"});
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "getAllUser" });
-      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", message:"ERROR"});
     }
   }
 
   async addUser(req, res) {
     try {
-      // upload images
-      await new Promise((resolve, reject) => {
-        this.upload.getUploadMiddleware().single("reviewProfile")(req, res, (err) => {
-          if (err) {
-            return this.response.error({ req, res, key: err.message });
-          }
-          return resolve();
-        });
-      });
 
       const data = {
         name: req.body?.name,
-        email: req.body?.email
+        email: req.body?.email,
+        phone: req.body?.phone,
+        password: req.body?.password,
+        status: req.body?.status,
+        notes: req.body?.notes
       };
 
-      // json validation
-      const validate = this.ajv.ajvCheck({
-        name: this.ajv.prop("string"),
-        email: this.ajv.prop("string", { format: "customEmail" })
-      });
-      if (!validate(data)) {
-        return this.response.error({ req, res, key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      // schema validation
+      const validation = userValidationSchemas.validate(data, "userCreate");
+      if (!validation.isValid) {
+        return this.response.send({ req, res, type:"BAD_REQUEST", message: this.ajv.errorMsg({ error: validation.errors[0] }) });
       }
 
       // main logic
       const newUser = await userServices.create({ data });
 
-      return this.response.send({req, res, type:"CREATED", data: newUser, key:"SUCCESS"});
+      return this.response.send({req, res, type:"CREATED", data: newUser, message:"SUCCESS"});
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "addUser" });
-      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", message:"ERROR"});
     }
   }
 
@@ -70,29 +58,27 @@ class userController {
       const payload = {
         id: req.body?.id || "",
         ...(req.body?.name && {name: req.body.name}),
-        ...(req.body?.email && {email: req.body.email})
+        ...(req.body?.email && {email: req.body.email}),
+        ...(req.body?.phone && {phone: req.body.phone}),
+        ...(req.body?.notes && {notes: req.body.notes})
       };
 
-      // json validation
-      const validate = this.ajv.ajvCheck({
-        id: this.ajv.prop("number", { title: "User ID" }),
-        name: this.ajv.prop("string", { title: "Name" }),
-        email: this.ajv.prop("string", { title: "Email", format: "customEmail" })
-      },
-      {
-        required: ["id"]
-      });
-      if (!validate(payload)) {
-        return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      // Use centralized schema validation via class method
+      const validation = userValidationSchemas.validate(payload, "userUpdate");
+      if (!validation.isValid) {
+        return this.response.send({req, res, type:"BAD_REQUEST", message: this.ajv.errorMsg({ error: validation.errors[0] }) });
       }
 
       // main logic
       const updatedUser = await userServices.update({ id: payload.id, data: payload });
 
-      return this.response.send({req, res, type:"UPDATE", data: updatedUser, key:"SUCCESS"});
+      return this.response.send({req, res, type:"UPDATE", data: updatedUser, message:"SUCCESS"});
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "updateUser" });
-      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", message:"ERROR"});
     }
   }
 
@@ -100,27 +86,25 @@ class userController {
     try {
 
       const payload = {
-        id: req.body?.id || ""
+        id: req.body?.id
       }
 
-      // json validation
-      const validate = this.ajv.ajvCheck({
-        id: this.ajv.prop("number", { title: "User ID" })
-      },
-      {
-        required: ["id"]
-      });
-      if (!validate(payload)) {
-        return this.response.send({req, res, type:"BAD_REQUEST", key: this.ajv.errorMsg({ error: validate.errors[0] }) });
+      // Use centralized schema validation via class method
+      const validation = userValidationSchemas.validate(payload, "userId");
+      if (!validation.isValid) {
+        return this.response.send({req, res, type:"BAD_REQUEST", message: this.ajv.errorMsg({ error: validation.errors[0] }) });
       }
 
       // main logic
       const deletedUser = await userServices.delete({ id: payload.id });
 
-      return this.response.send({req, res, type:"DELETE", data: deletedUser, key:"SUCCESS"});
+      return this.response.send({req, res, type:"DELETE", data: deletedUser, message:"SUCCESS"});
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "deleteUser" });
-      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", message:"ERROR"});
     }
   }
 
@@ -131,11 +115,15 @@ class userController {
       // main logic
       const demos = await userServices.filter({ name });
 
-      return this.response.send({req, res, type:"SUCCESS", data: demos, key:"SUCCESS"});
+      return this.response.send({req, res, type:"SUCCESS", data: demos, message:"SUCCESS"});
     } catch (error) {
+      if (error?.name === "AppError") {
+        return this.response.send({req, res, type:error?.type || "INTERNAL_SERVER_ERROR", message:error.message}  );
+      }
       this.logger.createLog({ msg: error, name: "filter" });
-      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", key:"ERROR"});
+      return this.response.send({req, res, type:"INTERNAL_SERVER_ERROR", message:"ERROR"});
     }
   }
 }
+
 module.exports = new userController();

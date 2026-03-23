@@ -32,6 +32,7 @@ class apiRoutes {
     Router.post("/token", this.testController.tokenGen.bind(this.testController));
     Router.post("/tokenCheck", this.testController.tokenCheck.bind(this.testController));
     Router.post("/apiVersion", this.testController.apiVersion.bind(this.testController));
+    Router.post("/upload", this.testController.uploadFile.bind(this.testController));
     
     this.routes.use("/public", Router);
   }
@@ -44,7 +45,7 @@ class apiRoutes {
     userRouter.post("/add", this.apiMiddleware.authorize({"user":["add"]}), this.userController.addUser.bind(this.userController));
     userRouter.put("/update", this.apiMiddleware.authorize({"user":["update"]}), this.userController.updateUser.bind(this.userController));
     userRouter.delete("/delete", this.apiMiddleware.authorize({"user":["delete"]}), this.userController.deleteUser.bind(this.userController));
-    userRouter.post("/filter", this.userController.filter.bind(this.userController));
+    userRouter.post("/filter", this.apiMiddleware.authorize({"user":["read"]}), this.userController.filter.bind(this.userController));
 
     this.routes.use("/user", userRouter);
   }
