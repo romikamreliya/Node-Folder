@@ -1,13 +1,8 @@
-const helperUtils = require("../../utils/helper.utils");
-const loggerUtils = require("../../utils/logger.utils");
-const tokenUtils = require("../../utils/token.utils");
+const BaseController = require("../../common/baseController");
 
-class testSocket {
+class testSocket extends BaseController {
     constructor({ socket, appEvent }) {
-        this.helper = helperUtils;
-        this.logger = loggerUtils;
-        this.token = tokenUtils;
-
+        super();
         this.socket = socket;
         this.appEvent = appEvent;
         this.authenticate();

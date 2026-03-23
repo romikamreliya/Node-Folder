@@ -1,8 +1,7 @@
+const BaseController = require("../common/baseController");
 const userModel = require("../models/user.model");
-const appError = require("../utils/appError.utils");
 
-class userService {
-  constructor() {}
+class userService extends BaseController {
 
   /**
    * Get list
@@ -18,7 +17,7 @@ class userService {
   static async getById({ id }) {
     const findRecord = await userModel.findOne({id});
     if (!findRecord) {
-      throw new appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
+      throw new this.appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
     }
     return userModel.resources.toJSON(findRecord);
   }
@@ -44,7 +43,7 @@ class userService {
   static async update({ id, data }) {
     const findRecord =  await userModel.findOne({id});
     if (!findRecord) {
-      throw new appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
+      throw new this.appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
     }
 
     const payload = {
@@ -65,7 +64,7 @@ class userService {
   static async delete({ id }) {
     const findRecord = await userModel.findOne({id});
     if (!findRecord) {
-      throw new appError({message: "DATA_NOT_FOUND", type: "NOT_FOUND"});
+      throw new this.appError({message: "DATA_NOT_FOUND", type: "NOT_FOUND"});
     }
 
     await userModel.delete({id});

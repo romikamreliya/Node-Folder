@@ -1,6 +1,5 @@
 const express = require("express");
 const apiMiddleware = require("../middleware/api.middleware");
-const helperUtils = require("../utils/helper.utils");
 
 const testController = require("../controllers/test.controller");
 const userController = require("../controllers/user.controller");
@@ -14,7 +13,6 @@ class apiRoutes {
     this.testController = testController;
     this.userController = userController;
     this.apiMiddleware = apiMiddleware;
-    this.helper = helperUtils;
     this.registerRoutes();
   }
 

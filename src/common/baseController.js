@@ -9,12 +9,17 @@ const dateUtility = require("../utils/date.utils");
 const i18nUtility = require("../utils/i18n.utils");
 const appErrorUtility = require("../utils/appError.utils");
 
-class BaseController {
+class baseController {
   
   static helper = helperUtils;
   static response = responseUtils;
   static logger = loggerUtils;
   static token = tokenUtils;
+  static ajv = ajvUtils;
+  static date = dateUtility
+  static i18n = i18nUtility;
+  static constants = constants
+  static appError = appErrorUtility;
 
   constructor({uploadPath} = {}) {
     this.ajv = ajvUtils;
@@ -30,4 +35,4 @@ class BaseController {
   }
 }
 
-module.exports = BaseController;
+module.exports = baseController;

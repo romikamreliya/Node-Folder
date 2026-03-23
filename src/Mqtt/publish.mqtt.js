@@ -1,14 +1,8 @@
-const helperUtils = require("../utils/helper.utils");
-const loggerUtils = require("../utils/logger.utils");
-const ajvUtils = require("../utils/ajv.utils");
+const BaseController = require("../common/baseController");
 
-class publishMqtt {
+class publishMqtt extends BaseController{
     constructor({conn, appEvent}) {
-
-        this.helper = helperUtils;
-        this.logger = loggerUtils;
-        this.ajv = ajvUtils;
-
+        super();
         this.mqtt = conn;
         this.appEvent = appEvent;
         this.setupAppEventListeners();

@@ -1,13 +1,10 @@
 const { parentPort, workerData } = require("worker_threads");
-const helperUtils = require("../utils/helper.utils");
-const loggerUtils = require("../utils/logger.utils");
+const BaseController = require("../common/baseController");
 
-class testWorker {
+class testWorker extends BaseController {
     constructor(data) {
-this.helper = helperUtils;
-        this.logger = loggerUtils;
-      
-      this.data = data;
+        super();
+        this.data = data;
     }
 
     calculate(n) {

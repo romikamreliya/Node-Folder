@@ -142,7 +142,7 @@ class userValidationSchemas {
   /**
    * Validate data against a schema
    * @param {Object} data - Data to validate
-   * @param {keyof typeof userValidationSchemas.allSchemas} schemaName - Name of schema to validate against
+   * @param {keyof typeof this.allSchemas} schemaName - Name of schema to validate against
    * @returns {Object} { isValid: boolean, errors: Array, validate: Function }
    */
   static validate(data, schemaName) {
