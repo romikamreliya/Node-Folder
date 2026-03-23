@@ -1,14 +1,6 @@
-const helperUtils = require("../utils/helper.utils");
-const responseUtils = require("../utils/response.utils");
-const loggerUtils = require("../utils/logger.utils");
-const tokenUtils = require("../utils/token.utils");
+const BaseController = require("../common/baseController");
 
-class apiMiddleware {
-
-  static helper = helperUtils;
-  static response = responseUtils;
-  static logger = loggerUtils;
-  static token = tokenUtils;
+class apiMiddleware extends BaseController {
 
   /**
    * Middleware to check user login and verify token
@@ -59,16 +51,16 @@ class apiMiddleware {
         }
 
         // check Permission logic
-        const userPermissions = req.currentUser?.permissions || {};
-        const allowed = Object.entries(permissions).some(
-          ([module, actions]) => {
-            if (!userPermissions[module]) return false;
-            return actions.some(action => userPermissions[module].includes(action));
-          }
-        );
-        if (!allowed) {
-          return this.response.error({ req, res, key: "FORBIDDEN" });
-        }
+        // const userPermissions = req.currentUser?.permissions || {};
+        // const allowed = Object.entries(permissions).some(
+        //   ([module, actions]) => {
+        //     if (!userPermissions[module]) return false;
+        //     return actions.some(action => userPermissions[module].includes(action));
+        //   }
+        // );
+        // if (!allowed) {
+        //   return this.response.error({ req, res, key: "FORBIDDEN" });
+        // }
 
         next();
       } catch (error) {

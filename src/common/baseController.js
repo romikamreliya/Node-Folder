@@ -7,8 +7,15 @@ const tokenUtils = require("../utils/token.utils");
 const uploadUtility = require("../utils/upload.utils");
 const dateUtility = require("../utils/date.utils");
 const i18nUtility = require("../utils/i18n.utils");
+const appErrorUtility = require("../utils/appError.utils");
 
 class BaseController {
+  
+  static helper = helperUtils;
+  static response = responseUtils;
+  static logger = loggerUtils;
+  static token = tokenUtils;
+
   constructor({uploadPath} = {}) {
     this.ajv = ajvUtils;
     this.constants = constants;
@@ -19,6 +26,7 @@ class BaseController {
     this.response = responseUtils;
     this.token = tokenUtils;
     this.upload = new uploadUtility(uploadPath);
+    this.appError = appErrorUtility;
   }
 }
 
