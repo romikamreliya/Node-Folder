@@ -13,20 +13,20 @@ class apiMiddleware extends BaseController {
       const token = req.headers['authorization']?.replace('Bearer ', '');
 
       if (!token) {
-        return this.response.error({ req, res, key: "UNAUTHORIZED" });
+        return this.response.send({req, res, type:"UNAUTHORIZED", message:"UNAUTHORIZED" });
       }
 
       // check Token
       const tokenCheck = this.token.verifyCustomToken(token);
       if (!tokenCheck.ok) {
-        return this.response.error({ req, res, key: tokenCheck.error });
+        return this.response.send({ req, res, type: "TOKEN_INVALID", message: "TOKEN_INVALID" });
       }
 
       req.currentUser = tokenCheck.data;
       next();
     } catch (error) {
       this.logger.createLog({ msg: error, name: "ApiMiddleware-userLogin" });
-      return this.response.error({ req, res, key: 'ERROR' });
+      return this.response.send({ req, res, type: "INTERNAL_ERROR", message: "INTERNAL_ERROR" });
     }
   }
 
@@ -47,7 +47,7 @@ class apiMiddleware extends BaseController {
       try {
         // Check if user is authenticated via token
         if (!req.currentUser) {
-          return this.response.error({ req, res, key: "UNAUTHORIZED" });
+          return this.response.send({ req, res, type: "UNAUTHORIZED", message: "UNAUTHORIZED" });
         }
 
         // check Permission logic
@@ -59,13 +59,13 @@ class apiMiddleware extends BaseController {
         //   }
         // );
         // if (!allowed) {
-        //   return this.response.error({ req, res, key: "FORBIDDEN" });
+        //   return this.response.send({ req, res, type: "FORBIDDEN", message: "FORBIDDEN" });
         // }
 
         next();
       } catch (error) {
         this.logger.createLog({ msg: error.message, name: "PermissionMiddleware-checkPermission" });
-        return this.response.error({ req, res, key: "INTERNAL_ERROR" });
+        return this.response.send({ req, res, type: "INTERNAL_ERROR", message: "INTERNAL_ERROR" });
       }
     };
   }

@@ -47,7 +47,7 @@ class responseUtils {
      * @param {Object} options
      * @param {Object} options.req - Express request
      * @param {Object} options.res - Express response
-     * @param {keyof typeof ResponseUtils.RES_CODES} options.type - Response type (SUCCESS, CREATED, BAD_REQUEST...)
+     * @param {keyof typeof responseUtils.RES_CODES} options.type - Response type (SUCCESS, CREATED, BAD_REQUEST...)
      * @param {keyof typeof message} options.message - Translation key
      * @param {Object} [options.data] - Response data
      * @returns {Object}
