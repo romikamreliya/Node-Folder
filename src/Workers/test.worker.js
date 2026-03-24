@@ -1,7 +1,7 @@
 const { parentPort, workerData } = require("worker_threads");
-const BaseController = require("../common/baseController");
+const BaseWorker = require("../common/baseWorker");
 
-class testWorker extends BaseController {
+class testWorker extends BaseWorker {
     constructor(data) {
         super();
         this.data = data;

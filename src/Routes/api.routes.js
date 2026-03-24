@@ -1,8 +1,8 @@
 const express = require("express");
 const apiMiddleware = require("../middleware/api.middleware");
 
-const testController = require("../controllers/test.controller");
-const userController = require("../controllers/user.controller");
+const demoController = require("../controllers/demoController");
+const userController = require("../controllers/userController");
 
 /**
  * API routes handler
@@ -10,7 +10,7 @@ const userController = require("../controllers/user.controller");
 class apiRoutes {
   constructor() {
     this.routes = express.Router();
-    this.testController = testController;
+    this.demoController = demoController;
     this.userController = userController;
     this.apiMiddleware = apiMiddleware;
     this.registerRoutes();
@@ -24,13 +24,13 @@ class apiRoutes {
   publicRoutes() {
     const Router = express.Router();
 
-    Router.get("/test", this.testController.test.bind(this.testController));
-    Router.post("/ajv", this.testController.ajvFun.bind(this.testController));
-    Router.post("/filter", this.testController.filter.bind(this.testController));
-    Router.post("/token", this.testController.tokenGen.bind(this.testController));
-    Router.post("/tokenCheck", this.testController.tokenCheck.bind(this.testController));
-    Router.post("/apiVersion", this.testController.apiVersion.bind(this.testController));
-    Router.post("/upload", this.testController.uploadFile.bind(this.testController));
+    Router.get("/test", this.demoController.test.bind(this.demoController));
+    Router.post("/ajv", this.demoController.ajvFun.bind(this.demoController));
+    Router.post("/filter", this.demoController.filter.bind(this.demoController));
+    Router.post("/token", this.demoController.tokenGen.bind(this.demoController));
+    Router.post("/tokenCheck", this.demoController.tokenCheck.bind(this.demoController));
+    Router.post("/apiVersion", this.demoController.apiVersion.bind(this.demoController));
+    Router.post("/upload", this.demoController.uploadFile.bind(this.demoController));
     
     this.routes.use("/public", Router);
   }

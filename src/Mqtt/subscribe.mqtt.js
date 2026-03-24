@@ -1,6 +1,6 @@
-const BaseController = require("../common/baseController");
+const BaseMqtt = require("../common/baseMqtt");
 
-class subscribeMqtt extends BaseController{
+class subscribeMqtt extends BaseMqtt{
     constructor({conn, appEvent}){
         super();
         this.mqtt = conn;

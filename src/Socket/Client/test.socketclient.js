@@ -1,6 +1,6 @@
-const BaseController = require("../../common/baseController");
+const BaseSocket = require("../../common/baseSocket");
 
-class testSocketClient extends BaseController {
+class testSocketClient extends BaseSocket {
     constructor({socketClient,appEvent}){
         super();
         this.socketClient = socketClient;

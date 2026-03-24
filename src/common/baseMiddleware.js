@@ -9,20 +9,18 @@ const dateUtility = require("../utils/date.utils");
 const i18nUtility = require("../utils/i18n.utils");
 const appErrorUtility = require("../utils/appError.utils");
 
-class baseController {
-  constructor({uploadPath} = {}) {
-    // Instance properties for use in controllers
-    this.ajv = ajvUtils;
-    this.constants = constants;
-    this.date = dateUtility;
-    this.helper = helperUtils;
-    this.i18n = i18nUtility;
-    this.logger = loggerUtils;
-    this.response = responseUtils;
-    this.token = tokenUtils;
-    this.upload = new uploadUtility(uploadPath);
-    this.appError = appErrorUtility;
-  }
+class baseMiddleware {
+
+  static ajv = ajvUtils;
+  static constants = constants;
+  static date = dateUtility;
+  static helper = helperUtils;
+  static i18n = i18nUtility;
+  static logger = loggerUtils;
+  static response = responseUtils;
+  static token = tokenUtils;
+  static upload = uploadUtility;
+  static appError = appErrorUtility;
 }
 
-module.exports = baseController;
+module.exports = baseMiddleware;

@@ -1,13 +1,7 @@
-const BaseController = require("../common/baseController");
+const BaseMiddleware = require("../common/baseMiddleware");
 
-class apiMiddleware extends BaseController {
+class apiMiddleware extends BaseMiddleware {
 
-  /**
-   * Middleware to check user login and verify token
-   * @param {Object} req - Express request object
-   * @param {Object} res - Express response object
-   * @param {Function} next - Express next function
-   */
   static authenticateToken(req, res, next) {
     try {
       const token = req.headers['authorization']?.replace('Bearer ', '');
@@ -26,17 +20,10 @@ class apiMiddleware extends BaseController {
       next();
     } catch (error) {
       this.logger.createLog({ msg: error, name: "ApiMiddleware-userLogin" });
-      return this.response.send({ req, res, type: "INTERNAL_ERROR", message: "INTERNAL_ERROR" });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "INTERNAL_SERVER_ERROR" });
     }
   }
 
-  /**
-   * Middleware to check user permissions
-   * @param {Object} options - Options object
-   * @param {string} options.moduleName - Module name for permission check
-   * @param {string} options.actionName - Action name for permission check
-   * @returns {Function} Express middleware function
-   */
   static authorize(permissions = {}) {
     // Validate required parameters
     if (!permissions || Object.keys(permissions).length === 0) {
@@ -50,22 +37,23 @@ class apiMiddleware extends BaseController {
           return this.response.send({ req, res, type: "UNAUTHORIZED", message: "UNAUTHORIZED" });
         }
 
-        // check Permission logic
+        // IMPLEMENTED: Check permission logic
         // const userPermissions = req.currentUser?.permissions || {};
         // const allowed = Object.entries(permissions).some(
         //   ([module, actions]) => {
-        //     if (!userPermissions[module]) return false;
+        //     if (!Array.isArray(userPermissions[module])) return false;
         //     return actions.some(action => userPermissions[module].includes(action));
         //   }
         // );
+        
         // if (!allowed) {
-        //   return this.response.send({ req, res, type: "FORBIDDEN", message: "FORBIDDEN" });
+        //   return this.response.send({ req, res, type: "FORBIDDEN", message: "INSUFFICIENT_PERMISSIONS" });
         // }
 
         next();
       } catch (error) {
         this.logger.createLog({ msg: error.message, name: "PermissionMiddleware-checkPermission" });
-        return this.response.send({ req, res, type: "INTERNAL_ERROR", message: "INTERNAL_ERROR" });
+        return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "INTERNAL_SERVER_ERROR" });
       }
     };
   }

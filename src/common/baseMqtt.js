@@ -9,7 +9,7 @@ const dateUtility = require("../utils/date.utils");
 const i18nUtility = require("../utils/i18n.utils");
 const appErrorUtility = require("../utils/appError.utils");
 
-class baseController {
+class baseMqtt {
   constructor({uploadPath} = {}) {
     // Instance properties for use in controllers
     this.ajv = ajvUtils;
@@ -25,4 +25,4 @@ class baseController {
   }
 }
 
-module.exports = baseController;
+module.exports = baseMqtt;

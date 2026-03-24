@@ -1,8 +1,8 @@
 const { Worker } = require('worker_threads');
-const BaseController = require("../common/baseController");
+const BaseWorker = require("../common/baseWorker");
 
 const path = require('path');
-class mainWorker extends BaseController {
+class mainWorker extends BaseWorker {
     constructor() {
         super();
     }

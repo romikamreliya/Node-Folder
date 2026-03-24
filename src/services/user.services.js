@@ -1,12 +1,16 @@
-const BaseController = require("../common/baseController");
+const BaseServices = require("../common/baseServices");
 const userModel = require("../models/user.model");
 
-class userService extends BaseController {
+class userService extends BaseServices {
+
+  constructor() {
+    super();
+  }
 
   /**
    * Get list
    */
-  static async getList() {
+  async getList() {
     const demos = await userModel.get();
     return userModel.resources.collection(demos, userModel.resources.toJSON);
   }
@@ -14,7 +18,7 @@ class userService extends BaseController {
   /**
    * Get by id
    */
-  static async getById({ id }) {
+  async getById({ id }) {
     const findRecord = await userModel.findOne({id});
     if (!findRecord) {
       throw new this.appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
@@ -25,7 +29,7 @@ class userService extends BaseController {
   /**
    * Create
    */
-  static async create({ data }) {
+  async create({ data }) {
     const payload = {
       name: data.name,
       email: data.email,
@@ -40,7 +44,7 @@ class userService extends BaseController {
   /**
    * Update
    */
-  static async update({ id, data }) {
+  async update({ id, data }) {
     const findRecord =  await userModel.findOne({id});
     if (!findRecord) {
       throw new this.appError({message: "DATA_NOT_FOUND", type :"NOT_FOUND" });
@@ -61,7 +65,7 @@ class userService extends BaseController {
   /**
    * Delete
    */
-  static async delete({ id }) {
+  async delete({ id }) {
     const findRecord = await userModel.findOne({id});
     if (!findRecord) {
       throw new this.appError({message: "DATA_NOT_FOUND", type: "NOT_FOUND"});
@@ -75,7 +79,7 @@ class userService extends BaseController {
   /**
    * filter
    */
-  static async filter({ name = "" }) {
+  async filter({ name = "" }) {
     const demos = await userModel.paginate({
       filters: {
         name: { like: name }
@@ -85,4 +89,4 @@ class userService extends BaseController {
   }
 }
 
-module.exports = userService;
+module.exports = new userService();

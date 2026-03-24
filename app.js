@@ -7,7 +7,9 @@ const appConfig = require("./src/config/app.config");
 const socketConfig = require("./src/config/socket.config");
 const socketClientConfig = require("./src/config/socket-client.config");
 const mqttConfig = require("./src/config/mqtt.config");
+// Middleware
 const rateLimitMiddleware = require("./src/middleware/ratelimit.middleware");
+const errorMiddleware = require("./src/middleware/error.middleware");
 
 // Routes
 const apiRoutes = require("./src/routes/api.routes");
@@ -48,7 +50,9 @@ class main {
     Routes() {
         this.app.use("/", webRoutes.allRoutes());
         this.app.use(/^\/api\/(v1|v2)/, rateLimitMiddleware.defaultLimiter, apiRoutes.getRoutes());
-        this.app.use("/", (req, res) => res.status(404).json({ success: false, message: "404 page not found" }));
+
+        // Global Error Handler
+        this.app.use(errorMiddleware.globalErrorHandler.bind(errorMiddleware));
     }
 
     Socket() {
