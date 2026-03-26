@@ -18,6 +18,7 @@ class baseServices {
     this.date = dateUtility;
     this.i18n = i18nUtility;
     this.appError = appErrorUtility;
+    this.response = responseUtils;
   }
 }
 
