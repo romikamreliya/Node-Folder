@@ -98,12 +98,12 @@ class tokenService {
       );
 
       if (data.exp < Date.now()) {
-        return { ok: false, error: "custom_token_expired" };
+        return { ok: false, error: "TOKEN_EXPIRED" };
       }
 
       return { ok: true, data: data.data };
     } catch (err) {
-      return { ok: false, error: "invalid_custom_token" };
+      return { ok: false, error: "TOKEN_INVALID" };
     }
   }
 
