@@ -13,7 +13,7 @@ class apiMiddleware extends BaseMiddleware {
       // check Token
       const tokenCheck = this.token.verifyCustomToken(token);
       if (!tokenCheck.ok) {
-        return this.response.send({ req, res, type: "TOKEN_INVALID", message: "TOKEN_INVALID" });
+        return this.response.send({ req, res, type: tokenCheck.error, message: tokenCheck.error });
       }
 
       req.currentUser = tokenCheck.data;
