@@ -1,18 +1,15 @@
 const BaseController = require("../common/baseController");
 const userValidationSchemas = require("../validations/user.schemas");
 
-/**
- * Demo/Example controller showing various API capabilities:
- * - API versioning detection
- * - Token generation and validation
- * - Schema validation examples
- */
 class demoController extends BaseController {
   constructor() {
     super();
   }
 
   async test(req, res) {
+    const eventEmitter = req.app.get('appEvent');
+    eventEmitter.emit("socketEmit", { message: "This is a test event" });
+
     const apiVersion = this.helper.getVersion({ url: req.baseUrl });
     return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: apiVersion });
   }
