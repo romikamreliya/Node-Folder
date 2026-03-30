@@ -49,7 +49,6 @@ class demoController extends BaseController {
       return this.response.send({ req, res, type: "BAD_REQUEST", message: this.ajv.errorMsg({ error: validation.errors[0] }) });
     }
 
-    // TODO: Implement filter logic if needed
     return this.response.send({ req, res, type: "SUCCESS", message: "SUCCESS", data: "filterUser" });
   }
 
