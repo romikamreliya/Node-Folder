@@ -24,20 +24,12 @@ class testSocketClient extends BaseSocket {
 
         this.socketClient.on('disconnect',(reason)=>{
             console.log('disconnect',reason)
-            this.appEventRemoveListeners();
         })
     }
     setupAppEventListeners() {
-        this.socketClientEmit = (data) => {
+        this.appEvent.on('socketClientEmit', (data) => {
             console.log('socket socketClientEmit', data);
-        }
-        this.appEvent.on('socketClientEmit', this.socketClientEmit);
-    }
-
-    appEventRemoveListeners() {
-        if (this.socketClientEmit) {
-            this.appEvent.removeListener('socketClientEmit', this.socketClientEmit)   
-        }
+        });
     }
 }
 

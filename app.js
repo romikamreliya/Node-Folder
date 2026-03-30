@@ -56,11 +56,9 @@ class main {
     }
 
     Socket() {
-        this.io.on("connection", (socket) => {
-            new testSocket({
-                socket,
-                appEvent: this.appEvent
-            });
+        new testSocket({
+            io: this.io,
+            appEvent: this.appEvent
         });
     }
 
@@ -72,9 +70,17 @@ class main {
     }
 
     Mqtt() {
+        this.publisher = null;
+        this.subscriber = null;
+
         this.mqttConnection.on("connect", () => {
-            new publishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
-            new subscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+            // Cleanup old instances before creating new ones
+            if (this.publisher === null) {
+                this.publisher = new publishMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+            };
+            if (this.subscriber === null) {
+                this.subscriber = new subscribeMqtt({ conn: this.mqttConnection, appEvent: this.appEvent });
+            };
         });
     }
 
