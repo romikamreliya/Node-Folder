@@ -1,76 +1,64 @@
-const HelperUtils = require("../../Utils/helper.utils");
-const LoggerUtils = require("../../Utils/logger.utils");
-const tokenUtils = require("../../Utils/token.utils");
+const BaseSocket = require("../../common/baseSocket");
 
-class TestSocket {
-    constructor({ socket, appEvent }) {
-        this.helper = HelperUtils;
-        this.logger = LoggerUtils;
-        this.token = tokenUtils;
-
-        this.socket = socket;
+class testSocket extends BaseSocket {
+    constructor({ appEvent, io }) {
+        super();
         this.appEvent = appEvent;
-        this.authenticate();
+        this.io = io;
+        this.init();
+        this.appEventHandler();
     }
 
-    authenticate() {
+    init() {
+        this.io.on("connection", (socket) => {
+            this.authenticate(socket);
+        });
+    }
+
+    authenticate(socket) {
         try {
-            const token = this.socket.handshake.auth.token;
+            // const token = socket.handshake.auth.token;
 
-            if (!token) {
-                this.socket.disconnect(true);
-                return;
-            }
+            // if (!token) {
+            //     socket.disconnect(true);
+            //     return;
+            // }
 
-            // Verify JWT token
-            const decoded = this.token.verifyCustomToken(token);
-            this.user = decoded;
+            // // Verify JWT token
+            // const decoded = this.token.verifyCustomToken(token);
+            // this.user = decoded;
 
-            this.initialize();
+            this.socketEmitHandler(socket);
         } catch (error) {
-            this.socket.emit("auth_error", {
+            socket.emit("auth_error", {
                 message: "Authentication failed",
                 error: error.message,
             });
-            this.socket.disconnect(true);
-            this.appEventRemoveListeners();
+            socket.disconnect(true);
         }
     }
 
-    initialize() {
-        this.setupSocketListeners();
-        this.setupAppEventListeners();
-    }
+    socketEmitHandler(socket) {
 
-    setupSocketListeners() {
-
-        this.socket.on("send", (data) => {
-            this.socket.emit("send", `${data} - server`);
+        socket.on("send", (data) => {
+            socket.emit("send", `${data} - server`);
         });
 
-        this.socket.on("error", (error) => {
+        socket.on("error", (error) => {
             this.logger.error("Socket error:", error);
         });
 
-        this.socket.on("disconnect", (reason) => {
+        socket.on("disconnect", (reason) => {
             console.log(`Socket disconnected: ${reason}`);
-            this.appEventRemoveListeners();
         });
     }
 
-    setupAppEventListeners() {
-        this.socketEmitHandler = (data) => {
+    appEventHandler() {
+        this.appEvent.on('socketEmit', (data) => {
             console.log('socket socketEmit', data);
-            this.socket.emit('send', data);
-        };
-        this.appEvent.on('socketEmit', this.socketEmitHandler);
-    }
-
-    appEventRemoveListeners() {
-        if (this.socketEmitHandler) {
-            this.appEvent.removeListener('socketEmit', this.socketEmitHandler)   
-        }
+            this.io.emit('send', data);
+        });
     }
 }
 
-module.exports = TestSocket;
+module.exports = testSocket;

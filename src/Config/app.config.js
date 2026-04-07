@@ -6,12 +6,12 @@ const ejs = require('ejs');
 const helmet = require("helmet");
 const fs = require("fs");
 
-const RequestLoggerMiddleware = require("../Middleware/request-logger.middleware");
+const requestLoggerMiddleware = require("../middleware/request-logger.middleware");
 
 /**
  * Express application configuration
  */
-class AppConfig {
+class appConfig {
     constructor() {
         this.app = express();
         this.allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(',').map(origin => origin.trim());
@@ -73,11 +73,11 @@ class AppConfig {
         // this.app.use((req,res,next)=>LanguageMiddleware.use(req,res,next)); // for multi language support
 
         if (process.env.REQUEST_LOGGER_ENABLED === "true") {
-            this.app.use(RequestLoggerMiddleware.skip(["/health", "/public"]));
+            this.app.use(requestLoggerMiddleware.skip(["/health", "/public"]));
         }
 
         console.log('✓ App Config Initialized Successfully');
     }
 }
 
-module.exports = new AppConfig();
+module.exports = new appConfig();

@@ -1,6 +1,6 @@
 const mqtt = require("mqtt");
 
-class MQTTConfig {
+class mqttConfig {
     constructor({ url, name }) {
         this.name = name;
         this.mqtt = mqtt.connect(url);
@@ -17,4 +17,4 @@ class MQTTConfig {
     }
 }
 
-module.exports = MQTTConfig;
+module.exports = mqttConfig;

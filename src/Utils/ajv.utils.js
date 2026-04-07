@@ -1,7 +1,7 @@
 const Ajv = require("ajv");
 
 
-class ValidationUtils {
+class validationUtils {
 
   static ajv = new Ajv({
     allErrors: true,
@@ -100,7 +100,7 @@ class ValidationUtils {
    * @property {Object} [properties] - Schema for object properties.
    * @property {string} [pattern] - Regex pattern (for strings).
    * @property {Array} [enum] - Allowed values.
-   * @property {"customEmail" | "customPhone" | "customWebsite"} [format] - Special format flag.
+   * @property {"customEmail" | "customPhone" | "customWebsite" | "customDate" | "customTime"} [format] - Special format flag.
    * @property {boolean} [required] - Whether field is required.
    */
   static prop(type, options = {}) {
@@ -153,5 +153,5 @@ class ValidationUtils {
   }
 }
 
-ValidationUtils.customKey();
-module.exports = ValidationUtils;
+validationUtils.customKey();
+module.exports = validationUtils;

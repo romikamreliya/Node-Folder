@@ -3,7 +3,7 @@
 /**
  * Web controller for rendering views
  */
-class WebController {
+class webController {
   constructor() {
     // constructor
   }
@@ -18,4 +18,4 @@ class WebController {
   }
 }
 
-module.exports = new WebController();
+module.exports = new webController();

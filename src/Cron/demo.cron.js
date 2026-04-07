@@ -1,7 +1,7 @@
 const cron = require("cron");
-const Logs = require("../Utils/logger.utils");
+const loggerUtils = require("../utils/logger.utils");
 
-class DemoCron {
+class demoCron {
   
   constructor() {
     this.name = "demoCron";
@@ -29,7 +29,7 @@ class DemoCron {
         this.cronRun.stop();
 
     } catch (error) {
-      Logs.createLog(error, this.name);
+      loggerUtils.createLog(error, this.name);
     }
   };
 
@@ -38,7 +38,7 @@ class DemoCron {
     this.schedule = this.datetimeExpression();
     this.Run();
 
-    Logs.createLog(`Cron Completed :- ${new Date()}`, this.name);
+    loggerUtils.createLog(`Cron Completed :- ${new Date()}`, this.name);
   }
 
   nextCall(next = 1) {
@@ -61,4 +61,4 @@ class DemoCron {
   };
 
 }
-module.exports = new DemoCron();
+module.exports = new demoCron();

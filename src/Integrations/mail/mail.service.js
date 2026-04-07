@@ -1,6 +1,6 @@
 const NodeMailer = require('nodemailer');
 
-class MailService{
+class mailService{
 
     constructor(){
         this.auth = {
@@ -48,4 +48,4 @@ class MailService{
 
 }
 
-module.exports = new MailService();
+module.exports = new mailService();

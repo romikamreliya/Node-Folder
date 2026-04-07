@@ -1,4 +1,4 @@
-class RequestLoggerMiddleware {
+class requestLoggerMiddleware {
 
     /**
      * Logs every incoming request with method, URL, IP, status, and response time.
@@ -31,9 +31,9 @@ class RequestLoggerMiddleware {
             if (paths.some((p) => req.originalUrl.startsWith(p))) {
                 return next();
             }
-            return RequestLoggerMiddleware.handle(req, res, next);
+            return requestLoggerMiddleware.handle(req, res, next);
         };
     }
 }
 
-module.exports = RequestLoggerMiddleware;
+module.exports = requestLoggerMiddleware;

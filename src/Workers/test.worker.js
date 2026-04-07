@@ -1,13 +1,10 @@
 const { parentPort, workerData } = require("worker_threads");
-const HelperUtils = require("../Utils/helper.utils");
-const LoggerUtils = require("../Utils/logger.utils");
+const BaseWorker = require("../common/baseWorker");
 
-class TestWorker {
+class testWorker extends BaseWorker {
     constructor(data) {
-      this.helper = HelperUtils;
-      this.logger = LoggerUtils;
-      
-      this.data = data;
+        super();
+        this.data = data;
     }
 
     calculate(n) {
@@ -24,5 +21,5 @@ class TestWorker {
     }
 }
 
-const worker = new TestWorker(workerData);
+const worker = new testWorker(workerData);
 worker.execute();

@@ -24,6 +24,7 @@ module.exports = {
   CONFLICT: "The request could not be completed due to a conflict.",
   UNPROCESSABLE_ENTITY: "The request contains invalid or incomplete data.",
   TOO_MANY_REQUESTS: "Too many requests. Please try again later.",
+  INSUFFICIENT_PERMISSIONS: "You do not have sufficient permissions to perform this action.",
 
   // User related
   USER_NOT_FOUND: "User not found",

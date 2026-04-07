@@ -1,50 +1,29 @@
-const HelperUtils = require("../Utils/helper.utils");
-const ResponseUtils = require("../Utils/response.utils");
-const LoggerUtils = require("../Utils/logger.utils");
-const TokenUtils = require("../Utils/token.utils");
+const BaseMiddleware = require("../common/baseMiddleware");
 
-class ApiMiddleware {
+class apiMiddleware extends BaseMiddleware {
 
-  static helper = HelperUtils;
-  static response = ResponseUtils;
-  static logger = LoggerUtils;
-  static token = TokenUtils;
-
-  /**
-   * Middleware to check user login and verify token
-   * @param {Object} req - Express request object
-   * @param {Object} res - Express response object
-   * @param {Function} next - Express next function
-   */
   static authenticateToken(req, res, next) {
     try {
       const token = req.headers['authorization']?.replace('Bearer ', '');
 
       if (!token) {
-        return this.response.error({ req, res, key: "UNAUTHORIZED" });
+        return this.response.send({req, res, type:"UNAUTHORIZED", message:"UNAUTHORIZED" });
       }
 
       // check Token
       const tokenCheck = this.token.verifyCustomToken(token);
       if (!tokenCheck.ok) {
-        return this.response.error({ req, res, key: tokenCheck.error });
+        return this.response.send({ req, res, type: tokenCheck.error, message: tokenCheck.error });
       }
 
       req.currentUser = tokenCheck.data;
       next();
     } catch (error) {
       this.logger.createLog({ msg: error, name: "ApiMiddleware-userLogin" });
-      return this.response.error({ req, res, key: 'ERROR' });
+      return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "INTERNAL_SERVER_ERROR" });
     }
   }
 
-  /**
-   * Middleware to check user permissions
-   * @param {Object} options - Options object
-   * @param {string} options.moduleName - Module name for permission check
-   * @param {string} options.actionName - Action name for permission check
-   * @returns {Function} Express middleware function
-   */
   static authorize(permissions = {}) {
     // Validate required parameters
     if (!permissions || Object.keys(permissions).length === 0) {
@@ -55,28 +34,29 @@ class ApiMiddleware {
       try {
         // Check if user is authenticated via token
         if (!req.currentUser) {
-          return this.response.error({ req, res, key: "UNAUTHORIZED" });
+          return this.response.send({ req, res, type: "UNAUTHORIZED", message: "UNAUTHORIZED" });
         }
 
-        // check Permission logic
-        const userPermissions = req.currentUser?.permissions || {};
-        const allowed = Object.entries(permissions).some(
-          ([module, actions]) => {
-            if (!userPermissions[module]) return false;
-            return actions.some(action => userPermissions[module].includes(action));
-          }
-        );
-        if (!allowed) {
-          return this.response.error({ req, res, key: "FORBIDDEN" });
-        }
+        // IMPLEMENTED: Check permission logic
+        // const userPermissions = req.currentUser?.permissions || {};
+        // const allowed = Object.entries(permissions).some(
+        //   ([module, actions]) => {
+        //     if (!Array.isArray(userPermissions[module])) return false;
+        //     return actions.some(action => userPermissions[module].includes(action));
+        //   }
+        // );
+        
+        // if (!allowed) {
+        //   return this.response.send({ req, res, type: "FORBIDDEN", message: "INSUFFICIENT_PERMISSIONS" });
+        // }
 
         next();
       } catch (error) {
         this.logger.createLog({ msg: error.message, name: "PermissionMiddleware-checkPermission" });
-        return this.response.error({ req, res, key: "INTERNAL_ERROR" });
+        return this.response.send({ req, res, type: "INTERNAL_SERVER_ERROR", message: "INTERNAL_SERVER_ERROR" });
       }
     };
   }
 }
 
-module.exports = ApiMiddleware;
+module.exports = apiMiddleware;

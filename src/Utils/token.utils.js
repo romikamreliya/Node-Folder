@@ -1,12 +1,11 @@
-// TokenService.js
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 /**
  * Token service for managing JWT, custom AES, and refresh tokens
  */
-class TokenService {
-
+class tokenService {
+  
   // JWT ACCESS TOKEN
   static jwtSecret = process.env.accessTokenKey;
   static jwtExpire = "15m";
@@ -99,12 +98,12 @@ class TokenService {
       );
 
       if (data.exp < Date.now()) {
-        return { ok: false, error: "custom_token_expired" };
+        return { ok: false, error: "TOKEN_EXPIRED" };
       }
 
       return { ok: true, data: data.data };
     } catch (err) {
-      return { ok: false, error: "invalid_custom_token" };
+      return { ok: false, error: "TOKEN_INVALID" };
     }
   }
 
@@ -166,4 +165,4 @@ class TokenService {
   }
 }
 
-module.exports = TokenService;
+module.exports = tokenService;

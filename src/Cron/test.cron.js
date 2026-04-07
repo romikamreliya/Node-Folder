@@ -1,5 +1,5 @@
 const cron = require("cron");
-const Logs = require("../Utils/logger.utils");
+const loggerUtils = require("../utils/logger.utils");
 
 class cronTest {
   
@@ -24,12 +24,12 @@ class cronTest {
     try {
       console.log("CronTask");
     } catch (error) {
-      Logs.createLog(error, this.name);
+      loggerUtils.createLog(error, this.name);
     }
   };
 
   async cronComplete() {
-    Logs.CreateLog(`Cron Completed :- ${new Date()}`, this.name);
+    loggerUtils.CreateLog(`Cron Completed :- ${new Date()}`, this.name);
   }
 
   nextCall(next = 1) {

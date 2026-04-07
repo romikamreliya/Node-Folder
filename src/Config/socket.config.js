@@ -1,15 +1,22 @@
 const { Server } = require("socket.io");
 
-class SocketConfig {
+class socketConfig {
     constructor({ server }) {
-        this.io = new Server(server, this.config).of("/");
+        // Build CORS configuration with allowed origins
+        const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(',').map(origin => origin.trim()).filter(Boolean);
+        
+        this.io = new Server(server, this.getConfig(allowedOrigins)).of("/");
         this.initialize();
     }
 
-    config = {
-        cors: {
-            origin: "*"
-        }
+    getConfig(allowedOrigins = []) {
+        return {
+            cors: {
+                origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+                credentials: true,
+                methods: ['GET', 'POST']
+            }
+        };
     }
 
     initialize() {
@@ -17,4 +24,4 @@ class SocketConfig {
     }
 }
 
-module.exports = SocketConfig;
+module.exports = socketConfig;

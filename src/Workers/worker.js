@@ -1,12 +1,10 @@
 const { Worker } = require('worker_threads');
-const HelperUtils = require("../Utils/helper.utils");
-const LoggerUtils = require("../Utils/logger.utils");
+const BaseWorker = require("../common/baseWorker");
 
 const path = require('path');
-class mainWorker {
+class mainWorker extends BaseWorker {
     constructor() {
-        this.helper = HelperUtils;
-        this.logger = LoggerUtils;
+        super();
     }
 
     executeWorker(data) {

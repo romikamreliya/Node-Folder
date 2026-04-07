@@ -1,28 +1,18 @@
-class UserResources {
+const baseResources = require('../common/baseResources');
+
+class userResources extends baseResources {
     constructor() {
-        this.user = {
-            id:"",
-            name : "",
-            email: "",
-            phone: "",
-            is_active : false,
-        }
+        super();
     }
 
-    fullDetails(data = {}) {
+    toJSON(data) {
         return {
-            id : data.id ?? this.user.id,
-            name : data.name ?? this.user.name,
-            email : data.email ?? this.user.email,
-            phone : data.phone ?? this.user.phone,
-            is_active : data.is_active ?? this.user.is_active,
-        }
+            id:      data.id,
+            name:    data.name,
+            email:   data.email,
+            phone:   data.phone
+        };
     }
-
-    list(data) {
-        return data?.map(item => this.fullDetails(item));
-    }
-
 }
 
-module.exports = new UserResources();
+module.exports = new userResources();

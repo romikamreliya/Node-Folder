@@ -3,23 +3,21 @@
  * Provides comprehensive date manipulation and formatting functions
  */
 
-class DateUtils {
-    constructor() {
-        this.formats = {
-            ISO: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
-            DATE: 'YYYY-MM-DD',
-            TIME: 'HH:mm:ss',
-            DATETIME: 'YYYY-MM-DD HH:mm:ss',
-            US: 'MM/DD/YYYY',
-            EU: 'DD/MM/YYYY'
-        };
-    }
+class dateUtils {
+    static formats = {
+        ISO: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+        DATE: 'YYYY-MM-DD',
+        TIME: 'HH:mm:ss',
+        DATETIME: 'YYYY-MM-DD HH:mm:ss',
+        US: 'MM/DD/YYYY',
+        EU: 'DD/MM/YYYY'
+    };
 
     /**
      * Get current date and time
      * @returns {Date} Current date object
      */
-    getCurrentDate() {
+    static getCurrentDate() {
         return new Date();
     }
 
@@ -27,7 +25,7 @@ class DateUtils {
      * Get current timestamp in milliseconds
      * @returns {number} Current timestamp
      */
-    getCurrentTimestamp() {
+    static getCurrentTimestamp() {
         return Date.now();
     }
 
@@ -35,7 +33,7 @@ class DateUtils {
      * Get current timestamp in seconds
      * @returns {number} Current timestamp in seconds
      */
-    getCurrentTimestampInSeconds() {
+    static getCurrentTimestampInSeconds() {
         return Math.floor(Date.now() / 1000);
     }
 
@@ -45,7 +43,7 @@ class DateUtils {
      * @param {string} format - Format string (YYYY, MM, DD, HH, mm, ss)
      * @returns {string} Formatted date string
      */
-    formatDate(date, format = this.formats.DATETIME) {
+    static formatDate(date, format = this.formats.DATETIME) {
         if (!(date instanceof Date)) return null;
 
         const year = date.getFullYear();
@@ -72,7 +70,7 @@ class DateUtils {
      * @param {string} dateString - Date string to parse
      * @returns {Date} Parsed date object
      */
-    parseDate(dateString) {
+    static parseDate(dateString) {
         return new Date(dateString);
     }
 
@@ -82,7 +80,7 @@ class DateUtils {
      * @param {number} days - Number of days to add
      * @returns {Date} New date with added days
      */
-    addDays(date, days) {
+    static addDays(date, days) {
         const result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
@@ -94,7 +92,7 @@ class DateUtils {
      * @param {number} months - Number of months to add
      * @returns {Date} New date with added months
      */
-    addMonths(date, months) {
+    static addMonths(date, months) {
         const result = new Date(date);
         result.setMonth(result.getMonth() + months);
         return result;
@@ -106,7 +104,7 @@ class DateUtils {
      * @param {number} years - Number of years to add
      * @returns {Date} New date with added years
      */
-    addYears(date, years) {
+    static addYears(date, years) {
         const result = new Date(date);
         result.setFullYear(result.getFullYear() + years);
         return result;
@@ -118,7 +116,7 @@ class DateUtils {
      * @param {number} hours - Number of hours to add
      * @returns {Date} New date with added hours
      */
-    addHours(date, hours) {
+    static addHours(date, hours) {
         const result = new Date(date);
         result.setHours(result.getHours() + hours);
         return result;
@@ -130,7 +128,7 @@ class DateUtils {
      * @param {number} minutes - Number of minutes to add
      * @returns {Date} New date with added minutes
      */
-    addMinutes(date, minutes) {
+    static addMinutes(date, minutes) {
         const result = new Date(date);
         result.setMinutes(result.getMinutes() + minutes);
         return result;
@@ -142,7 +140,7 @@ class DateUtils {
      * @param {number} seconds - Number of seconds to add
      * @returns {Date} New date with added seconds
      */
-    addSeconds(date, seconds) {
+    static addSeconds(date, seconds) {
         const result = new Date(date);
         result.setSeconds(result.getSeconds() + seconds);
         return result;
@@ -154,7 +152,7 @@ class DateUtils {
      * @param {Date} date2 - Second date
      * @returns {number} Difference in days
      */
-    getDaysDifference(date1, date2) {
+    static getDaysDifference(date1, date2) {
         const oneDay = 24 * 60 * 60 * 1000;
         return Math.floor((date2 - date1) / oneDay);
     }
@@ -165,7 +163,7 @@ class DateUtils {
      * @param {Date} date2 - Second date
      * @returns {number} Difference in hours
      */
-    getHoursDifference(date1, date2) {
+    static getHoursDifference(date1, date2) {
         const oneHour = 60 * 60 * 1000;
         return Math.floor((date2 - date1) / oneHour);
     }
@@ -176,7 +174,7 @@ class DateUtils {
      * @param {Date} date2 - Second date
      * @returns {number} Difference in minutes
      */
-    getMinutesDifference(date1, date2) {
+    static getMinutesDifference(date1, date2) {
         const oneMinute = 60 * 1000;
         return Math.floor((date2 - date1) / oneMinute);
     }
@@ -187,7 +185,7 @@ class DateUtils {
      * @param {Date} date2 - Second date
      * @returns {number} Difference in seconds
      */
-    getSecondsDifference(date1, date2) {
+    static getSecondsDifference(date1, date2) {
         return Math.floor((date2 - date1) / 1000);
     }
 
@@ -196,7 +194,7 @@ class DateUtils {
      * @param {Date} date - Date to check
      * @returns {boolean} True if date is in the past
      */
-    isDateInPast(date) {
+    static isDateInPast(date) {
         return date < new Date();
     }
 
@@ -205,7 +203,7 @@ class DateUtils {
      * @param {Date} date - Date to check
      * @returns {boolean} True if date is in the future
      */
-    isDateInFuture(date) {
+    static isDateInFuture(date) {
         return date > new Date();
     }
 
@@ -214,7 +212,7 @@ class DateUtils {
      * @param {Date} date - Date to check
      * @returns {boolean} True if date is today
      */
-    isToday(date) {
+    static isToday(date) {
         const today = new Date();
         return date.getDate() === today.getDate() &&
                date.getMonth() === today.getMonth() &&
@@ -226,7 +224,7 @@ class DateUtils {
      * @param {Date} date - Date to check
      * @returns {boolean} True if date is tomorrow
      */
-    isTomorrow(date) {
+    static isTomorrow(date) {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         return date.getDate() === tomorrow.getDate() &&
@@ -239,7 +237,7 @@ class DateUtils {
      * @param {Date} date - Date to check
      * @returns {boolean} True if date is yesterday
      */
-    isYesterday(date) {
+    static isYesterday(date) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         return date.getDate() === yesterday.getDate() &&
@@ -252,7 +250,7 @@ class DateUtils {
      * @param {number} year - Year to check
      * @returns {boolean} True if year is leap year
      */
-    isLeapYear(year) {
+    static isLeapYear(year) {
         return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
     }
 
@@ -261,7 +259,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {Date} Start of day (00:00:00)
      */
-    getStartOfDay(date) {
+    static getStartOfDay(date) {
         const result = new Date(date);
         result.setHours(0, 0, 0, 0);
         return result;
@@ -272,7 +270,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {Date} End of day (23:59:59)
      */
-    getEndOfDay(date) {
+    static getEndOfDay(date) {
         const result = new Date(date);
         result.setHours(23, 59, 59, 999);
         return result;
@@ -283,7 +281,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {Date} Start of month (first day, 00:00:00)
      */
-    getStartOfMonth(date) {
+    static getStartOfMonth(date) {
         const result = new Date(date);
         result.setDate(1);
         result.setHours(0, 0, 0, 0);
@@ -295,7 +293,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {Date} End of month (last day, 23:59:59)
      */
-    getEndOfMonth(date) {
+    static getEndOfMonth(date) {
         const result = new Date(date.getFullYear(), date.getMonth() + 1, 0);
         result.setHours(23, 59, 59, 999);
         return result;
@@ -306,7 +304,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {Date} Start of year (January 1, 00:00:00)
      */
-    getStartOfYear(date) {
+    static getStartOfYear(date) {
         const result = new Date(date);
         result.setMonth(0, 1);
         result.setHours(0, 0, 0, 0);
@@ -318,7 +316,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {Date} End of year (December 31, 23:59:59)
      */
-    getEndOfYear(date) {
+    static getEndOfYear(date) {
         const result = new Date(date);
         result.setMonth(11, 31);
         result.setHours(23, 59, 59, 999);
@@ -330,7 +328,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {number} Day of week
      */
-    getDayOfWeek(date) {
+    static getDayOfWeek(date) {
         return date.getDay();
     }
 
@@ -339,7 +337,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {string} Day name
      */
-    getDayName(date) {
+    static getDayName(date) {
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return days[date.getDay()];
     }
@@ -349,7 +347,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {string} Month name
      */
-    getMonthName(date) {
+    static getMonthName(date) {
         const months = ['January', 'February', 'March', 'April', 'May', 'June',
                        'July', 'August', 'September', 'October', 'November', 'December'];
         return months[date.getMonth()];
@@ -360,7 +358,7 @@ class DateUtils {
      * @param {Date} date - Base date
      * @returns {number} Week number (1-53)
      */
-    getWeekNumber(date) {
+    static getWeekNumber(date) {
         const firstDay = new Date(date.getFullYear(), 0, 1);
         const pastDaysOfYear = (date - firstDay) / 86400000;
         return Math.ceil((pastDaysOfYear + firstDay.getDay() + 1) / 7);
@@ -372,7 +370,7 @@ class DateUtils {
      * @param {Date} date2 - Second date
      * @returns {boolean} True if dates are equal
      */
-    isEqual(date1, date2) {
+    static isEqual(date1, date2) {
         return date1.getTime() === date2.getTime();
     }
 
@@ -383,7 +381,7 @@ class DateUtils {
      * @param {Date} endDate - End date
      * @returns {boolean} True if date is between start and end
      */
-    isBetween(date, startDate, endDate) {
+    static isBetween(date, startDate, endDate) {
         return date >= startDate && date <= endDate;
     }
 
@@ -393,7 +391,7 @@ class DateUtils {
      * @param {number} year - Year
      * @returns {number} Number of days in month
      */
-    getDaysInMonth(month, year) {
+    static getDaysInMonth(month, year) {
         return new Date(year, month, 0).getDate();
     }
 
@@ -402,7 +400,7 @@ class DateUtils {
      * @param {Date} date - Date to convert
      * @returns {string} ISO string
      */
-    toISOString(date) {
+    static toISOString(date) {
         return date.toISOString();
     }
 
@@ -411,7 +409,7 @@ class DateUtils {
      * @param {Date} date - Date to compare
      * @returns {string} Relative time string
      */
-    getRelativeTime(date) {
+    static getRelativeTime(date) {
         const now = new Date();
         const seconds = Math.floor((now - date) / 1000);
         
@@ -430,10 +428,10 @@ class DateUtils {
      * @param {Date} date - Date to clone
      * @returns {Date} Cloned date
      */
-    cloneDate(date) {
+    static cloneDate(date) {
         return new Date(date.getTime());
     }
 }
 
 // Export singleton instance
-module.exports = new DateUtils();
+module.exports = dateUtils;

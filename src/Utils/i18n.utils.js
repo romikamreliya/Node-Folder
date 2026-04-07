@@ -1,4 +1,4 @@
-class I18nUtils {
+class i18nUtils {
     
     static dl = process.env.default_language;
 
@@ -12,4 +12,4 @@ class I18nUtils {
         }
     }
 }
-module.exports = I18nUtils;
+module.exports = i18nUtils;

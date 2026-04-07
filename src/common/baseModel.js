@@ -1,6 +1,6 @@
-const db = require("../Database/connection");
+const db = require("./baseConnection");
 
-class BaseModel {
+class baseModel {
   constructor({ table, columns = [], hidden = [], primaryKey = "id", limit = 10 }) {
     this.table = table;
     this.columns = columns;
@@ -14,12 +14,22 @@ class BaseModel {
       return {};
     }
 
-    const validColumns = new Set([...this.columns, this.hidden]);
+    // Only allow declared columns, explicitly EXCLUDE hidden columns
+    const allowedColumns = new Set(this.columns);
+    const protectedColumns = new Set(this.hidden);
 
     return Object.fromEntries(
       Object.entries(data)
       .filter(([key, value]) => {
-        return value !== undefined && validColumns.has(key);
+        // Reject if it's a protected/hidden column
+        if (protectedColumns.has(key)) {
+          return false;
+        }
+        // Only allow declared columns
+        if (!allowedColumns.has(key)) {
+          return false;
+        }
+        return value !== undefined;
       })
       .map(([key, value]) => [key, this.sanitize(value)])
     )
@@ -46,26 +56,6 @@ class BaseModel {
       return value.trim().replace(/\0/g, '');
     }
 
-    const injectionPatterns = [
-      /(\bOR\b\s+\d+\s*=\s*\d+|\bOR\b\s+'[^']*'\s*=\s*'[^']*')/i,
-      /(\bAND\b\s+\d+\s*=\s*\d+|\bAND\b\s+'[^']*'\s*=\s*'[^']*')/i,
-      /\bUNION\b/i,
-      /\bSELECT\b/i,
-      /\bDROP\b/i,
-      /\bINSERT\b/i,
-      /\bUPDATE\b/i,
-      /\bDELETE\b/i,
-      /--/,
-      /\/\*/,
-      /;\s*(DROP|DELETE|UPDATE|INSERT)/i,
-      /xp_/i,
-      /sp_/i,
-    ];
-
-    // Check if value contains injection patterns
-    if (injectionPatterns.some(pattern => pattern.test(value))) {
-      throw new Error(`SQL injection attempt detected: ${value}`);
-    }
 
     return value.toString().trim().replace(/\0/g, '');
   }
@@ -183,4 +173,4 @@ class BaseModel {
   }
 }
 
-module.exports = BaseModel;
+module.exports = baseModel;
