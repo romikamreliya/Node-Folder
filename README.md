@@ -56,6 +56,7 @@ This Node.js project is a full-featured API platform designed for enterprise app
 ## ✨ Key Features
 
 ### 🏗️ **Enterprise-Grade API**
+
 - RESTful API design with Express.js v5.2.1
 - Multiple API version support (v1, v2) with route versioning
 - MVC architecture with clear separation of concerns
@@ -68,6 +69,7 @@ This Node.js project is a full-featured API platform designed for enterprise app
 - Request logging and tracking
 
 ### 🔐 **Authentication & Security**
+
 - JWT token generation and verification
 - Token refresh mechanism
 - Custom token encryption (AES-256-CBC)
@@ -79,6 +81,7 @@ This Node.js project is a full-featured API platform designed for enterprise app
 - Middleware-based authorization checks
 
 ### 📊 **Database & ORM**
+
 - Support for MySQL and SQLite databases
 - Knex.js v3.1.0 for SQL query building
 - Connection pooling for performance
@@ -89,6 +92,7 @@ This Node.js project is a full-featured API platform designed for enterprise app
 - Transaction support
 
 ### 🔄 **Real-time Communication**
+
 - Socket.IO v4.8.3 server implementation
 - Socket.IO client v4.8.3 for external connections
 - Bi-directional real-time data synchronization
@@ -97,12 +101,14 @@ This Node.js project is a full-featured API platform designed for enterprise app
 - Socket event handlers organized by domain
 
 ### 📡 **IoT & Messaging**
+
 - MQTT v5.14.1 broker support
 - Publish/Subscribe messaging pattern
 - Topic-based message routing
 - Event-driven MQTT integration
 
 ### ⏱️ **Background Processing**
+
 - Cron scheduling with flexible time expressions
 - Multiple job scheduling support
 - Worker threads for CPU-intensive tasks
@@ -110,6 +116,7 @@ This Node.js project is a full-featured API platform designed for enterprise app
 - Job status monitoring
 
 ### 📧 **Integrations**
+
 - **Email Service**: Nodemailer integration with HTML templates
 - **SMS Service**: Framework ready (implementation pending)
 - **Payment Processing**: Framework ready (implementation pending)
@@ -119,24 +126,24 @@ This Node.js project is a full-featured API platform designed for enterprise app
 
 ## 🛠 Tech Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Runtime** | Node.js | 22.x |
-| **Framework** | Express.js | 5.2.1 |
-| **Real-time** | Socket.IO | 4.8.3 |
-| **Messaging** | MQTT | 5.14.1 |
-| **Database** | Knex.js | 3.1.0 |
-| **DB Drivers** | MySQL, SQLite3 | Latest |
-| **Validation** | AJV | 8.17.1 |
-| **Security** | Helmet | 8.1.0 |
-| **Rate Limiting** | express-rate-limit | 8.2.1 |
-| **Scheduling** | Cron | 4.4.0 |
-| **File Upload** | Multer | 2.0.2 |
-| **Email** | Nodemailer | 7.0.11 |
-| **Logging** | Winston | 3.11.0 |
-| **JWT** | jsonwebtoken | 9.0.3 |
-| **Testing** | Jest | Latest |
-| **Templating** | EJS | 3.1.10 |
+| Layer             | Technology         | Version |
+| ----------------- | ------------------ | ------- |
+| **Runtime**       | Node.js            | 22.x    |
+| **Framework**     | Express.js         | 5.2.1   |
+| **Real-time**     | Socket.IO          | 4.8.3   |
+| **Messaging**     | MQTT               | 5.14.1  |
+| **Database**      | Knex.js            | 3.1.0   |
+| **DB Drivers**    | MySQL, SQLite3     | Latest  |
+| **Validation**    | AJV                | 8.17.1  |
+| **Security**      | Helmet             | 8.1.0   |
+| **Rate Limiting** | express-rate-limit | 8.2.1   |
+| **Scheduling**    | Cron               | 4.4.0   |
+| **File Upload**   | Multer             | 2.0.2   |
+| **Email**         | Nodemailer         | 7.0.11  |
+| **Logging**       | Winston            | 3.11.0  |
+| **JWT**           | jsonwebtoken       | 9.0.3   |
+| **Testing**       | Jest               | Latest  |
+| **Templating**    | EJS                | 3.1.10  |
 
 ---
 
@@ -265,17 +272,20 @@ root/
 ## 🔧 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd Node-Folder
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Create environment file**
+
    ```bash
    cp .env.example .env
    ```
@@ -341,11 +351,13 @@ RATE_LIMIT_MAX_REQUESTS=100
 ## 🚀 Running the Application
 
 ### Development Mode
+
 ```bash
 npm start
 ```
 
 ### Database Setup
+
 ```bash
 # Run all migrations and seeders
 npm run db:setup
@@ -370,6 +382,7 @@ npm run db:seeder
 ```
 
 ### Testing
+
 ```bash
 # Run all tests
 npm test
@@ -382,6 +395,7 @@ npm test -- --coverage
 ```
 
 ### Load Testing
+
 ```bash
 npm run load-test
 ```
@@ -391,12 +405,15 @@ npm run load-test
 ## 📚 API Documentation
 
 ### Base URL
+
 ```
 http://localhost:3000/api/v1
 ```
 
 ### Authentication
+
 All protected endpoints require a Bearer token in the Authorization header:
+
 ```
 Authorization: Bearer <your_jwt_token>
 ```
@@ -404,10 +421,11 @@ Authorization: Bearer <your_jwt_token>
 ### User Endpoints
 
 #### Get All Users
+
 ```
 GET /api/v1/user/get
 Headers: Authorization: Bearer <token>
-Response: 
+Response:
 {
   "res": true,
   "msg": "Success",
@@ -419,6 +437,7 @@ Response:
 ```
 
 #### Create User
+
 ```
 POST /api/v1/user/add
 Headers: Authorization: Bearer <token>
@@ -432,6 +451,7 @@ Body: {
 ```
 
 #### Update User
+
 ```
 PUT /api/v1/user/update
 Headers: Authorization: Bearer <token>
@@ -439,6 +459,7 @@ Body: { id, ...fields to update }
 ```
 
 #### Delete User
+
 ```
 DELETE /api/v1/user/delete
 Headers: Authorization: Bearer <token>
@@ -446,6 +467,7 @@ Body: { id }
 ```
 
 #### Filter Users
+
 ```
 POST /api/v1/user/filter
 Headers: Authorization: Bearer <token>
@@ -455,17 +477,20 @@ Body: { name, id, range }
 ### Public Demo Endpoints
 
 #### Test Endpoint
+
 ```
 GET /api/v1/public/test
 ```
 
 #### Validate Data
+
 ```
 POST /api/v1/public/ajv
 Body: { validation payload }
 ```
 
 #### Generate Token
+
 ```
 POST /api/v1/public/token
 Response: { customToken, jwtToken, refreshToken }
@@ -481,16 +506,16 @@ Migrations are managed through Knex.js. Create new migrations in `src/database/m
 
 ```javascript
 exports.up = async (knex) => {
-  return knex.schema.createTable('users', (table) => {
-    table.increments('id').primary();
-    table.string('name').notNullable();
-    table.string('email').notNullable().unique();
+  return knex.schema.createTable("users", (table) => {
+    table.increments("id").primary();
+    table.string("name").notNullable();
+    table.string("email").notNullable().unique();
     table.timestamps();
   });
 };
 
 exports.down = async (knex) => {
-  return knex.schema.dropTable('users');
+  return knex.schema.dropTable("users");
 };
 ```
 
@@ -500,9 +525,7 @@ Create seeders in `src/database/seeds/`:
 
 ```javascript
 exports.seed = async (knex) => {
-  await knex('users').insert([
-    { name: 'John', email: 'john@example.com' }
-  ]);
+  await knex("users").insert([{ name: "John", email: "john@example.com" }]);
 };
 ```
 
@@ -511,16 +534,19 @@ exports.seed = async (knex) => {
 ## 🔌 Real-time Features
 
 ### Socket.IO Server
+
 - Main namespace: `/`
 - Events are handled in `src/socket/server/test.socket.js`
 - Supports custom namespace and room-based communication
 
 ### Socket.IO Client
+
 - Connects to Socket.IO server
 - Configuration in `src/config/socket-client.config.js`
 - Implemented in `src/socket/client/test.socketclient.js`
 
 ### MQTT Integration
+
 - Publisher: `src/mqtt/publish.mqtt.js`
 - Subscriber: `src/mqtt/subscribe.mqtt.js`
 - Topic-based message routing
@@ -583,11 +609,13 @@ exports.seed = async (knex) => {
 ## 🏛️ Architecture & Design Patterns
 
 ### MVC Pattern
+
 - **Models**: Data layer with Knex.js
 - **Views**: EJS templates for rendering
 - **Controllers**: Request handlers with business logic
 
 ### Base Classes
+
 - `BaseController`: Common controller functionality
 - `BaseServices`: Service layer abstractions
 - `BaseModel`: ORM model wrapper
@@ -596,11 +624,13 @@ exports.seed = async (knex) => {
 - `BaseMqtt`: MQTT integration base
 
 ### Resource Pattern
+
 - `userResources.js`: Transforms raw data to API response format
 - Centralized response formatting
 - Consistent API responses
 
 ### Dependency Injection
+
 - Base classes provide common utilities
 - Service locator pattern via static methods
 - Mixin classes for shared functionality
@@ -610,6 +640,7 @@ exports.seed = async (knex) => {
 ## 👨‍💻 Development
 
 ### Code Style
+
 - ES6+ syntax
 - Async/await for asynchronous operations
 - Arrow functions for callbacks
@@ -629,6 +660,7 @@ exports.seed = async (knex) => {
 ## 🧪 Testing
 
 ### Jest Configuration
+
 - Test environment: Node.js
 - Test files: `*.test.js`
 - Coverage reports generated in `coverage/`
@@ -666,16 +698,19 @@ describe("Feature Name", () => {
 ## 📊 Logging & Monitoring
 
 ### Winston Logger
+
 - Configured in `src/utils/logger.utils.js`
 - Log levels: error, warn, info, debug
 - Logs stored in `logs/` directory
 
 ### Request Logging
+
 - All requests logged by middleware
 - Request ID tracking
 - Response time measurement
 
 ### Monitoring Tools
+
 - Error tracking: Winston logs
 - Performance tracking: `performance.utils.js`
 - Memory monitoring: `memory.utils.js`
@@ -685,16 +720,19 @@ describe("Feature Name", () => {
 ## 🔒 Security
 
 ### Authentication
+
 - JWT tokens for API access
 - Custom token encryption (AES-256-CBC)
 - Auto token expiry and refresh
 
 ### Authorization
+
 - Role-Based Access Control (RBAC)
 - Permission-based route protection
 - Endpoint-level authorization checks
 
 ### Other Security Measures
+
 - Helmet security headers
 - CORS configuration
 - Rate limiting
@@ -708,6 +746,7 @@ describe("Feature Name", () => {
 ## 🚀 Deployment
 
 ### With PM2
+
 ```bash
 npm install -g pm2
 pm2 start ecosystem.config.js
@@ -716,7 +755,9 @@ pm2 startup
 ```
 
 ### Docker Deployment
+
 Create `Dockerfile`:
+
 ```dockerfile
 FROM node:22-alpine
 WORKDIR /app
@@ -728,6 +769,7 @@ CMD ["node", "app.js"]
 ```
 
 ### With Jenkins
+
 - Pipeline configured in `Jenkinsfile`
 - Automated testing on every push
 - Automated deployment on release
@@ -737,6 +779,7 @@ CMD ["node", "app.js"]
 ## 🐛 Troubleshooting
 
 ### Database Connection Issues
+
 ```bash
 # Check MySQL service
 mysql -u root -p
@@ -747,6 +790,7 @@ npm run db:setup
 ```
 
 ### Port Already in Use
+
 ```bash
 # Change PORT in .env file
 # Or kill process using port 3000
@@ -755,6 +799,7 @@ taskkill /PID <PID> /F
 ```
 
 ### Module Not Found
+
 ```bash
 # Clear node_modules and reinstall
 rm -rf node_modules package-lock.json
@@ -762,6 +807,7 @@ npm install
 ```
 
 ### MQTT Connection Issues
+
 ```bash
 # Verify MQTT broker is running
 # Check MQTT_URL in .env
@@ -769,6 +815,7 @@ npm install
 ```
 
 ### Socket.IO Connection Problems
+
 - Check CORS settings in `.env`
 - Verify Socket.IO middleware
 - Check browser console for errors
@@ -783,6 +830,7 @@ npm install
 4. Submit a pull request
 
 ### Commit Message Format
+
 ```
 [TYPE] Brief description
 

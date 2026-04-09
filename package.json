@@ -8,21 +8,20 @@
   },
   "scripts": {
     "db:setup": "npm run db:migrate && npm run db:seeder",
-    "db:connection": "node ./src/database/migrations db:connection",
-    "db:migrate": "node ./src/database/migrations db:migrate",
-    "db:seeder": "node ./src/database/seeder db:seeder",
-    "db:reset": "node ./src/database/migrations db:reset",
-
-    "migration:create": "node ./src/database/migrations migration:create",
-    "migration:rollback": "node ./src/database/migrations migration:rollback",
-    "migration:status": "node ./src/database/migrations migration:status",
-
-    "seeder:create": "node ./src/database/seeder seeder:create",
-    "seeder:reset": "node ./src/database/seeder seeder:reset",
-
+    "db:connection": "node ./src/infra/database/migrations db:connection",
+    "db:migrate": "node ./src/infra/database/migrations db:migrate",
+    "db:seeder": "node ./src/infra/database/seeder db:seeder",
+    "db:reset": "node ./src/infra/database/migrations db:reset",
+    "migration:create": "node ./src/infra/database/migrations migration:create",
+    "migration:rollback": "node ./src/infra/database/migrations migration:rollback",
+    "migration:status": "node ./src/infra/database/migrations migration:status",
+    "seeder:create": "node ./src/infra/database/seeder seeder:create",
+    "seeder:reset": "node ./src/infra/database/seeder seeder:reset",
     "test": "jest",
     "start": "node app.js",
-    "load-test": "artillery run test.yml"
+    "load-test": "artillery run test.yml",
+    "format": "prettier --write app.js package.json README.md test.yml ecosystem.config.js jest.config.js \"src/**/*.js\" \"tests/**/*.js\"",
+    "format:check": "prettier --check app.js package.json README.md test.yml ecosystem.config.js jest.config.js \"src/**/*.js\" \"tests/**/*.js\""
   },
   "author": "",
   "license": "ISC",
@@ -50,6 +49,7 @@
   },
   "devDependencies": {
     "jest": "^30.3.0",
+    "prettier": "^3.8.1",
     "supertest": "^7.2.2"
   }
 }
