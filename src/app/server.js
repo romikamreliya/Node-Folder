@@ -54,7 +54,7 @@ class ApplicationServer {
   }
 
   registerRoutes() {
-    this.app.use("/", webRoutes.allRoutes());
+    this.app.use("/", webRoutes.getRoutes());
     this.app.use(
       /^\/api\/(v1|v2)/,
       rateLimitMiddleware.defaultLimiter,

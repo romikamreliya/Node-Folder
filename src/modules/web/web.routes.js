@@ -1,25 +1,16 @@
-const express = require("express");
+const BaseRoute = require("../../common/base/base-route");
 const webController = require("./web.controller");
 
 /**
  * Web routes handler
  */
-class WebRoutes {
-  constructor() {
-    this.routes = express.Router();
-    this.registerRoutes();
-  }
-
+class WebRoutes extends BaseRoute {
   registerRoutes() {
     this.setupRoutes();
   }
 
   setupRoutes() {
-    this.routes.get("/", webController.homeView);
-  }
-
-  allRoutes() {
-    return this.routes;
+    this.router.get("/", this.bindHandler(webController.homeView, webController));
   }
 }
 

@@ -12,14 +12,11 @@ class BaseRoute {
     return this.router;
   }
 
-  bindHandler(controller, methodName) {
-    const handler = controller?.[methodName];
+  bindHandler(handler, context = null) {
     if (typeof handler !== "function") {
-      throw new Error(
-        `Route handler '${methodName}' is not defined on controller.`,
-      );
+      throw new Error("Route handler must be a function.");
     }
-    return handler.bind(controller);
+    return context ? handler.bind(context) : handler;
   }
 }
 
