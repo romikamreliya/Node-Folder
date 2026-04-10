@@ -8,8 +8,6 @@
   },
   "scripts": {
     "migrate": "node prisma/script.js",
-    "seeder:create": "node ./src/infra/database/seeder seeder:create",
-    "seeder:reset": "node ./src/infra/database/seeder seeder:reset",
     "test": "jest",
     "start": "node app.js",
     "load-test": "artillery run test.yml",

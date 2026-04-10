@@ -23,23 +23,6 @@ class UploadUtil {
     }
   }
 
-  storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      try {
-        this._initializeUploadDir();
-        cb(null, this.uploadDir);
-      } catch (err) {
-        cb(new Error(`Failed to create upload directory: ${err.message}`));
-      }
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      const ext = path.extname(file.originalname).toLowerCase();
-      const name = path.basename(file.originalname, ext).replace(/\s+/g, "-");
-      cb(null, `${name}-${uniqueSuffix}${ext}`);
-    },
-  });
-
   _fileFilter = (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
 
@@ -76,6 +59,23 @@ class UploadUtil {
     };
   }
 
+  storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      try {
+        this._initializeUploadDir();
+        cb(null, this.uploadDir);
+      } catch (err) {
+        cb(new Error(`Failed to create upload directory: ${err.message}`));
+      }
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+      const ext = path.extname(file.originalname).toLowerCase();
+      const name = path.basename(file.originalname, ext).replace(/\s+/g, "-");
+      cb(null, `${name}-${uniqueSuffix}${ext}`);
+    },
+  });
+
   // ===> Get multer upload middleware configured with storage, file filter, and size limits
   getUploadMiddleware() {
     const upload = multer({
@@ -86,8 +86,7 @@ class UploadUtil {
 
     return {
       single: (fieldName) => this._wrapUpload(upload.single(fieldName)),
-      array: (fieldName, maxCount) =>
-        this._wrapUpload(upload.array(fieldName, maxCount)),
+      array: (fieldName, maxCount) => this._wrapUpload(upload.array(fieldName, maxCount)),
       fields: (fields) => this._wrapUpload(upload.fields(fields)),
       any: () => this._wrapUpload(upload.any()),
     };

@@ -7,6 +7,12 @@ class UserRoutes extends BaseRoute {
     this.router.use(
       this.bindHandler(authMiddleware.authenticateToken, authMiddleware),
     );
+    
+    this.webRoutes();
+    this.mobileRoutes();
+  }
+  
+  webRoutes() {
     this.router.get(
       "/get",
       authMiddleware.authorize({ user: ["read"] }),
@@ -27,12 +33,16 @@ class UserRoutes extends BaseRoute {
       authMiddleware.authorize({ user: ["delete"] }),
       this.bindHandler(userController.deleteUser, userController),
     );
+  }
+
+  mobileRoutes() {
     this.router.post(
       "/filter",
       authMiddleware.authorize({ user: ["read"] }),
       this.bindHandler(userController.filterUsers, userController),
     );
   }
+
 }
 
 module.exports = new UserRoutes();
