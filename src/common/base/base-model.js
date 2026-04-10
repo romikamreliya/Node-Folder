@@ -1,65 +1,52 @@
-const db = require("../../infra/database/knex");
+const prisma = require("../../infra/database/connection");
 
 class BaseModel {
-  constructor({
-    table,
-    columns = [],
-    hidden = [],
-    primaryKey = "id",
-    limit = 10,
-  }) {
+  constructor({ table, columns = [], hidden = [], primaryKey = "id", limit = 10 }) {
     this.table = table;
     this.columns = columns;
     this.hidden = hidden;
     this.primaryKey = primaryKey;
     this.pageLimit = limit;
+    this.db = prisma;
   }
 
   clean(data) {
-    if (!data || typeof data !== "object") {
-      return {};
-    }
+    if (!data || typeof data !== 'object') { return {};}
 
-    // Only allow declared columns, explicitly EXCLUDE hidden columns
-    const allowedColumns = new Set(this.columns);
-    const protectedColumns = new Set(this.hidden);
+    const validColumns = new Set([...this.columns, this.hidden]);
 
     return Object.fromEntries(
-      Object.entries(data)
-        .filter(([key, value]) => {
-          // Reject if it's a protected/hidden column
-          if (protectedColumns.has(key)) {
-            return false;
-          }
-          // Only allow declared columns
-          if (!allowedColumns.has(key)) {
-            return false;
-          }
-          return value !== undefined;
-        })
-        .map(([key, value]) => [key, this.sanitize(value)]),
-    );
+      Object.entries(data).filter(([key, value]) => {
+        return value !== undefined && validColumns.has(key);
+      }).map(([key, value]) => [key, this.sanitize(value)])
+    )
   }
 
   sanitize(value) {
-    if (value === null) {
-      return null;
+    if (value === null || value === undefined) return value;
+
+    if (typeof value === 'string') {
+      return value.trim().replace(/[\u0000-\u001F\u007F]/g, '');
+    }
+
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    if (value instanceof Date || Buffer.isBuffer(value)) {
+      return value;
     }
 
     // Handle arrays
     if (Array.isArray(value)) {
-      return value.map((item) => this.sanitize(item));
+      return value.map(item => this.sanitize(item));
     }
 
     // Handle Objects
-    if (typeof value === "object") {
+    if (typeof value === 'object') {
       return Object.fromEntries(
-        Object.entries(value).map(([k, v]) => [k, this.sanitize(v)]),
+        Object.entries(value).map(([k, v]) => [k, this.sanitize(v)])
       );
-    }
-
-    if (typeof value === "string") {
-      return value.trim().replace(/\0/g, "");
     }
 
     return value;
@@ -67,34 +54,41 @@ class BaseModel {
 
   // BASIC CRUD
   async get() {
-    return db(this.table).select(this.columns);
+    return await this.db[this.table].findMany();
   }
 
   async find(query) {
-    return db(this.table).where(this.clean(query)).select(this.columns);
+    return this.db[this.table].findMany({ where: this.clean(query) });
   }
 
   async findOne(query) {
-    return db(this.table).where(this.clean(query)).select(this.columns).first();
+    return this.db[this.table].findFirst({ where: this.clean(query) });
   }
 
   async insert(data) {
-    return db(this.table).insert(this.clean(data)).select(this.columns);
+    return await this.db[this.table].create({ data: this.clean(data) });
   }
 
   async update(id, data) {
-    return db(this.table).where(this.primaryKey, id).update(this.clean(data));
+    return await this.db[this.table].update({
+      where: { [this.primaryKey]: id },
+      data: this.clean(data)
+    });
+  }
+
+  async updateWhere(query, data) {
+    return await this.db[this.table].update({
+      where: this.clean(query),
+      data: this.clean(data)
+    });
   }
 
   async delete(query) {
-    return db(this.table).where(this.clean(query)).del();
+    return await this.db[this.table].deleteMany({ where: this.clean(query) });
   }
 
   async count(query = {}) {
-    return db(this.table)
-      .where(this.clean(query))
-      .count(`${this.primaryKey} as count`)
-      .first();
+    return this.db[this.table].count({ where: this.clean(query) });
   }
 
   // PAGINATION + ADVANCED FILTERS
@@ -106,7 +100,7 @@ class BaseModel {
    * @param {Object} [options.filters={}] Filter conditions
    * @param {Boolean} [options.pagination=true] Filter conditions
    * @param {string|string[]} [options.select="*"] Columns to select
-   * @param {Array<{column: string, dir?: "asc"|"desc"}>} [options.order=[]] Sorting rules
+   * @param {Object<string, "asc"|"desc">} [options.order={}] Sorting order
    * @returns {Promise<Object|Array>} Paginated result object or array
    * @returns {Array<Object>} return.data Array of rows
    * @returns {Object} return.pagination Pagination info
@@ -121,7 +115,7 @@ class BaseModel {
    *   limit: 10,
    *   filters: { name: { like: "Romik" } },
    *   select: ["id","name","email"],
-   *   order: [{ column: "created_at", dir: "desc" }]
+   *   order: { created_at: "desc" }
    *   pagination: true,
    * });
    */
@@ -129,57 +123,38 @@ class BaseModel {
     page = 1,
     limit = this.pageLimit,
     filters = {},
-    select = this.columns,
-    order = [],
-    pagination = true,
+    select = undefined,
+    order = {},
+    pagination = true
   } = {}) {
-    let query = db(this.table).select(select);
 
-    // FILTERS
-    const cleaned = this.clean(filters);
-    for (const [field, cond] of Object.entries(cleaned)) {
-      if (typeof cond === "object") {
-        if (cond.like) query.where(field, "like", `%${cond.like}%`);
-        if (cond.eq) query.where(field, cond.eq);
-        if (cond.gt) query.where(field, ">", cond.gt);
-        if (cond.gte) query.where(field, ">=", cond.gte);
-        if (cond.lt) query.where(field, "<", cond.lt);
-        if (cond.lte) query.where(field, "<=", cond.lte);
-        if (cond.between) query.whereBetween(field, cond.between);
-        if (cond.in) query.whereIn(field, cond.in);
-        if (cond.notIn) query.whereNotIn(field, cond.notIn);
-        if (cond.null) query.whereNull(field);
-        if (cond.notNull) query.whereNotNull(field);
-      } else {
-        query.where(field, cond);
-      }
+    if (!pagination) {
+      return this.db[this.table].findMany({
+        where: filters,
+        select,
+        orderBy: order
+      });
     }
-
-    // ORDER BY
-    order.forEach((o) => {
-      if (o.column) query.orderBy(o.column, o.dir || "asc");
-    });
-
-    if (!pagination) return query.clone();
-
-    // PAGINATION
-    const data = await query
-      .clone()
-      .limit(limit)
-      .offset((page - 1) * limit);
-    const total = await query
-      .clone()
-      .count(`${this.primaryKey} as count`)
-      .first();
+    
+    const [data, total] = await this.db.$transaction([
+      this.db[this.table].findMany({
+        where: filters,
+        select,
+        orderBy: order,
+        skip: (page - 1) * limit,
+        take: limit
+      }),
+      this.db[this.table].count({ where: filters })
+    ]);
 
     return {
       data,
       pagination: {
-        totalRows: total.count,
-        totalPages: Math.ceil(total.count / limit),
+        totalRows: total,
+        totalPages: Math.ceil(total / limit),
         currentPage: page,
-        limit,
-      },
+        limit
+      }
     };
   }
 }
