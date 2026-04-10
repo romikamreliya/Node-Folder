@@ -12,8 +12,8 @@ const errorMiddleware = require("./middleware/error.middleware");
 const appRouter = require("./router");
 const webRoutes = require("../modules/web/web.routes");
 
-const AppSocketServer = require("../infra/realtime/socket/server.socket");
-const AppSocketClient = require("../infra/realtime/socket/client.socket");
+const AppSocketServer = require("../infra/realtime/socketServer/server.socket");
+const AppSocketClient = require("../infra/realtime/socketClient/client.socket");
 const MqttPublisher = require("../infra/realtime/mqtt/publisher.mqtt");
 const MqttSubscriber = require("../infra/realtime/mqtt/subscriber.mqtt");
 
