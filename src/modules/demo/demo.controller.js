@@ -1,7 +1,15 @@
+const { log } = require("winston");
 const BaseController = require("../../common/base/base-controller");
 const userSchema = require("../user/user.schema");
 
 class DemoController extends BaseController {
+
+  constructor() {
+    const uploadPath = "public/upload/demo";
+    super({ uploadPath });
+    this.uploadPath = uploadPath;
+  }
+
   async test(req, res) {
     const eventEmitter = req.app.get("appEvent");
     eventEmitter.emit("socketEmit", { message: "This is a test event" });
@@ -181,28 +189,45 @@ class DemoController extends BaseController {
 
   async uploadFile(req, res) {
     try {
-      if (!req.file) {
+
+      // upload images
+      await new Promise((resolve, reject) => {
+        this.upload.getUploadMiddleware().single("reviewProfile")(req, res, (err) => {
+          if (err) {
+            return this.response.error({ req, res, key: err.message });
+          }
+          return resolve();
+        });
+      });
+
+      const payload = {
+        name: req.body.name,
+        age: Number(req.body.age),
+        isActive: Boolean(req.body.isActive),
+        array: req.body?.array && typeof req.body.array === "string" ? req.body.array.split(",") : req.body.array,
+        object: req.body?.object && typeof req.body.object === "string" ? JSON.parse(req.body.object) : req.body.object,
+        profile: req?.file?.filename ? `${this.uploadPath}/${req.file.filename}` : "",
+      }
+
+      console.log('payload', payload);
+      
+
+      const validation = userSchema.validate(payload, "uploadSchema");
+      if (!validation.isValid) {
         return this.response.send({
           req,
           res,
           type: "BAD_REQUEST",
-          message: "NO_FILE_PROVIDED",
+          message: this.ajv.errorMsg({ error: validation.errors[0] }),
         });
       }
-
-      const fileData = {
-        filename: req.file.filename,
-        path: req.file.path,
-        size: req.file.size,
-        mimetype: req.file.mimetype,
-      };
 
       return this.response.send({
         req,
         res,
         type: "SUCCESS",
         message: "FILE_UPLOADED",
-        data: fileData,
+        data: payload,
       });
     } catch (error) {
       throw new this.appError({

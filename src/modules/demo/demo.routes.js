@@ -3,7 +3,6 @@ const demoController = require("./demo.controller");
 
 class DemoRoutes extends BaseRoute {
   registerRoutes() {
-    const uploadMiddleware = demoController.upload.getUploadMiddleware();
 
     this.router.get(
       "/test",
@@ -31,7 +30,6 @@ class DemoRoutes extends BaseRoute {
     );
     this.router.post(
       "/upload",
-      uploadMiddleware.single("file"),
       this.bindHandler(demoController.uploadFile, demoController),
     );
   }

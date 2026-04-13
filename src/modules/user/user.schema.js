@@ -1,4 +1,5 @@
 const ajvUtil = require("../../common/utils/ajv.util");
+const { upload } = require("./user.controller");
 
 class UserSchema {
   static ajv = ajvUtil;
@@ -157,12 +158,43 @@ class UserSchema {
     };
   }
 
+  static uploadSchema() {
+    return {
+      fields: {
+        name: this.ajv.prop("string", { title: "Name", minLength: 2 }),
+        age: this.ajv.prop("number", { title: "Age", minimum: 0 }),
+        isActive: this.ajv.prop("boolean", { title: "Is Active" }),
+        array: this.ajv.prop("array", {
+          title: "User List",
+          items: this.ajv.prop("string", {
+            title: "User List Item",
+            minLength: 2,
+          }),
+          uniqueItems: true,
+        }),
+        object: this.ajv.prop("object", {
+          title: "User Object",
+          properties: {
+            name: this.ajv.prop("string"),
+            email: this.ajv.prop(["string", "null"], { format: "customEmail" })
+          },
+          required: ["name"],
+        }),
+        profile: this.ajv.prop("string", { title: "Profile Image" }),
+      },
+      options: {
+        required: ["name", "age", "isActive", "array", "object"],
+      },
+    };
+  }
+
   static allSchemas = {
     userCreate: this.userCreateSchema(),
     userUpdate: this.userUpdateSchema(),
     userId: this.userIdSchema(),
     ajvFunSchema: this.ajvFunSchema(),
     filterSchema: this.filterSchema(),
+    uploadSchema: this.uploadSchema(),
   };
 
   /**
