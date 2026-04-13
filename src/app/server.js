@@ -56,12 +56,16 @@ class ApplicationServer {
 
   registerRoutes() {
     if (process.env.SWAGGER_ENABLED === "true") {
-      this.app.use("/api-docs", swaggerConfig.getSpecs()); 
+      this.app.use("/api-docs", swaggerConfig.getRouter()); 
     }
     this.app.use("/", webRoutes.getRoutes());
     this.app.use("/api/v1",
       rateLimitMiddleware.defaultLimiter,
       appRouter.getRoutesV1(),
+    );
+    this.app.use("/api/v2",
+      rateLimitMiddleware.defaultLimiter,
+      appRouter.getRoutesV2(),
     );
     this.app.use(errorMiddleware.globalErrorHandler.bind(errorMiddleware));
   }

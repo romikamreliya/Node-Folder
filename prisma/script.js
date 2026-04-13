@@ -11,7 +11,7 @@ function parseArgs(argv) {
             } else if (arg.startsWith("--seeder_run")) { // Example: --seeder_run (all run), --seeder_run=20240101-seed-users (this run)
                 const seederArg = arg.split("=");
                 if (seederArg[1]) {
-                    acc.seeder_run.name = seederArg[1].replace(/[^a-zA-Z0-9_.-]/g, '_');
+                    acc.seeder_run.name = seederArg[1].replace(/[^a-zA-Z0-9_-]/g, '_');
                 }
                 acc.seeder_run.is_run = true;
             }
@@ -34,7 +34,7 @@ async function runMigrateFlow() {
         }
 
         const seederDir = "./prisma/seeder";
-        const seederName = `${new Date().getTime()}-${args.seeder_create.name.replace(/[^a-zA-Z0-9_.-]/g, '_')}.js`;
+        const seederName = `${new Date().getTime()}-${args.seeder_create.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.js`;
         const seederFile = `/**\n * Seeder: {seederName}\n */\nmodule.exports = {\n  tableName: "user", // Specify the table name\n  seed: async (conn) => {\n    // Write seed code here\n    // Example:\n    // await conn.user.createMany({\n    //   data: [\n    //     { name: 'John Doe', email: 'john.doe@example.com' },\n    //   ]\n    // });\n  }\n};\n`;
         fs.writeFileSync(`${seederDir}/${seederName}`, seederFile.replaceAll("{seederName}", args.seeder_create?.name));
         console.log(`Creating seeder: ${args.seeder_create.name}`);

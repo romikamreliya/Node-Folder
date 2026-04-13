@@ -10,7 +10,8 @@ class WebRoutes extends BaseRoute {
   }
 
   setupRoutes() {
-    this.router.get("/", this.bindHandler(webController.homeView, webController));
+    const router = this.version("v1");
+    router.get("/", this.bindHandler(webController.homeView, webController));
   }
 }
 

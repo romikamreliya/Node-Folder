@@ -2,14 +2,21 @@ const express = require("express");
 
 class BaseRoute {
   constructor() {
-    this.router = express.Router();
+    this.routes = {};
     this.registerRoutes();
   }
 
   registerRoutes() {}
 
-  getRoutes() {
-    return this.router;
+  version(ver = "v1") {
+    if (!this.routes[ver]) {
+      this.routes[ver] = express.Router();
+    }
+    return this.routes[ver];
+  }
+
+  getRoutes(version = "v1") {
+    return this.routes[version] || express.Router();
   }
 
   bindHandler(handler, context = null) {

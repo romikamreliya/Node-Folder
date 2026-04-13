@@ -5,8 +5,13 @@ const userRoutes = require("../modules/user/user.routes");
 class AppRouter {
   getRoutesV1() {
     const router = express.Router();
-    router.use("/public", demoRoutes.getRoutes());
-    router.use("/user", userRoutes.getRoutes());
+    router.use("/public", demoRoutes.getRoutes("v1"));
+    router.use("/user", userRoutes.getRoutes("v1"));
+    return router;
+  }
+  getRoutesV2() {
+    const router = express.Router();
+    router.use("/public", demoRoutes.getRoutes("v2"));
     return router;
   }
 }
