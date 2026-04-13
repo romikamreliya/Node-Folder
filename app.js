@@ -1,7 +1,7 @@
-const { startApp, app, server } = require("./src/app/bootstrap");
+const { applicationServer, app, server } = require("./src/app/server");
 
 if (process.env.NODE_APP_ENV !== "test") {
-  startApp();
+  applicationServer.start();
 }
 
 module.exports = { app, server };
