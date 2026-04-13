@@ -15,45 +15,36 @@ class UserController extends BaseController {
   }
 
   async createUser(req, res) {
-    try {
-      const data = {
-        name: req.body?.name,
-        email: req.body?.email,
-        phone: req.body?.phone,
-        password: req.body?.password,
-        status: req.body?.status,
-        notes: req.body?.notes,
-      };
+    const data = {
+      name: req.body?.name,
+      email: req.body?.email,
+      phone: req.body?.phone,
+      password: req.body?.password,
+      status: req.body?.status,
+      notes: req.body?.notes,
+    };
 
-      // schema validation
-      const validation = userSchemas.validate(data, "userCreate");
-      if (!validation.isValid) {
-        return this.response.send({
-          req,
-          res,
-          type: "BAD_REQUEST",
-          message: this.ajv.errorMsg({ error: validation.errors[0] }),
-        });
-      }
-
-      // main logic
-      const newUser = await userService.create({ data });
-      
+    // schema validation
+    const validation = userSchemas.validate(data, "userCreate");
+    if (!validation.isValid) {
       return this.response.send({
         req,
         res,
-        type: "CREATED",
-        data: newUser,
-        message: "SUCCESS",
-      });
-    } catch (error) {
-      return this.response.send({
-        req,
-        res,
-        type: "INTERNAL_SERVER_ERROR",
-        message: "An error occurred while creating the user.",
+        type: "BAD_REQUEST",
+        message: this.ajv.errorMsg({ error: validation.errors[0] }),
       });
     }
+
+    // main logic
+    const newUser = await userService.create({ data });
+    
+    return this.response.send({
+      req,
+      res,
+      type: "CREATED",
+      data: newUser,
+      message: "SUCCESS",
+    });
   }
 
   async updateUser(req, res) {

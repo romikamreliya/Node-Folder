@@ -1,6 +1,4 @@
 const ajvUtil = require("../../common/utils/ajv.util");
-const { upload } = require("./user.controller");
-
 class UserSchema {
   static ajv = ajvUtil;
 
