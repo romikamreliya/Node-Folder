@@ -1,4 +1,5 @@
 const BaseService = require("../../common/base/base-service");
+const passwordUtil = require("../../common/utils/password.util");
 const userModel = require("./user.model");
 
 class UserService extends BaseService {
@@ -25,11 +26,13 @@ class UserService extends BaseService {
    * Create
    */
   async create({ data }) {
+    const passwordHash = passwordUtil.hash(data.password);
+
     const payload = {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      password: data.password,
+      password: passwordHash,
       status: data.status ?? "active",
       notes: data.notes ?? null,
     };
@@ -81,10 +84,13 @@ class UserService extends BaseService {
    * filter
    */
   async filter({ name = "" }) {
+    const normalizedName = typeof name === "string" ? name.trim() : "";
     const users = await userModel.paginate({
-      filters: {
-        name: { like: name },
-      },
+      filters: normalizedName
+        ? {
+            name: { contains: normalizedName },
+          }
+        : {},
     });
     return userModel.resources.paginate(
       users.data,

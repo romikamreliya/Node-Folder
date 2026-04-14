@@ -1,6 +1,21 @@
 const BaseMiddleware = require("../../common/base/base-middleware");
 
 class AuthMiddleware extends BaseMiddleware {
+  static hasRequiredPermission(userPermissions = {}, requiredPermissions = {}) {
+    return Object.entries(requiredPermissions).some(([module, actions]) => {
+      if (!Array.isArray(actions) || actions.length === 0) {
+        return false;
+      }
+
+      const grantedActions = userPermissions[module];
+      if (!Array.isArray(grantedActions)) {
+        return false;
+      }
+
+      return actions.some((action) => grantedActions.includes(action));
+    });
+  }
+
   static authenticateToken(req, res, next) {
     try {
       const token = req.headers["authorization"]?.replace("Bearer ", "");
@@ -56,18 +71,20 @@ class AuthMiddleware extends BaseMiddleware {
           });
         }
 
-        // IMPLEMENTED: Check permission logic
-        // const userPermissions = req.currentUser?.permissions || {};
-        // const allowed = Object.entries(permissions).some(
-        //   ([module, actions]) => {
-        //     if (!Array.isArray(userPermissions[module])) return false;
-        //     return actions.some(action => userPermissions[module].includes(action));
-        //   }
-        // );
+        const userPermissions = req.currentUser?.permissions || {};
+        const allowed = this.hasRequiredPermission(
+          userPermissions,
+          permissions,
+        );
 
-        // if (!allowed) {
-        //   return this.response.send({ req, res, type: "FORBIDDEN", message: "INSUFFICIENT_PERMISSIONS" });
-        // }
+        if (!allowed) {
+          return this.response.send({
+            req,
+            res,
+            type: "FORBIDDEN",
+            message: "INSUFFICIENT_PERMISSIONS",
+          });
+        }
 
         next();
       } catch (error) {

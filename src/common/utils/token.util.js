@@ -16,13 +16,19 @@ class TokenUtil {
 
   // Custom AES Token
   static aesExpireMs = parseInt(24 * 60 * 60 * 1000); // 24 hours
-  static aesKey = crypto.pbkdf2Sync(
-    process.env.accessTokenKey,
-    "salt",
-    100000,
-    32,
-    "sha256",
-  );
+  static aesSalt = process.env.AES_SALT || crypto.randomBytes(16).toString("hex");
+  static aesKey = (() => {
+    if (!process.env.accessTokenKey) {
+      throw new Error("Missing required env variable: accessTokenKey");
+    }
+    return crypto.pbkdf2Sync(
+      process.env.accessTokenKey,
+      TokenUtil.aesSalt,
+      100000,
+      32,
+      "sha256",
+    );
+  })();
   static algorithm = "aes-256-gcm";
 
   // =========================================================

@@ -127,6 +127,10 @@ class BaseModel {
     order = {},
     pagination = true
   } = {}) {
+    // Validate and cap pagination params to prevent DoS
+    const MAX_LIMIT = 1000;
+    page = Math.max(1, Math.floor(Number(page) || 1));
+    limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(Number(limit) || this.pageLimit)));
 
     if (!pagination) {
       return this.db[this.table].findMany({

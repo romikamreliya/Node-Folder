@@ -89,6 +89,10 @@ class ResponseUtil {
    * @returns {Object} JSON response
    */
   static success({ req, res, key, code = null, data = {}, status = 200 }) {
+    if (status === 204) {
+      return res.status(status).end();
+    }
+
     return res.status(status).json({
       success: true,
       code,

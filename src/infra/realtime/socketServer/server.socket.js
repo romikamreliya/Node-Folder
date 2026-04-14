@@ -17,17 +17,22 @@ class AppSocketServer extends BaseSocket {
 
   authenticate(socket) {
     try {
-      // const token = socket.handshake.auth.token;
+      const token = socket.handshake.auth.token;
 
-      // if (!token) {
-      //     socket.disconnect(true);
-      //     return;
-      // }
+      if (!token) {
+        socket.disconnect(true);
+        return;
+      }
 
-      // // Verify JWT token
-      // const decoded = this.token.verifyCustomToken(token);
-      // this.user = decoded;
+      // Verify token
+      const decoded = this.token.verifyCustomToken(token);
+      if (!decoded.ok) {
+        socket.emit("auth_error", { message: "Invalid token" });
+        socket.disconnect(true);
+        return;
+      }
 
+      socket.user = decoded.data;
       this.socketEmitHandler(socket);
     } catch (error) {
       socket.emit("auth_error", {
