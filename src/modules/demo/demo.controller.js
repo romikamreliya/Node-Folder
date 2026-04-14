@@ -1,9 +1,7 @@
-const { log } = require("winston");
 const BaseController = require("../../common/base/base-controller");
 const userSchema = require("../user/user.schema");
 
 class DemoController extends BaseController {
-
   constructor() {
     const uploadPath = "public/upload/demo";
     super({ uploadPath });
@@ -190,27 +188,22 @@ class DemoController extends BaseController {
   async uploadFile(req, res) {
     try {
 
-      // upload images
-      await new Promise((resolve, reject) => {
-        this.upload.getUploadMiddleware().single("reviewProfile")(req, res, (err) => {
-          if (err) {
-            return this.response.error({ req, res, key: err.message });
-          }
-          return resolve();
-        });
-      });
-
       const payload = {
         name: req.body.name,
         age: Number(req.body.age),
-        isActive: Boolean(req.body.isActive),
-        array: req.body?.array && typeof req.body.array === "string" ? req.body.array.split(",") : req.body.array,
-        object: req.body?.object && typeof req.body.object === "string" ? JSON.parse(req.body.object) : req.body.object,
-        profile: req?.file?.filename ? `${this.uploadPath}/${req.file.filename}` : "",
-      }
-
-      console.log('payload', payload);
-      
+        isActive: this.helper.parseBoolean(req.body.isActive),
+        array:
+          req.body?.array && typeof req.body.array === "string"
+            ? req.body.array.split(",")
+            : req.body.array,
+        object:
+          req.body?.object && typeof req.body.object === "string"
+            ? JSON.parse(req.body.object)
+            : req.body.object,
+        profile: req?.file?.filename
+          ? `${this.uploadPath}/${req.file.filename}`
+          : "",
+      };
 
       const validation = userSchema.validate(payload, "uploadSchema");
       if (!validation.isValid) {

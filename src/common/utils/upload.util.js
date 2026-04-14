@@ -1,6 +1,7 @@
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const AppError = require("../errors/app-error");
 
 class UploadUtil {
   constructor(uploadDir = "public/upload") {
@@ -36,17 +37,21 @@ class UploadUtil {
     // Check MIME type
     if (!this.allowedMimeTypes.includes(file.mimetype)) {
       return cb(
-        new Error(
-          `Invalid file type. Allowed types: ${this.allowedMimeTypes.join(", ")}`,
-        ),
+        new AppError({
+          code: "INVALID_FILE_TYPE",
+          message: `Invalid file type. Allowed types: ${this.allowedMimeTypes.join(", ")}`,
+          type: "BAD_REQUEST",
+        })
       );
     }
 
     if (!this.allowedExtensions.includes(ext)) {
       return cb(
-        new Error(
-          `Invalid file extension. Allowed extensions: ${this.allowedExtensions.join(", ")}`,
-        ),
+        new AppError({
+          code: "INVALID_FILE_EXTENSION",
+          message: `Invalid file extension. Allowed extensions: ${this.allowedExtensions.join(", ")}`,
+          type: "BAD_REQUEST",
+        })
       );
     }
 
@@ -55,7 +60,11 @@ class UploadUtil {
 
   _handleMulterError(err, next) {
     if (err?.code === "LIMIT_FILE_SIZE") {
-      return next(new Error(`File size exceeds the ${this.fileSize}MB limit.`));
+      return next(new AppError({
+        code: "LIMIT_FILE_SIZE",
+        message: `File size exceeds the ${this.fileSize}MB limit.`,
+        type: "BAD_REQUEST",
+      }));
     }
     return next(err);
   }
@@ -72,7 +81,11 @@ class UploadUtil {
         this._initializeUploadDir();
         cb(null, this.uploadDir);
       } catch (err) {
-        cb(new Error(`Failed to create upload directory: ${err.message}`));
+        cb(new AppError({
+          code: "UPLOAD_DIR_CREATION_FAILED",
+          message: `Failed to create upload directory: ${err.message}`,
+          type: "BAD_REQUEST",
+        }));
       }
     },
     filename: (req, file, cb) => {

@@ -2,16 +2,33 @@
  * Helper utilities for common operations
  */
 class HelperUtil {
-  /**
-   * Extract API version from URL
-   * @param {Object} options - Options object
-   * @param {string} options.url - Request URL
-   * @returns {string|null} API version (v1, v2) or null
-   */
-  static getVersion({ url }) {
-    const match = url.match(/\/api\/(v1|v2)/);
-    return match ? match[1] : null;
-  }
+  
+  static parseBoolean(value) {
+    if (typeof value === "boolean") {
+      return value;
+    }
+
+    if (typeof value === "number") {
+      if (value === 1) return true;
+      if (value === 0) return false;
+      return value;
+    }
+
+    if (typeof value === "string") {
+      const normalizedValue = value.trim().toLowerCase();
+      if (["true", "1", "yes", "on"].includes(normalizedValue)) {
+        return true;
+      }
+      if (["false", "0", "no", "off"].includes(normalizedValue)) {
+        return false;
+      }
+      return value;
+    }
+
+    return value;
+  }  
+  
+
 }
 
 module.exports = HelperUtil;

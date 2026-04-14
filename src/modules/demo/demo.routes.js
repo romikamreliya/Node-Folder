@@ -37,6 +37,7 @@ class DemoRoutes extends BaseRoute {
     );
     router.post(
       "/upload",
+      demoController.upload.getUploadMiddleware().single("reviewProfile"),
       this.bindHandler(demoController.uploadFile, demoController),
     );
   }
