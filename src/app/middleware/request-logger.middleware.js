@@ -6,12 +6,13 @@ class RequestLoggerMiddleware {
   static handle(req, res, next) {
     const start = Date.now();
     const { method, originalUrl, ip } = req;
+    const rid = req.requestId || "-";
 
     console.log(
-      `--> ${method} ${originalUrl} (ip : ${req.headers["x-forwarded-for"] || ip}) (userAgent : ${req.headers["user-agent"]})`,
+      `[${rid}] --> ${method} ${originalUrl} (ip : ${req.headers["x-forwarded-for"] || ip}) (userAgent : ${req.headers["user-agent"]})`,
     );
     console.log(
-      `Request Body: ${method !== "GET" ? JSON.stringify(req.body) : "N/A"}`,
+      `[${rid}] Request Body: ${method !== "GET" ? JSON.stringify(req.body) : "N/A"}`,
     );
 
     // Intercept res.end to capture status & duration
@@ -19,7 +20,7 @@ class RequestLoggerMiddleware {
     res.end = function (...args) {
       const duration = Date.now() - start;
       console.log(
-        `<-- ${method} ${originalUrl} (statusCode : ${res.statusCode}) (${duration}ms)`,
+        `[${rid}] <-- ${method} ${originalUrl} (statusCode : ${res.statusCode}) (${duration}ms)`,
       );
       return originalEnd(...args);
     };

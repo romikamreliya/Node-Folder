@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const fs = require("fs");
 
 const RequestLoggerMiddleware = require("../app/middleware/request-logger.middleware");
+const RequestIdMiddleware = require("../app/middleware/request-id.middleware");
 const Constants = require("../common/utils/constants");
 
 /**
@@ -63,6 +64,7 @@ class AppConfig {
   };
 
   middlewares() {
+    this.app.use(RequestIdMiddleware.handle);
     this.app.use(helmet(this.helmetConfig));
     this.app.use(express.urlencoded({ extended: false, limit: Constants.http.bodyLimitUrlEncoded }));
     this.app.use(express.json({ limit: Constants.http.bodyLimitJson }));

@@ -17,10 +17,11 @@ class ErrorMiddleware extends BaseMiddleware {
       });
     }
 
-    // Log unexpected errors
+    // Log unexpected errors with request ID
     this.logger.createLog({
       msg: error,
       name: `UnhandledError-${req.method}-${req.path}`,
+      requestId: req.requestId,
     });
 
     // Return generic error response

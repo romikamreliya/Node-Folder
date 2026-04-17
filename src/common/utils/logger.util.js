@@ -136,7 +136,20 @@ class LoggerUtil {
       typeof payloadOrMessage === "object" &&
       Object.prototype.hasOwnProperty.call(payloadOrMessage, "msg")
     ) {
-      this.error(payloadOrMessage.msg, payloadOrMessage.name || "");
+      const { msg, name: logName = "", requestId } = payloadOrMessage;
+      const logger = this.getLogger();
+      const meta = requestId ? { requestId } : {};
+
+      if (msg instanceof Error) {
+        logger.error(`${logName}`, {
+          ...meta,
+          error: msg.message,
+          stack: msg.stack,
+          fileName: msg.fileName,
+        });
+      } else {
+        logger.error(`${logName}`, { ...meta, message: msg });
+      }
       return;
     }
     this.error(payloadOrMessage, name);
