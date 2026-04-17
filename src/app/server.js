@@ -60,11 +60,13 @@ class ApplicationServer {
     }
     this.app.use("/", webRoutes.getRoutes());
     this.app.use("/api/v1",
-      rateLimitMiddleware.defaultLimiter,
+      rateLimitMiddleware.globalLimiter,
+      rateLimitMiddleware.userLimiter,
       appRouter.getRoutesV1(),
     );
     this.app.use("/api/v2",
-      rateLimitMiddleware.defaultLimiter,
+      rateLimitMiddleware.globalLimiter,
+      rateLimitMiddleware.userLimiter,
       appRouter.getRoutesV2(),
     );
     this.app.use(errorMiddleware.globalErrorHandler.bind(errorMiddleware));

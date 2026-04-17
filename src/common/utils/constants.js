@@ -50,8 +50,22 @@ class Constants {
 
   // ─── Rate Limiting ────────────────────────────────
   static rateLimit = {
-    windowMs: 1 * 60 * 1000,  // 1 minute
-    maxRequests: 10,
+    // Global (IP-based, unauthenticated)
+    windowMs: 1 * 60 * 1000,       // 1 minute
+    maxRequests: 60,
+
+    // Per-user (authenticated, keyed by user ID)
+    userWindowMs: 1 * 60 * 1000,   // 1 minute
+    userMaxRequests: 120,
+
+    // Endpoint-specific presets
+    auth: {
+      windowMs: 15 * 60 * 1000,    // 15 minutes
+      maxRequests: 10,              // 10 attempts per 15 min
+    },
+
+    // Paths to skip entirely
+    skipPaths: ["/health", "/favicon.ico"],
   };
 
   // ─── HTTP / CORS / Helmet ─────────────────────────
