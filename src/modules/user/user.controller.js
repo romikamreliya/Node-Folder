@@ -1,6 +1,7 @@
 const BaseController = require("../../common/base/base-controller");
 const userSchemas = require("./user.schema.js");
 const userService = require("./user.service");
+const UserRequestDto = require("./user.dto.js");
 
 class UserController extends BaseController {
   async getUsers(req, res) {
@@ -15,17 +16,12 @@ class UserController extends BaseController {
   }
 
   async createUser(req, res) {
-    const data = {
-      name: req.body?.name,
-      email: req.body?.email,
-      phone: req.body?.phone,
-      password: req.body?.password,
-      status: req.body?.status,
-      notes: req.body?.notes,
-    };
 
-    // schema validation
-    const validation = userSchemas.validate(data, "userCreate");
+    // payload transformation
+    const payloadDto = UserRequestDto.createFromRequest(req);
+
+    // payload schema validation
+    const validation = userSchemas.validate(payloadDto, "userCreate");
     if (!validation.isValid) {
       return this.response.send({
         req,
@@ -36,8 +32,9 @@ class UserController extends BaseController {
     }
 
     // main logic
-    const newUser = await userService.create({ data });
+    const newUser = await userService.create({ data: payloadDto });
     
+    // response send
     return this.response.send({
       req,
       res,
@@ -48,16 +45,12 @@ class UserController extends BaseController {
   }
 
   async updateUser(req, res) {
-    const payload = {
-      id: req.body?.id || "",
-      ...(req.body?.name && { name: req.body.name }),
-      ...(req.body?.email && { email: req.body.email }),
-      ...(req.body?.phone && { phone: req.body.phone }),
-      ...(req.body?.notes && { notes: req.body.notes }),
-    };
 
-    // Use centralized schema validation via class method
-    const validation = userSchemas.validate(payload, "userUpdate");
+    // payload transformation
+    const payloadDto = UserRequestDto.updateFromRequest(req);
+
+    // payload schema validation
+    const validation = userSchemas.validate(payloadDto, "userUpdate");
     if (!validation.isValid) {
       return this.response.send({
         req,
@@ -69,9 +62,11 @@ class UserController extends BaseController {
 
     // main logic
     const updatedUser = await userService.update({
-      id: payload.id,
-      data: payload,
+      id: payloadDto.id,
+      data: payloadDto,
     });
+
+    // response send
     return this.response.send({
       req,
       res,
@@ -82,12 +77,12 @@ class UserController extends BaseController {
   }
 
   async deleteUser(req, res) {
-    const payload = {
-      id: req.body?.id,
-    };
+
+    // payload transformation
+    const payloadDto = UserRequestDto.deleteFromRequest(req);
 
     // Use centralized schema validation via class method
-    const validation = userSchemas.validate(payload, "userId");
+    const validation = userSchemas.validate({ id: payloadDto.id }, "userId");
     if (!validation.isValid) {
       return this.response.send({
         req,
@@ -98,21 +93,25 @@ class UserController extends BaseController {
     }
 
     // main logic
-    const deletedUser = await userService.delete({ id: payload.id });
+    await userService.delete({ id: payloadDto.id });
+
+    // response send
     return this.response.send({
       req,
       res,
       type: "DELETE",
-      data: deletedUser,
       message: "SUCCESS",
     });
   }
 
   async filterUsers(req, res) {
-    const name = req.body?.name || "";
+
+    // payload transformation
+    const payloadDto = UserRequestDto.filterFromRequest(req);
 
     // main logic
-    const users = await userService.filter({ name });
+    const users = await userService.filter({ name: payloadDto.name });
+    
     return this.response.send({
       req,
       res,

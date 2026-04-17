@@ -1,6 +1,6 @@
 const BaseService = require("../../common/base/base-service");
-const passwordUtil = require("../../common/utils/password.util");
 const userModel = require("./user.model");
+const userResponse = require("./user.resource");
 
 class UserService extends BaseService {
   /**
@@ -8,7 +8,7 @@ class UserService extends BaseService {
    */
   async getList() {
     const users = await userModel.get();
-    return userModel.resources.collection(users, userModel.resources.toJSON);
+    return userResponse.collection(users, userResponse.toJSON);
   }
 
   /**
@@ -19,30 +19,27 @@ class UserService extends BaseService {
     if (!findRecord) {
       throw new this.appError({ message: "DATA_NOT_FOUND", type: "NOT_FOUND" });
     }
-    return userModel.resources.toJSON(findRecord);
+    return userResponse.toJSON(findRecord);
   }
 
   /**
    * Create
    */
   async create({ data }) {
-    const passwordHash = passwordUtil.hash(data.password);
 
     const payload = {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      password: passwordHash,
-      status: data.status ?? "active",
-      notes: data.notes ?? null,
+      password: this.password.hash(data.password),
+      status: data.status,
+      notes: data.notes,
     };
 
     const insertedRows = await userModel.insert(payload);
-    const createdUser = Array.isArray(insertedRows)
-      ? insertedRows[0]
-      : insertedRows;
+    const createdUser = Array.isArray(insertedRows) ? insertedRows[0] : insertedRows;
 
-    return userModel.resources.toJSON(createdUser);
+    return userResponse.toJSON(createdUser);
   }
 
   /**
@@ -63,7 +60,7 @@ class UserService extends BaseService {
 
     await userModel.update(id, payload);
 
-    return userModel.resources.toJSON({ ...findRecord, id, ...payload });
+    return userResponse.toJSON({ ...findRecord, id, ...payload });
   }
 
   /**
@@ -84,19 +81,10 @@ class UserService extends BaseService {
    * filter
    */
   async filter({ name = "" }) {
-    const normalizedName = typeof name === "string" ? name.trim() : "";
     const users = await userModel.paginate({
-      filters: normalizedName
-        ? {
-            name: { contains: normalizedName },
-          }
-        : {},
+      filters: name ? {name: { contains: name }} : {},
     });
-    return userModel.resources.paginate(
-      users.data,
-      users.pagination,
-      userModel.resources.toJSON,
-    );
+    return userResponse.paginate(users.data, users.pagination);
   }
 }
 

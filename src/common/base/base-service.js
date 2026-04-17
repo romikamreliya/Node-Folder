@@ -7,6 +7,7 @@ const tokenUtil = require("../utils/token.util");
 const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
 const AppError = require("../errors/app-error");
+const PasswordUtil = require("../utils/password.util");
 
 class BaseService {
   constructor() {
@@ -19,6 +20,7 @@ class BaseService {
     this.i18n = i18nUtil;
     this.appError = AppError;
     this.response = responseUtil;
+    this.password = PasswordUtil;
   }
 }
 
