@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -65,8 +64,8 @@ class AppConfig {
 
   middlewares() {
     this.app.use(helmet(this.helmetConfig));
-    this.app.use(bodyParser.urlencoded({ extended: false, limit: Constants.http.bodyLimitUrlEncoded }));
-    this.app.use(bodyParser.json({ limit: Constants.http.bodyLimitJson }));
+    this.app.use(express.urlencoded({ extended: false, limit: Constants.http.bodyLimitUrlEncoded }));
+    this.app.use(express.json({ limit: Constants.http.bodyLimitJson }));
     this.app.use("/public", express.static("public"));
     this.app.use(cors(this.corsOptions));
     this.app.set("views", path.join(__dirname, "../views"));
