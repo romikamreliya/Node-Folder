@@ -58,7 +58,7 @@ class AppSocketServer extends BaseSocket {
   }
 
   appEventHandler() {
-    this.appEvent.on("socketEmit", (data) => {
+    this.appEvent.on(this.appEvent.EVENTS.SOCKET_EMIT, (data) => {
       console.log("socket socketEmit", data);
       this.io.emit("send", data);
     });

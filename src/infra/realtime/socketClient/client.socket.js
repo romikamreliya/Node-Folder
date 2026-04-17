@@ -16,7 +16,7 @@ class AppSocketClient extends BaseSocket {
 
     this.socketClient.on("message", (data) => {
       console.log("message", data);
-      this.appEvent.emit("socketEmit", data);
+      this.appEvent.emit(this.appEvent.EVENTS.SOCKET_EMIT, data);
     });
     this.socketClient.on("participants", (data) => {
       console.log("participants", data);
@@ -27,7 +27,7 @@ class AppSocketClient extends BaseSocket {
     });
   }
   setupAppEventListeners() {
-    this.appEvent.on("socketClientEmit", (data) => {
+    this.appEvent.on(this.appEvent.EVENTS.SOCKET_CLIENT_EMIT, (data) => {
       console.log("socket socketClientEmit", data);
     });
   }

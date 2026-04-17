@@ -10,7 +10,7 @@ class DemoController extends BaseController {
 
   async test(req, res) {
     const eventEmitter = req.app.get("appEvent");
-    eventEmitter.emit("socketEmit", { message: "This is a test event" });
+    eventEmitter.emit(eventEmitter.EVENTS.SOCKET_EMIT, { message: "This is a test event" });
 
     const apiVersion = this.helper.getVersion({ url: req.baseUrl });
     return this.response.send({

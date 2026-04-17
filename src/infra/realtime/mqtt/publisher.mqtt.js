@@ -15,7 +15,7 @@ class MqttPublisher extends BaseMqtt {
     );
   }
   setupAppEventListeners() {
-    this.appEvent.on("socketEmit", (data) => {
+    this.appEvent.on(this.appEvent.EVENTS.SOCKET_EMIT, (data) => {
       this.mqtt.publish(`bms/v1/123456/test`, JSON.stringify(data));
     });
   }
