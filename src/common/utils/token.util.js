@@ -11,7 +11,7 @@ class TokenUtil {
 
   // Refresh Token
   static refreshBytes = parseInt(64, 10);
-  static refreshSecret = process.env.refressTokenKey;
+  static refreshSecret = process.env.refreshTokenKey || crypto.randomBytes(32).toString("hex");
   static refreshExpireMs = parseInt(7 * 24 * 60 * 60 * 1000); // 7 days
 
   // Custom AES Token
