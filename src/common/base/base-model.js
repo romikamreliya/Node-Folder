@@ -59,11 +59,11 @@ class BaseModel {
   }
 
   async find(query) {
-    return this.db[this.table].findMany({ where: this.clean(query) });
+    return await this.db[this.table].findMany({ where: this.clean(query) });
   }
 
   async findOne(query) {
-    return this.db[this.table].findFirst({ where: this.clean(query) });
+    return await this.db[this.table].findFirst({ where: this.clean(query) });
   }
 
   async insert(data) {
@@ -89,7 +89,7 @@ class BaseModel {
   }
 
   async count(query = {}) {
-    return this.db[this.table].count({ where: this.clean(query) });
+    return await this.db[this.table].count({ where: this.clean(query) });
   }
 
   // PAGINATION + ADVANCED FILTERS
@@ -134,7 +134,7 @@ class BaseModel {
     limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(Number(limit) || this.pageLimit)));
 
     if (!pagination) {
-      return this.db[this.table].findMany({
+      return await this.db[this.table].findMany({
         where: filters,
         select,
         orderBy: order

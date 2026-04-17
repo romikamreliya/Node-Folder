@@ -20,7 +20,7 @@ class TestCron {
     }
   }
 
-  async executeTask() {
+  executeTask() {
     try {
       console.log("CronTask");
     } catch (error) {
@@ -28,7 +28,7 @@ class TestCron {
     }
   }
 
-  async cronComplete() {
+  cronComplete() {
     loggerUtil.createLog({
       msg: `Cron Completed :- ${new Date()}`,
       name: this.name,

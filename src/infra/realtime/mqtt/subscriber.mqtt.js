@@ -38,7 +38,7 @@ class MqttSubscriber extends BaseMqtt {
     });
   }
 
-  async telemetryStatistic(data, serialNumber) {
+  telemetryStatistic(data, serialNumber) {
     try {
       console.log("data", data);
     } catch (error) {

@@ -21,7 +21,7 @@ class DemoCron {
     }
   }
 
-  async executeTask() {
+  executeTask() {
     try {
       console.log(`CronTask ${new Date()}`);
 
@@ -31,7 +31,7 @@ class DemoCron {
     }
   }
 
-  async cronComplete() {
+  cronComplete() {
     this.schedule = this.datetimeExpression();
     this.run();
 

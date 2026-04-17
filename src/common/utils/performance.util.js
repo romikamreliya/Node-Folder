@@ -24,7 +24,7 @@ class PerformanceUtil {
         const cpuStart = process.cpuUsage();
 
         // Execute the function
-        const returnValue = fn();
+        const returnValue = await fn();
 
         // CPU measurement end
         const cpuEnd = process.cpuUsage(cpuStart);
