@@ -1,10 +1,11 @@
 const BaseMiddleware = require("../../common/base/base-middleware");
 const { rateLimit } = require("express-rate-limit");
+const Constants = require("../../common/utils/constants");
 
 class RateLimitMiddleware extends BaseMiddleware {
   static defaultLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    limit: 10,
+    windowMs: Constants.rateLimit.windowMs,
+    limit: Constants.rateLimit.maxRequests,
     message: async (req, res) => {
       return this.response.send({
         req,

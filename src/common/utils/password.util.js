@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const Constants = require("./constants");
 
 class PasswordUtil {
   static hash(password) {
@@ -6,8 +7,8 @@ class PasswordUtil {
       throw new Error("Password is required");
     }
 
-    const salt = crypto.randomBytes(16).toString("hex");
-    const derivedKey = crypto.scryptSync(password, salt, 64).toString("hex");
+    const salt = crypto.randomBytes(Constants.password.saltBytes).toString("hex");
+    const derivedKey = crypto.scryptSync(password, salt, Constants.password.keyLength).toString("hex");
 
     return `${salt}:${derivedKey}`;
   }
@@ -22,7 +23,7 @@ class PasswordUtil {
     }
 
     const [salt, storedHash] = hashedPassword.split(":");
-    const computedHash = crypto.scryptSync(password, salt, 64).toString("hex");
+    const computedHash = crypto.scryptSync(password, salt, Constants.password.keyLength).toString("hex");
 
     return crypto.timingSafeEqual(
       Buffer.from(storedHash, "hex"),

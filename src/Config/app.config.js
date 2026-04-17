@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const fs = require("fs");
 
 const RequestLoggerMiddleware = require("../app/middleware/request-logger.middleware");
+const Constants = require("../common/utils/constants");
 
 /**
  * Express application configuration
@@ -35,7 +36,7 @@ class AppConfig {
       },
     },
     hsts: {
-      maxAge: 31536000, // 1 year
+      maxAge: Constants.http.hstsMaxAge,
       includeSubDomains: true,
       preload: true,
     },
@@ -58,14 +59,14 @@ class AppConfig {
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["X-Request-ID"],
-    maxAge: 86400, // 24 hours
-    optionsSuccessStatus: 200,
+    maxAge: Constants.http.corsMaxAge,
+    optionsSuccessStatus: Constants.http.corsOptionsStatus,
   };
 
   middlewares() {
     this.app.use(helmet(this.helmetConfig));
-    this.app.use(bodyParser.urlencoded({ extended: false, limit: "10mb" }));
-    this.app.use(bodyParser.json({ limit: "10mb" }));
+    this.app.use(bodyParser.urlencoded({ extended: false, limit: Constants.http.bodyLimitUrlEncoded }));
+    this.app.use(bodyParser.json({ limit: Constants.http.bodyLimitJson }));
     this.app.use("/public", express.static("public"));
     this.app.use(cors(this.corsOptions));
     this.app.set("views", path.join(__dirname, "../views"));

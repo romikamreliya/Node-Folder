@@ -1,21 +1,22 @@
 const cron = require("cron");
 const loggerUtil = require("../../common/utils/logger.util");
+const Constants = require("../../common/utils/constants");
 
 class DemoCron {
   constructor() {
     this.name = "demoCron";
     // this.schedule = "*/2 * * * * *";
     this.schedule = this.datetimeExpression();
-    this.timeZone = "Asia/Kolkata";
+    this.timeZone = Constants.cron.defaultTimezone;
     this.cronRun;
   }
 
   datetimeExpression(datetime = new Date()) {
     try {
-      const d = new Date(new Date(datetime).getTime() + 5000);
+      const d = new Date(new Date(datetime).getTime() + Constants.cron.scheduleOffsetMs);
       return `${d.getSeconds()} ${d.getMinutes()} ${d.getHours()} ${d.getDate()} ${d.getMonth() + 1} *`;
     } catch (error) {
-      const d = new Date(new Date().getTime() + 5000);
+      const d = new Date(new Date().getTime() + Constants.cron.scheduleOffsetMs);
       return `${d.getSeconds()} ${d.getMinutes()} ${d.getHours()} ${d.getDate()} ${d.getMonth() + 1} *`;
     }
   }

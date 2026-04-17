@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const Constants = require("./constants");
 
 /**
  * Token service for managing JWT, custom AES, and refresh tokens
@@ -7,16 +8,16 @@ const crypto = require("crypto");
 class TokenUtil {
   // JWT ACCESS TOKEN
   static jwtSecret = process.env.accessTokenKey;
-  static jwtExpire = "15m";
+  static jwtExpire = Constants.token.jwtExpire;
 
   // Refresh Token
-  static refreshBytes = parseInt(64, 10);
-  static refreshSecret = process.env.refreshTokenKey || crypto.randomBytes(32).toString("hex");
-  static refreshExpireMs = parseInt(7 * 24 * 60 * 60 * 1000); // 7 days
+  static refreshBytes = Constants.token.refreshBytes;
+  static refreshSecret = process.env.refreshTokenKey || crypto.randomBytes(Constants.token.fallbackSecretBytes).toString("hex");
+  static refreshExpireMs = Constants.token.refreshExpireMs;
 
   // Custom AES Token
-  static aesExpireMs = parseInt(24 * 60 * 60 * 1000); // 24 hours
-  static aesSalt = process.env.AES_SALT || crypto.randomBytes(16).toString("hex");
+  static aesExpireMs = Constants.token.aesExpireMs;
+  static aesSalt = process.env.AES_SALT || crypto.randomBytes(Constants.token.aesSaltBytes).toString("hex");
   static aesKey = (() => {
     if (!process.env.accessTokenKey) {
       throw new Error("Missing required env variable: accessTokenKey");
@@ -24,12 +25,12 @@ class TokenUtil {
     return crypto.pbkdf2Sync(
       process.env.accessTokenKey,
       TokenUtil.aesSalt,
-      100000,
-      32,
-      "sha256",
+      Constants.token.pbkdf2Iterations,
+      Constants.token.pbkdf2KeyLength,
+      Constants.token.pbkdf2Digest,
     );
   })();
-  static algorithm = "aes-256-gcm";
+  static algorithm = Constants.token.aesAlgorithm;
 
   // =========================================================
   //                    JWT ACCESS TOKEN
@@ -43,7 +44,7 @@ class TokenUtil {
   static createJwtAccessToken(payload) {
     return jwt.sign(payload, this.jwtSecret, {
       expiresIn: this.jwtExpire,
-      algorithm: "HS256",
+      algorithm: Constants.token.jwtAlgorithm,
     });
   }
 
@@ -70,7 +71,7 @@ class TokenUtil {
    * @returns {string} Encrypted token in base64
    */
   static createCustomToken(data) {
-    const iv = crypto.randomBytes(12);
+    const iv = crypto.randomBytes(Constants.token.aesIvBytes);
     const cipher = crypto.createCipheriv(this.algorithm, this.aesKey, iv);
 
     const payload = {
@@ -97,9 +98,9 @@ class TokenUtil {
   static verifyCustomToken(token) {
     try {
       const raw = Buffer.from(token, "base64");
-      const iv = raw.slice(0, 12);
-      const tag = raw.slice(12, 28);
-      const encrypted = raw.slice(28);
+      const iv = raw.slice(0, Constants.token.aesIvBytes);
+      const tag = raw.slice(Constants.token.aesIvBytes, Constants.token.aesIvBytes + Constants.token.aesTagBytes);
+      const encrypted = raw.slice(Constants.token.aesIvBytes + Constants.token.aesTagBytes);
 
       const decipher = crypto.createDecipheriv(this.algorithm, this.aesKey, iv);
       decipher.setAuthTag(tag);

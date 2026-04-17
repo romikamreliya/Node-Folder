@@ -3,6 +3,8 @@
  * Tracks and logs memory usage for performance analysis
  */
 
+const Constants = require("./constants");
+
 class MemoryUtil {
   static getMemoryUsage() {
     const used = process.memoryUsage();
@@ -33,7 +35,7 @@ class MemoryUtil {
     console.log(`External: ${memory.external}`);
   }
 
-  static startMonitoring(intervalMs = 10000) {
+  static startMonitoring(intervalMs = Constants.memory.defaultIntervalMs) {
     setInterval(() => {
       const memory = this.getFormattedMemory();
       console.log(

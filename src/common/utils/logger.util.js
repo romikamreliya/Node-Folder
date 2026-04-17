@@ -1,5 +1,6 @@
 const winston = require("winston");
 const path = require("path");
+const Constants = require("./constants");
 
 /**
  * Logger utility using Winston for file and console logging
@@ -39,14 +40,14 @@ class LoggerUtil {
         new winston.transports.File({
           filename: path.join(logDir, `${date}-error.log`),
           level: "error",
-          maxsize: 5242880, // 5MB
-          maxFiles: 5,
+          maxsize: Constants.logging.maxFileSize,
+          maxFiles: Constants.logging.maxFiles,
         }),
         // File transport for all logs
         new winston.transports.File({
           filename: path.join(logDir, `${date}.log`),
-          maxsize: 5242880, // 5MB
-          maxFiles: 5,
+          maxsize: Constants.logging.maxFileSize,
+          maxFiles: Constants.logging.maxFiles,
         }),
       ],
     });
