@@ -9,18 +9,34 @@ const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
 const AppError = require("../errors/app-error");
 
+const REGISTRY = {
+  ajv: ajvUtil,
+  constants,
+  date: dateUtil,
+  helper: helperUtil,
+  i18n: i18nUtil,
+  logger: loggerUtil,
+  response: responseUtil,
+  token: tokenUtil,
+  appError: AppError,
+};
+
 class BaseController {
-  constructor({ uploadPath } = {}) {
-    this.ajv = ajvUtil;
-    this.constants = constants;
-    this.date = dateUtil;
-    this.helper = helperUtil;
-    this.i18n = i18nUtil;
-    this.logger = loggerUtil;
-    this.response = responseUtil;
-    this.token = tokenUtil;
-    this.upload = new UploadUtil(uploadPath);
-    this.appError = AppError;
+  /**
+   * @param {Object} [options={}]
+   * @param {Array<keyof typeof REGISTRY>} [options.inject]
+   * @param {string} [options.uploadPath]
+   */
+  constructor({ inject, uploadPath } = {}) {
+    const keys = inject || Object.keys(REGISTRY);
+    for (const key of keys) {
+      if (REGISTRY[key]) {
+        this[key] = REGISTRY[key];
+      }
+    }
+    if (!inject || inject.includes("upload")) {
+      this.upload = new UploadUtil(uploadPath);
+    }
   }
 }
 

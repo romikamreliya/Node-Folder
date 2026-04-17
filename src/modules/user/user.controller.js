@@ -4,6 +4,10 @@ const userService = require("./user.service");
 const UserRequestDto = require("./user.dto.js");
 
 class UserController extends BaseController {
+  constructor() {
+    super({ inject: ["response", "ajv"] });
+  }
+
   async getUsers(req, res) {
     const users = await userService.getList();
     return this.response.send({

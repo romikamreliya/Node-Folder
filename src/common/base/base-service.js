@@ -9,18 +9,31 @@ const i18nUtil = require("../utils/i18n.util");
 const AppError = require("../errors/app-error");
 const PasswordUtil = require("../utils/password.util");
 
+const REGISTRY = {
+  constants,
+  helper: helperUtil,
+  logger: loggerUtil,
+  ajv: ajvUtil,
+  token: tokenUtil,
+  date: dateUtil,
+  i18n: i18nUtil,
+  appError: AppError,
+  response: responseUtil,
+  password: PasswordUtil,
+};
+
 class BaseService {
-  constructor() {
-    this.constants = constants;
-    this.helper = helperUtil;
-    this.logger = loggerUtil;
-    this.ajv = ajvUtil;
-    this.token = tokenUtil;
-    this.date = dateUtil;
-    this.i18n = i18nUtil;
-    this.appError = AppError;
-    this.response = responseUtil;
-    this.password = PasswordUtil;
+  /**
+   * @param {Object} [options={}]
+   * @param {Array<keyof typeof REGISTRY>} [options.inject]
+   */
+  constructor({ inject } = {}) {
+    const keys = inject || Object.keys(REGISTRY);
+    for (const key of keys) {
+      if (REGISTRY[key]) {
+        this[key] = REGISTRY[key];
+      }
+    }
   }
 }
 

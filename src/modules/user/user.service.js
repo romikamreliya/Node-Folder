@@ -3,6 +3,10 @@ const userModel = require("./user.model");
 const userResponse = require("./user.resource");
 
 class UserService extends BaseService {
+  constructor() {
+    super({ inject: ["appError", "password"] });
+  }
+
   /**
    * Get list
    */
