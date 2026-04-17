@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+const Constants = require("../common/utils/constants");
 
 class SocketConfig {
   constructor({ server }) {
@@ -14,6 +15,7 @@ class SocketConfig {
 
   getConfig(allowedOrigins = []) {
     return {
+      maxHttpBufferSize: Constants.socket.maxHttpBufferSize,
       cors: {
         origin: allowedOrigins.length > 0 ? allowedOrigins : true,
         credentials: true,

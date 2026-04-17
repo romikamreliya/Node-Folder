@@ -93,6 +93,11 @@ class Constants {
   static memory = {
     defaultIntervalMs: 10000,       // 10 seconds
   };
+
+  // ─── Socket.IO ────────────────────────────────────
+  static socket = {
+    maxHttpBufferSize: 1e6,         // 1 MB (default is 1e6, explicit for visibility)
+  };
 }
 
 module.exports = Constants;
