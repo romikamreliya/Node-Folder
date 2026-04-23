@@ -3,9 +3,7 @@ const userSchema = require("../user/user.schema");
 
 class DemoController extends BaseController {
   constructor() {
-    const uploadPath = "public/upload/demo";
-    super({ uploadPath });
-    this.uploadPath = uploadPath;
+    super({inject: ["response","ajv","storageUtil"]});
   }
 
   async test(req, res) {

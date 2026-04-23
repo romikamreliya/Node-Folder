@@ -12,10 +12,14 @@ class TestCron {
 
   datetimeExpression(datetime = new Date()) {
     try {
-      const d = new Date(new Date(datetime).getTime() + Constants.cron.scheduleOffsetMs);
+      const d = new Date(
+        new Date(datetime).getTime() + Constants.cron.scheduleOffsetMs,
+      );
       return `${d.getSeconds()} ${d.getMinutes()} ${d.getHours()} ${d.getDate()} ${d.getMonth() + 1} *`;
     } catch (error) {
-      const d = new Date(new Date().getTime() + Constants.cron.scheduleOffsetMs);
+      const d = new Date(
+        new Date().getTime() + Constants.cron.scheduleOffsetMs,
+      );
       return `${d.getSeconds()} ${d.getMinutes()} ${d.getHours()} ${d.getDate()} ${d.getMonth() + 1} *`;
     }
   }
@@ -25,6 +29,23 @@ class TestCron {
       console.log("CronTask");
     } catch (error) {
       loggerUtil.createLog({ msg: error, name: this.name });
+    }
+  }
+
+  async onTick() {
+    try {
+      await this.executeTask();
+    } catch (error) {
+      const normalizedError =
+        error instanceof Error ? error : new Error(String(error));
+
+      loggerUtil.getLogger().error(`${this.name} onTick failed`, {
+        cronName: this.name,
+        schedule: this.schedule,
+        timeZone: this.timeZone,
+        error: normalizedError.message,
+        stack: normalizedError.stack,
+      });
     }
   }
 
@@ -46,8 +67,8 @@ class TestCron {
   run() {
     this.cronRun = cron.CronJob.from({
       cronTime: this.schedule,
-      onTick: this.executeTask,
-      onComplete: this.cronComplete,
+      onTick: this.onTick.bind(this),
+      onComplete: this.cronComplete.bind(this),
       name: this.name,
       start: true,
       timeZone: this.timeZone,

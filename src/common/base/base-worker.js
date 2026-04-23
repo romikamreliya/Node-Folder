@@ -4,13 +4,13 @@ const responseUtil = require("../utils/response.util");
 const loggerUtil = require("../utils/logger.util");
 const ajvUtil = require("../utils/ajv.util");
 const tokenUtil = require("../utils/token.util");
-const UploadUtil = require("../utils/upload.util");
+const storageUtil = require("../utils/storage.util");
 const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
 const AppError = require("../errors/app-error");
 
 class BaseWorker {
-  constructor({ uploadPath } = {}) {
+  constructor() {
     this.ajv = ajvUtil;
     this.constants = constants;
     this.date = dateUtil;
@@ -19,7 +19,7 @@ class BaseWorker {
     this.logger = loggerUtil;
     this.response = responseUtil;
     this.token = tokenUtil;
-    this.upload = new UploadUtil(uploadPath);
+    this.storageUtil = storageUtil;
     this.appError = AppError;
   }
 }

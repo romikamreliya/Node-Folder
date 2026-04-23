@@ -4,7 +4,7 @@ const responseUtil = require("../utils/response.util");
 const loggerUtil = require("../utils/logger.util");
 const ajvUtil = require("../utils/ajv.util");
 const tokenUtil = require("../utils/token.util");
-const UploadUtil = require("../utils/upload.util");
+const storageUtil = require("../utils/storage.util");
 const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
 const AppError = require("../errors/app-error");
@@ -18,7 +18,7 @@ class BaseMiddleware {
   static logger = loggerUtil;
   static response = responseUtil;
   static token = tokenUtil;
-  static upload = UploadUtil;
+  static storageUtil = storageUtil;
   static appError = AppError;
 }
 

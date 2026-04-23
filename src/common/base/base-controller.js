@@ -4,7 +4,7 @@ const responseUtil = require("../utils/response.util");
 const loggerUtil = require("../utils/logger.util");
 const ajvUtil = require("../utils/ajv.util");
 const tokenUtil = require("../utils/token.util");
-const UploadUtil = require("../utils/upload.util");
+const storageUtil = require("../utils/storage.util");
 const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
 const AppError = require("../errors/app-error");
@@ -19,23 +19,20 @@ const REGISTRY = {
   response: responseUtil,
   token: tokenUtil,
   appError: AppError,
+  storageUtil: storageUtil,
 };
 
 class BaseController {
   /**
    * @param {Object} [options={}]
    * @param {Array<keyof typeof REGISTRY>} [options.inject]
-   * @param {string} [options.uploadPath]
    */
-  constructor({ inject, uploadPath } = {}) {
+  constructor({ inject } = {}) {
     const keys = inject || Object.keys(REGISTRY);
     for (const key of keys) {
       if (REGISTRY[key]) {
         this[key] = REGISTRY[key];
       }
-    }
-    if (!inject || inject.includes("upload")) {
-      this.upload = new UploadUtil(uploadPath);
     }
   }
 }
