@@ -229,13 +229,12 @@ class DemoController extends BaseController {
   }
 
   async apiVersion(req, res) {
-    const version = this.helper.getVersion({ url: req.baseUrl });
     return this.response.send({
       req,
       res,
       type: "SUCCESS",
       message: "SUCCESS",
-      data: { version },
+      data: { version:req.baseUrl },
     });
   }
 }

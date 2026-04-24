@@ -8,10 +8,8 @@ const socketClientConfig = require("../config/socket-client.config");
 const mqttConfig = require("../config/mqtt.config");
 const swaggerConfig = require("../config/swagger.config");
 
-const rateLimitMiddleware = require("./middleware/rate-limit.middleware");
 const errorMiddleware = require("./middleware/error.middleware");
 const appRouter = require("./router");
-const webRoutes = require("../modules/web/web.routes");
 
 const AppSocketServer = require("../infra/realtime/socketServer/server.socket");
 const AppSocketClient = require("../infra/realtime/socketClient/client.socket");
@@ -58,17 +56,7 @@ class ApplicationServer {
     if (process.env.SWAGGER_ENABLED === "true") {
       this.app.use("/api-docs", swaggerConfig.getRouter()); 
     }
-    this.app.use("/", webRoutes.getRoutes());
-    this.app.use("/api/v1",
-      rateLimitMiddleware.globalLimiter,
-      rateLimitMiddleware.userLimiter,
-      appRouter.getRoutesV1(),
-    );
-    this.app.use("/api/v2",
-      rateLimitMiddleware.globalLimiter,
-      rateLimitMiddleware.userLimiter,
-      appRouter.getRoutesV2(),
-    );
+    this.app.use("/", appRouter.registerRoutes());
     this.app.use(errorMiddleware.globalErrorHandler.bind(errorMiddleware));
   }
 
