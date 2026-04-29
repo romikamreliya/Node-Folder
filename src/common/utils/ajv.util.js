@@ -3,7 +3,8 @@ const Ajv = require("ajv");
 class ValidationUtil {
   static ajv = new Ajv({
     allErrors: true,
-    useDefaults: true,
+    // useDefaults: true,
+    useDefaults: "empty",
     verbose: true,
   });
 
@@ -100,6 +101,8 @@ class ValidationUtil {
    * @property {Object} [properties] - Schema for object properties.
    * @property {string} [pattern] - Regex pattern (for strings).
    * @property {Array} [enum] - Allowed values.
+   * @property {string} [default] - Default values.
+   * @property {string} [title] - Title of the field.
    * @property {"customEmail" | "customPhone" | "customWebsite" | "customDate" | "customTime"} [format] - Special format flag.
    * @property {boolean} [required] - Whether field is required.
    */

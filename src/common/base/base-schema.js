@@ -16,7 +16,7 @@ class BaseSchema {
   static commonFields = {
     page: this.ajv.prop("integer", { minimum: 1 }),
     limit: this.ajv.prop("integer", { minimum: 1, maximum: 100 }),
-    search: this.ajv.prop("string", { minLength: 1, maxLength: 255 }),
+    search: this.ajv.prop("string", { maxLength: 255 }),
     pagination: this.ajv.prop("boolean"),
     sortOrder: this.ajv.prop("string", { enum: Object.values(this.constants.orderByOptions) }),
   }
