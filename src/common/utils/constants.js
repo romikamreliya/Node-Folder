@@ -3,6 +3,12 @@ class Constants {
   static defaultPageLimit = 10;
   static maxPageLimit = 1000;
 
+  // ─── Order By Options ──────────────────────────────
+  static orderByOptions = {
+    asc: "ASC",
+    desc: "DESC",
+  }
+
   // ─── Language ──────────────────────────────────────
   static defaultLanguage = "en";
 

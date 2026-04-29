@@ -1,6 +1,5 @@
-const ajvUtil = require("../../common/utils/ajv.util");
-class UserSchema {
-  static ajv = ajvUtil;
+const BaseSchema = require("../../common/base/base-schema");
+class UserSchema extends BaseSchema {
 
   static columns = {
     id: this.ajv.prop("number", { minimum: 1 }),

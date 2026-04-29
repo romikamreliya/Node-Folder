@@ -1,4 +1,5 @@
-class UserRequestDto {
+const BaseDTO = require("../../common/base/base-dto");
+class UserRequestDto extends BaseDTO {
 
     static createFromRequest(req) {
         const { name, email, phone, password, status, notes } = req.body || {};
