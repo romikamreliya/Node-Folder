@@ -5,8 +5,8 @@ class Constants {
 
   // ─── Order By Options ──────────────────────────────
   static orderByOptions = {
-    asc: "ASC",
-    desc: "DESC",
+    asc: "asc",
+    desc: "desc",
   }
 
   // ─── Language ──────────────────────────────────────

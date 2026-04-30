@@ -4,7 +4,7 @@ const userResponse = require("./user.resource");
 
 class UserService extends BaseService {
   constructor() {
-    super({ inject: ["appError", "password"] });
+    super({ inject: ["appError", "passwordUtil"] });
   }
 
   /**
@@ -35,7 +35,7 @@ class UserService extends BaseService {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      password: this.password.hash(data.password),
+      password: this.passwordUtil.hash(data.password),
       status: data.status,
       notes: data.notes,
     };

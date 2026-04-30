@@ -3,7 +3,7 @@ const userSchema = require("../user/user.schema");
 
 class DemoController extends BaseController {
   constructor() {
-    super({inject: ["response","ajv","storageUtil"]});
+    super({inject: ["responseUtil","ajvUtil","storageUtil"]});
   }
 
   async test(req, res) {
@@ -11,7 +11,7 @@ class DemoController extends BaseController {
     eventEmitter.emit(eventEmitter.EVENTS.SOCKET_EMIT, { message: "This is a test event" });
 
     const apiVersion = this.helper.getVersion({ url: req.baseUrl });
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",
@@ -36,15 +36,15 @@ class DemoController extends BaseController {
     // Use centralized schema validation via class method
     const validation = userSchema.validate(data, "ajvFunSchema");
     if (!validation.isValid) {
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "BAD_REQUEST",
-        message: this.ajv.errorMsg({ error: validation.errors[0] }),
+        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
       });
     }
 
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",
@@ -63,15 +63,15 @@ class DemoController extends BaseController {
     // Use centralized schema validation via class method
     const validation = userSchema.validate(data, "filterSchema");
     if (!validation.isValid) {
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "BAD_REQUEST",
-        message: this.ajv.errorMsg({ error: validation.errors[0] }),
+        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
       });
     }
 
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",
@@ -86,7 +86,7 @@ class DemoController extends BaseController {
     const jwtAccessToken = this.token.createJwtAccessToken(userData);
     const customRefreshToken = this.token.createRefreshToken();
 
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",
@@ -123,11 +123,11 @@ class DemoController extends BaseController {
     });
 
     if (!validate(data)) {
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "BAD_REQUEST",
-        message: this.ajv.errorMsg({ error: validate.errors[0] }),
+        message: this.ajvUtil.errorMsg({ error: validate.errors[0] }),
       });
     }
 
@@ -136,7 +136,7 @@ class DemoController extends BaseController {
       data.jwtAccessToken,
     );
     if (!jwtAccessTokenCheck.ok) {
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "UNAUTHORIZED",
@@ -149,7 +149,7 @@ class DemoController extends BaseController {
       data.customAccessToken,
     );
     if (!customAccessTokenCheck.ok) {
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "UNAUTHORIZED",
@@ -162,7 +162,7 @@ class DemoController extends BaseController {
       data.customRefreshToken,
     );
     if (!customRefreshTokenCheck.ok) {
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "UNAUTHORIZED",
@@ -170,7 +170,7 @@ class DemoController extends BaseController {
       });
     }
 
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",
@@ -205,15 +205,15 @@ class DemoController extends BaseController {
 
       const validation = userSchema.validate(payload, "uploadSchema");
       if (!validation.isValid) {
-        return this.response.send({
+        return this.responseUtil.send({
           req,
           res,
           type: "BAD_REQUEST",
-          message: this.ajv.errorMsg({ error: validation.errors[0] }),
+          message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
         });
       }
 
-      return this.response.send({
+      return this.responseUtil.send({
         req,
         res,
         type: "SUCCESS",
@@ -229,7 +229,7 @@ class DemoController extends BaseController {
   }
 
   async apiVersion(req, res) {
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",

@@ -5,7 +5,7 @@ const UserRequestDto = require("./user.dto.js");
 
 class UserController extends BaseController {
   constructor() {
-    super({ inject: ["response", "ajv"] });
+    super({ inject: ["responseUtil", "ajvUtil"] });
   }
 
   async getUsers(req, res) {
@@ -31,7 +31,7 @@ class UserController extends BaseController {
         req,
         res,
         type: "BAD_REQUEST",
-        message: this.ajv.errorMsg({ error: validation.errors[0] }),
+        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
       });
     }
 
@@ -39,7 +39,7 @@ class UserController extends BaseController {
     const newUser = await userService.create({ data: payloadDto });
     
     // response send
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "CREATED",
@@ -60,7 +60,7 @@ class UserController extends BaseController {
         req,
         res,
         type: "BAD_REQUEST",
-        message: this.ajv.errorMsg({ error: validation.errors[0] }),
+        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
       });
     }
 
@@ -71,7 +71,7 @@ class UserController extends BaseController {
     });
 
     // response send
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "UPDATE",
@@ -92,7 +92,7 @@ class UserController extends BaseController {
         req,
         res,
         type: "BAD_REQUEST",
-        message: this.ajv.errorMsg({ error: validation.errors[0] }),
+        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
       });
     }
 
@@ -100,7 +100,7 @@ class UserController extends BaseController {
     await userService.delete({ id: payloadDto.id });
 
     // response send
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "DELETE",
@@ -116,7 +116,7 @@ class UserController extends BaseController {
     // main logic
     const users = await userService.filter({ name: payloadDto.name });
     
-    return this.response.send({
+    return this.responseUtil.send({
       req,
       res,
       type: "SUCCESS",
