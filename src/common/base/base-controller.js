@@ -7,19 +7,19 @@ const tokenUtil = require("../utils/token.util");
 const storageUtil = require("../utils/storage.util");
 const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
-const AppError = require("../errors/app-error");
+const appError = require("../errors/app-error");
 
 const REGISTRY = {
-  ajv: ajvUtil,
+  ajvUtil,
   constants,
-  date: dateUtil,
-  helper: helperUtil,
-  i18n: i18nUtil,
-  logger: loggerUtil,
-  response: responseUtil,
-  token: tokenUtil,
-  appError: AppError,
-  storageUtil: storageUtil,
+  dateUtil,
+  helperUtil,
+  i18nUtil,
+  loggerUtil,
+  responseUtil,
+  tokenUtil,
+  appError,
+  storageUtil,
 };
 
 class BaseController {

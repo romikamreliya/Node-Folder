@@ -54,8 +54,8 @@ class BaseModel {
   }
 
   // BASIC CRUD
-  async get() {
-    return await this.db[this.table].findMany();
+  async get(options) {
+    return await this.db[this.table].findMany(options);
   }
 
   async find(query) {

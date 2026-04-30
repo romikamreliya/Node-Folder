@@ -6,20 +6,20 @@ const ajvUtil = require("../utils/ajv.util");
 const tokenUtil = require("../utils/token.util");
 const dateUtil = require("../utils/date.util");
 const i18nUtil = require("../utils/i18n.util");
-const AppError = require("../errors/app-error");
-const PasswordUtil = require("../utils/password.util");
+const appError = require("../errors/app-error");
+const passwordUtil = require("../utils/password.util");
 
 const REGISTRY = {
   constants,
-  helper: helperUtil,
-  logger: loggerUtil,
-  ajv: ajvUtil,
-  token: tokenUtil,
-  date: dateUtil,
-  i18n: i18nUtil,
-  appError: AppError,
-  response: responseUtil,
-  password: PasswordUtil,
+  helperUtil,
+  loggerUtil,
+  ajvUtil,
+  tokenUtil,
+  dateUtil,
+  i18nUtil,
+  appError,
+  responseUtil,
+  passwordUtil,
 };
 
 class BaseService {
