@@ -102,7 +102,7 @@ class BaseModel {
    * @param {Boolean} [options.pagination=true] Filter conditions
    * @param {string|string[]} [options.select="*"] Columns to select
    * @param {Object<string, "asc"|"desc">} [options.order={}] Sorting order
-   * @returns {Promise<Object|Array>} Paginated result object or array
+   * @returns {Promise<Object>} Paginated result object or array
    * @returns {Array<Object>} return.data Array of rows
    * @returns {Object} return.pagination Pagination info
    * @returns {number} return.pagination.totalRows Total number of rows matching the filters
@@ -114,9 +114,9 @@ class BaseModel {
    * const result = await User.pagination({
    *   page: 2,
    *   limit: 10,
-   *   filters: { name: { like: "Romik" } },
+   *   filters: { name: { like: "test" } },
    *   select: ["id","name","email"],
-   *   order: { created_at: "desc" }
+   *   order: { created_at: "desc" },
    *   pagination: true,
    * });
    */
@@ -134,11 +134,12 @@ class BaseModel {
     limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(Number(limit) || this.pageLimit)));
 
     if (!pagination) {
-      return await this.db[this.table].findMany({
+      const data = await this.db[this.table].findMany({
         where: filters,
         select,
         orderBy: order
       });
+      return { data };
     }
     
     const [data, total] = await this.db.$transaction([

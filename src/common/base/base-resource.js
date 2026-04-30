@@ -1,3 +1,5 @@
+const constants = require("../../common/utils/constants");
+
 class BaseResource {
   /**
    * Apply format() to an array of items.
@@ -15,19 +17,24 @@ class BaseResource {
 
   /**
    * Wrap a paginated response with metadata.
-   * @param {Array}  data
-   * @param {Object} pagination  - { total, page, limit, totalPages }
-   * @param {Function} formatter
+   * @param {Object} options
+   * @param {boolean} [options.enabled=true] - Whether pagination is enabled
+   * @param {Array} [options.items=[]] - Array of items
+   * @param {Object} [options.pageInfo={}] - Pagination info { totalRows, currentPage, limit, totalPages }
+   * @param {Function} [options.transform] - Function to transform each item
    * @returns {Object}
    */
-  paginate(data = [], pagination = {}, formatter) {
+  paginate({enabled = true, items = [], pageInfo = {}, transform}) {
+    if (!enabled) {
+      return this.collection(items, transform);
+    }
     return {
-      data: this.collection(data, formatter),
+      data: this.collection(items, transform),
       pagination: {
-        total: pagination.totalRows ?? 0,
-        page: pagination.currentPage ?? 1,
-        limit: pagination.limit ?? 10,
-        totalPages: pagination.totalPages ?? 0,
+        total: pageInfo.totalRows ?? 0,
+        page: pageInfo.currentPage ?? 1,
+        limit: pageInfo.limit ?? constants.defaultPageLimit,
+        totalPages: pageInfo.totalPages ?? 0,
       },
     };
   }

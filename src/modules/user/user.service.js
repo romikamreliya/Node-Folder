@@ -88,7 +88,7 @@ class UserService extends BaseService {
     const users = await userModel.paginate({
       filters: name ? {name: { contains: name }} : {},
     });
-    return userResponse.paginate(users.data, users.pagination);
+    return userResponse.paginate({items: users.data, pageInfo: users.pagination});
   }
 }
 
