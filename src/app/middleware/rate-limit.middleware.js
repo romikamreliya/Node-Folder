@@ -1,12 +1,11 @@
 const BaseMiddleware = require("../../common/base/base-middleware");
 const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
-const Constants = require("../../common/utils/constants");
 
 class RateLimitMiddleware extends BaseMiddleware {
   // ─── IP-based global limiter (skips whitelisted paths) ─────
   static globalLimiter = rateLimit({
-    windowMs: Constants.rateLimit.windowMs,
-    limit: Constants.rateLimit.maxRequests,
+    windowMs: this.constants.rateLimit.windowMs,
+    limit: this.constants.rateLimit.maxRequests,
     message: async (req, res) => {
       return this.response.send({
         req,
@@ -17,14 +16,14 @@ class RateLimitMiddleware extends BaseMiddleware {
     },
     standardHeaders: true,
     legacyHeaders: false,
-    skip: (req) => Constants.rateLimit.skipPaths.includes(req.path),
+    skip: (req) => this.constants.rateLimit.skipPaths.includes(req.path),
     // skipSuccessfulRequests: true // Optionally skip counting successful requests
   });
 
   // ─── Per-user limiter (keyed by authenticated user ID) ─────
   static userLimiter = rateLimit({
-    windowMs: Constants.rateLimit.userWindowMs,
-    limit: Constants.rateLimit.userMaxRequests,
+    windowMs: this.constants.rateLimit.userWindowMs,
+    limit: this.constants.rateLimit.userMaxRequests,
     keyGenerator: (req) => ipKeyGenerator(req.ip),
     validate: false,
     message: async (req, res) => {

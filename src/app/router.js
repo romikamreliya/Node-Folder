@@ -21,8 +21,8 @@ class AppRouter {
   registerRoutes() {
     const router = express.Router();
     router.use("/", webRoutes.getRoutes());
-    router.use("/api/v1", rateLimitMiddleware.globalLimiter, rateLimitMiddleware.userLimiter, this.getRoutesV1());
-    router.use("/api/v2", rateLimitMiddleware.globalLimiter, rateLimitMiddleware.userLimiter, this.getRoutesV2());
+    router.use("/api/v1", rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV1());
+    router.use("/api/v2", rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV2());
     return router;
   }
 }
