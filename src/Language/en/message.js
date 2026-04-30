@@ -14,7 +14,8 @@ module.exports = {
 
   // Error
   BAD_REQUEST: "The request is invalid.",
-  UNAUTHORIZED: "Unauthorized access",
+  UNAUTHORIZED: "Authentication token is required",
+  TOKEN_MISSING: "Authorization token is missing.",
   PAYMENT_REQUIRED: "Payment is required to complete this request.",
   FORBIDDEN: "You do not have permission to access this resource.",
   NOT_FOUND: "The requested resource was not found.",

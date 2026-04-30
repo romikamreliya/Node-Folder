@@ -18,7 +18,7 @@ class BaseMiddleware {
   static logger = loggerUtil;
   static response = responseUtil;
   static token = tokenUtil;
-  static storageUtil = storageUtil;
+  static storage = storageUtil;
   static appError = AppError;
 }
 

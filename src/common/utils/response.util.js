@@ -17,6 +17,7 @@ class ResponseUtil {
     // ❌ Client Errors
     BAD_REQUEST: { status: 400, success: false },
     UNAUTHORIZED: { status: 401, success: false },
+    TOKEN_MISSING: { status: 401, success: false },
     PAYMENT_REQUIRED: { status: 402, success: false },
     FORBIDDEN: { status: 403, success: false },
     NOT_FOUND: { status: 404, success: false },
@@ -52,17 +53,17 @@ class ResponseUtil {
    * @returns {Object}
    */
   static send({ req, res, type = "SUCCESS", message, data = null } = {}) {
-    if (!req || !res)
-      throw new Error("Request and Response objects are required");
+    if (!req || !res) throw new Error("Request and Response objects are required");
 
     const error = this.RES_CODES[type];
     if (!error) {
-      return this.error({ req, res, key: message || type, status: 500 });
+      return this.error({ req, res, key: message || type, status: 500, code: type });
     }
     if (error.success) {
       return this.success({
         req,
         res,
+        code: type,
         key: message || type,
         data,
         status: error.status,
@@ -71,6 +72,7 @@ class ResponseUtil {
       return this.error({
         req,
         res,
+        code: type,
         key: message || type,
         status: error.status,
       });
