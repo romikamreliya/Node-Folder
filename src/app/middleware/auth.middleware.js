@@ -43,7 +43,7 @@ class AuthMiddleware extends BaseMiddleware {
       req.currentUser = tokenCheck.data;
       next();
     } catch (error) {
-      this.logger.createLog({ msg: error, name: "ApiMiddleware-userLogin", requestId: req.requestId });
+      this.logger.createLog(error,"ApiMiddleware-userLogin");
       return this.response.send({
         req,
         res,
@@ -88,11 +88,7 @@ class AuthMiddleware extends BaseMiddleware {
 
         next();
       } catch (error) {
-        this.logger.createLog({
-          msg: error.message,
-          name: "PermissionMiddleware-checkPermission",
-          requestId: req.requestId,
-        });
+        this.logger.createLog(error,"PermissionMiddleware-checkPermission");
         return this.response.send({
           req,
           res,

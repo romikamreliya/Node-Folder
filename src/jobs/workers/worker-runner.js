@@ -19,19 +19,19 @@ class WorkerRunner extends BaseWorker {
         });
 
         worker.on("error", (err) => {
-          this.logger.createLog({ msg: err, name: "testWorker" });
+          this.logger.createLog(err,"testWorker");
           reject(err);
         });
 
         worker.on("exit", (code) => {
           if (code !== 0) {
             const error = new Error(`Worker stopped with exit code ${code}`);
-            this.logger.createLog({ msg: error, name: "testWorker exit" });
+            this.logger.createLog(error,"testWorker exit");
             reject(error);
           }
         });
       } catch (error) {
-        this.logger.createLog({ msg: error, name: "testWorker exit" });
+        this.logger.createLog(error,"testWorker exit");
         reject(error);
       }
     });

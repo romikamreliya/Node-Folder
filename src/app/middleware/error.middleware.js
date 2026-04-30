@@ -18,11 +18,7 @@ class ErrorMiddleware extends BaseMiddleware {
     }
 
     // Log unexpected errors with request ID
-    this.logger.createLog({
-      msg: error,
-      name: `UnhandledError-${req.method}-${req.path}`,
-      requestId: req.requestId,
-    });
+    this.logger.createLog(error, `UnhandledError-${req.method}-${req.path}`);
 
     // Return generic error response
     return this.response.send({
