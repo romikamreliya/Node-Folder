@@ -61,22 +61,26 @@ class AuthMiddleware extends BaseMiddleware {
     }
 
     return async (req, res, next) => {
-      // Check if user is authenticated via token
-      if (!req.currentUser) {
-        throw new this.appError({type: "UNAUTHORIZED"});
+      try {
+        // Check if user is authenticated via token
+        if (!req.currentUser) {
+          throw new this.appError({type: "UNAUTHORIZED"});
+        }
+
+        const userPermissions = req.currentUser?.permissions || {};
+        const allowed = this.hasRequiredPermission(
+          userPermissions,
+          permissions,
+        );
+
+        if (!allowed) {
+          throw new this.appError({type: "FORBIDDEN"});
+        }
+
+        next();
+      } catch (error) {
+        next(error);
       }
-
-      const userPermissions = req.currentUser?.permissions || {};
-      const allowed = this.hasRequiredPermission(
-        userPermissions,
-        permissions,
-      );
-
-      if (!allowed) {
-        throw new this.appError({type: "FORBIDDEN"});
-      }
-
-      next();
     };
   }
 }

@@ -14,7 +14,7 @@ class BaseModel {
   clean(data) {
     if (!data || typeof data !== 'object') { return {};}
 
-    const validColumns = new Set([...this.columns, this.hidden]);
+    const validColumns = new Set([...this.columns, ...this.hidden]);
 
     return Object.fromEntries(
       Object.entries(data).filter(([key, value]) => {
