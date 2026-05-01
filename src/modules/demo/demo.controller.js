@@ -6,184 +6,174 @@ class DemoController extends BaseController {
     super({inject: ["responseUtil","ajvUtil","storageUtil"]});
   }
 
-  async test(req, res) {
-    const eventEmitter = req.app.get("appEvent");
-    eventEmitter.emit(eventEmitter.EVENTS.SOCKET_EMIT, { message: "This is a test event" });
+  async test(req, res, next) {
+    try {
+      const eventEmitter = req.app.get("appEvent");
+      eventEmitter.emit(eventEmitter.EVENTS.SOCKET_EMIT, { message: "This is a test event" });
 
-    const apiVersion = this.helper.getVersion({ url: req.baseUrl });
-    return this.responseUtil.send({
-      req,
-      res,
-      type: "SUCCESS",
-      message: "SUCCESS",
-      data: apiVersion,
-    });
+      const apiVersion = this.helper.getVersion({ url: req.baseUrl });
+      return this.responseUtil.send({
+        req,
+        res,
+        type: "SUCCESS",
+        message: "SUCCESS",
+        data: apiVersion,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  async ajvFun(req, res) {
-    const data = {
-      type: req.body?.type,
-      name: req.body?.name,
-      email: req.body?.email,
-      email_two: req.body?.email_two,
-      phone: req.body?.phone,
-      website: req.body?.website,
-      demoTemp: req.body?.demoTemp,
-      array: req.body?.array,
-      object: req.body?.object,
-    };
+  async ajvFun(req, res, next) {
+    try {
+      const data = {
+        type: req.body?.type,
+        name: req.body?.name,
+        email: req.body?.email,
+        email_two: req.body?.email_two,
+        phone: req.body?.phone,
+        website: req.body?.website,
+        demoTemp: req.body?.demoTemp,
+        array: req.body?.array,
+        object: req.body?.object,
+      };
 
-    // Use centralized schema validation via class method
-    const validation = userSchema.validate(data, "ajvFunSchema");
-    if (!validation.isValid) {
+      // Use centralized schema validation via class method
+      const validation = userSchema.validate(data, "ajvFunSchema");
+      if (!validation.isValid) {
+        throw new this.appError({type: "BAD_REQUEST", message: this.ajvUtil.errorMsg({ error: validation.errors[0] })});
+      }
+
       return this.responseUtil.send({
         req,
         res,
-        type: "BAD_REQUEST",
-        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
+        type: "SUCCESS",
+        message: "SUCCESS",
+        data: "valid",
       });
+    } catch (error) {
+      next(error);
     }
-
-    return this.responseUtil.send({
-      req,
-      res,
-      type: "SUCCESS",
-      message: "SUCCESS",
-      data: "valid",
-    });
   }
 
-  async filter(req, res) {
-    const data = {
-      name: req.body?.name,
-      id: req.body?.id,
-      range: req.body?.range,
-    };
+  async filter(req, res, next) {
+    try {
+      const data = {
+        name: req.body?.name,
+        id: req.body?.id,
+        range: req.body?.range,
+      };
 
-    // Use centralized schema validation via class method
-    const validation = userSchema.validate(data, "filterSchema");
-    if (!validation.isValid) {
+      // Use centralized schema validation via class method
+      const validation = userSchema.validate(data, "filterSchema");
+      if (!validation.isValid) {
+        throw new this.appError({type: "BAD_REQUEST", message: this.ajvUtil.errorMsg({ error: validation.errors[0] })});
+      }
+
       return this.responseUtil.send({
         req,
         res,
-        type: "BAD_REQUEST",
-        message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
+        type: "SUCCESS",
+        message: "SUCCESS",
+        data: "filterUser",
       });
+    } catch (error) {
+      next(error);
     }
-
-    return this.responseUtil.send({
-      req,
-      res,
-      type: "SUCCESS",
-      message: "SUCCESS",
-      data: "filterUser",
-    });
   }
 
-  async tokenGen(req, res) {
-    const userData = { email: "user@gmail.com", pass: "pass" };
-    const customAccessToken = this.token.createCustomToken(userData);
-    const jwtAccessToken = this.token.createJwtAccessToken(userData);
-    const customRefreshToken = this.token.createRefreshToken();
+  async tokenGen(req, res, next) {
+    try {
+      const userData = { email: "user@gmail.com", pass: "pass" };
+      const customAccessToken = this.token.createCustomToken(userData);
+      const jwtAccessToken = this.token.createJwtAccessToken(userData);
+      const customRefreshToken = this.token.createRefreshToken();
 
-    return this.responseUtil.send({
-      req,
-      res,
-      type: "SUCCESS",
-      message: "SUCCESS",
-      data: {
-        customAccessToken,
-        jwtAccessToken,
-        customRefreshToken,
-      },
-    });
+      return this.responseUtil.send({
+        req,
+        res,
+        type: "SUCCESS",
+        message: "SUCCESS",
+        data: {
+          customAccessToken,
+          jwtAccessToken,
+          customRefreshToken,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  async tokenCheck(req, res) {
-    const data = {
-      customAccessToken: req.body.customAccessToken,
-      jwtAccessToken: req.body.jwtAccessToken,
-      customRefreshToken: req.body.customRefreshToken,
-    };
+  async tokenCheck(req, res, next) {
+    try {
+      const data = {
+        customAccessToken: req.body.customAccessToken,
+        jwtAccessToken: req.body.jwtAccessToken,
+        customRefreshToken: req.body.customRefreshToken,
+      };
 
-    // json validation
-    const validate = this.ajv.ajvCheck({
-      customAccessToken: this.ajv.prop("string", {
-        title: "Custom Access Token",
-        minLength: 10,
-      }),
-      jwtAccessToken: this.ajv.prop("string", {
-        title: "JWT Access Token",
-        minLength: 10,
-      }),
-      customRefreshToken: this.ajv.prop("string", {
-        title: "Custom Refresh Token",
-        minLength: 10,
-      }),
-    });
+      // json validation
+      const validate = this.ajv.ajvCheck({
+        customAccessToken: this.ajv.prop("string", {
+          title: "Custom Access Token",
+          minLength: 10,
+        }),
+        jwtAccessToken: this.ajv.prop("string", {
+          title: "JWT Access Token",
+          minLength: 10,
+        }),
+        customRefreshToken: this.ajv.prop("string", {
+          title: "Custom Refresh Token",
+          minLength: 10,
+        }),
+      });
 
-    if (!validate(data)) {
+      if (!validate(data)) {
+        throw new this.appError({type: "BAD_REQUEST", message: this.ajvUtil.errorMsg({ error: validation.errors[0] })});
+      }
+
+      // check JWT Access Token
+      const jwtAccessTokenCheck = this.token.verifyJwtAccessToken(
+        data.jwtAccessToken,
+      );
+      if (!jwtAccessTokenCheck.ok) {
+        throw new this.appError({type: "UNAUTHORIZED"});
+      }
+
+      // check Custom Access Token
+      const customAccessTokenCheck = this.token.verifyCustomToken(
+        data.customAccessToken,
+      );
+      if (!customAccessTokenCheck.ok) {
+        throw new this.appError({type: "UNAUTHORIZED"});
+      }
+
+      // check Custom Refresh Token
+      const customRefreshTokenCheck = this.token.verifyRefreshToken(
+        data.customRefreshToken,
+      );
+      if (!customRefreshTokenCheck.ok) {
+        throw new this.appError({type: "UNAUTHORIZED"});
+      }
+
       return this.responseUtil.send({
         req,
         res,
-        type: "BAD_REQUEST",
-        message: this.ajvUtil.errorMsg({ error: validate.errors[0] }),
+        type: "SUCCESS",
+        message: "SUCCESS",
+        data: {
+          customAccessToken: customAccessTokenCheck,
+          jwtAccessToken: jwtAccessTokenCheck,
+          customRefreshToken: customRefreshTokenCheck,
+        },
       });
+    } catch (error) {
+      next(error);
     }
-
-    // check JWT Access Token
-    const jwtAccessTokenCheck = this.token.verifyJwtAccessToken(
-      data.jwtAccessToken,
-    );
-    if (!jwtAccessTokenCheck.ok) {
-      return this.responseUtil.send({
-        req,
-        res,
-        type: "UNAUTHORIZED",
-        message: "UNAUTHORIZED",
-      });
-    }
-
-    // check Custom Access Token
-    const customAccessTokenCheck = this.token.verifyCustomToken(
-      data.customAccessToken,
-    );
-    if (!customAccessTokenCheck.ok) {
-      return this.responseUtil.send({
-        req,
-        res,
-        type: "UNAUTHORIZED",
-        message: "UNAUTHORIZED",
-      });
-    }
-
-    // check Custom Refresh Token
-    const customRefreshTokenCheck = this.token.verifyRefreshToken(
-      data.customRefreshToken,
-    );
-    if (!customRefreshTokenCheck.ok) {
-      return this.responseUtil.send({
-        req,
-        res,
-        type: "UNAUTHORIZED",
-        message: "UNAUTHORIZED",
-      });
-    }
-
-    return this.responseUtil.send({
-      req,
-      res,
-      type: "SUCCESS",
-      message: "SUCCESS",
-      data: {
-        customAccessToken: customAccessTokenCheck,
-        jwtAccessToken: jwtAccessTokenCheck,
-        customRefreshToken: customRefreshTokenCheck,
-      },
-    });
   }
 
-  async uploadFile(req, res) {
+  async uploadFile(req, res, next) {
     try {
 
       const payload = {
@@ -205,12 +195,7 @@ class DemoController extends BaseController {
 
       const validation = userSchema.validate(payload, "uploadSchema");
       if (!validation.isValid) {
-        return this.responseUtil.send({
-          req,
-          res,
-          type: "BAD_REQUEST",
-          message: this.ajvUtil.errorMsg({ error: validation.errors[0] }),
-        });
+        throw new this.appError({type: "BAD_REQUEST", message: this.ajvUtil.errorMsg({ error: validation.errors[0] })});
       }
 
       return this.responseUtil.send({
@@ -221,21 +206,22 @@ class DemoController extends BaseController {
         data: payload,
       });
     } catch (error) {
-      throw new this.appError({
-        message: "FILE_UPLOAD_FAILED",
-        type: "BAD_REQUEST",
-      });
+      next(error);
     }
   }
 
-  async apiVersion(req, res) {
-    return this.responseUtil.send({
-      req,
-      res,
-      type: "SUCCESS",
-      message: "SUCCESS",
-      data: { version:req.baseUrl },
-    });
+  async apiVersion(req, res, next) {
+    try {
+      return this.responseUtil.send({
+        req,
+        res,
+        type: "SUCCESS",
+        message: "SUCCESS",
+        data: { version:req.baseUrl },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
