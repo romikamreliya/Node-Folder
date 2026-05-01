@@ -16,19 +16,26 @@ class AuthMiddleware extends BaseMiddleware {
     });
   }
 
+  static validateAuthHeader(authHeader) {
+    if (!authHeader) {
+      throw new this.appError({type: "TOKEN_MISSING"});
+    }
+
+    if (!authHeader.startsWith("Bearer ")) {
+      throw new this.appError({type: "INVALID_TOKEN_FORMAT"});
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      throw new this.appError({type: "TOKEN_MISSING"});
+    }
+
+    return token;
+  }
+
   static authenticateToken(req, res, next) {
     try {
-      const token = req.headers["authorization"]?.replace("Bearer ", "");
-
-      if (!token) {
-        return this.response.send({
-          req,
-          res,
-          type: "UNAUTHORIZED",
-          message: "UNAUTHORIZED",
-        });
-      }
-
+      const token = this.validateAuthHeader(req.headers.authorization);
       // check Token
       const tokenCheck = this.token.verifyCustomToken(token);
       if (!tokenCheck.ok) {
@@ -43,13 +50,7 @@ class AuthMiddleware extends BaseMiddleware {
       req.currentUser = tokenCheck.data;
       next();
     } catch (error) {
-      this.logger.createLog(error,"ApiMiddleware-userLogin");
-      return this.response.send({
-        req,
-        res,
-        type: "INTERNAL_SERVER_ERROR",
-        message: "INTERNAL_SERVER_ERROR",
-      });
+      next(error);
     }
   }
 
@@ -60,42 +61,22 @@ class AuthMiddleware extends BaseMiddleware {
     }
 
     return async (req, res, next) => {
-      try {
-        // Check if user is authenticated via token
-        if (!req.currentUser) {
-          return this.response.send({
-            req,
-            res,
-            type: "UNAUTHORIZED",
-            message: "UNAUTHORIZED",
-          });
-        }
-
-        const userPermissions = req.currentUser?.permissions || {};
-        const allowed = this.hasRequiredPermission(
-          userPermissions,
-          permissions,
-        );
-
-        if (!allowed) {
-          return this.response.send({
-            req,
-            res,
-            type: "FORBIDDEN",
-            message: "INSUFFICIENT_PERMISSIONS",
-          });
-        }
-
-        next();
-      } catch (error) {
-        this.logger.createLog(error,"PermissionMiddleware-checkPermission");
-        return this.response.send({
-          req,
-          res,
-          type: "INTERNAL_SERVER_ERROR",
-          message: "INTERNAL_SERVER_ERROR",
-        });
+      // Check if user is authenticated via token
+      if (!req.currentUser) {
+        throw new this.appError({type: "UNAUTHORIZED"});
       }
+
+      const userPermissions = req.currentUser?.permissions || {};
+      const allowed = this.hasRequiredPermission(
+        userPermissions,
+        permissions,
+      );
+
+      if (!allowed) {
+        throw new this.appError({type: "FORBIDDEN"});
+      }
+
+      next();
     };
   }
 }
