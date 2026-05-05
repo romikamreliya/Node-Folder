@@ -5,6 +5,16 @@ const Constants = require("./constants");
 /**
  * Token service for managing JWT, custom AES, and refresh tokens
  */
+
+// Fail fast at startup if required env vars are missing.
+// A missing secret causes silent runtime failures or insecure fallbacks.
+const REQUIRED_ENV = ["accessTokenKey", "refreshTokenKey", "AES_SALT"];
+for (const key of REQUIRED_ENV) {
+  if (!process.env[key]) {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+}
+
 class TokenUtil {
   // JWT ACCESS TOKEN
   static jwtSecret = process.env.accessTokenKey;
@@ -12,19 +22,15 @@ class TokenUtil {
 
   // Refresh Token
   static refreshBytes = Constants.token.refreshBytes;
-  static refreshSecret = process.env.refreshTokenKey || crypto.randomBytes(Constants.token.fallbackSecretBytes).toString("hex");
+  static refreshSecret = process.env.refreshTokenKey;
   static refreshExpireMs = Constants.token.refreshExpireMs;
 
   // Custom AES Token
   static aesExpireMs = Constants.token.aesExpireMs;
-  static aesSalt = process.env.AES_SALT || crypto.randomBytes(Constants.token.aesSaltBytes).toString("hex");
   static aesKey = (() => {
-    if (!process.env.accessTokenKey) {
-      throw new Error("Missing required env variable: accessTokenKey");
-    }
     return crypto.pbkdf2Sync(
       process.env.accessTokenKey,
-      TokenUtil.aesSalt,
+      process.env.AES_SALT,
       Constants.token.pbkdf2Iterations,
       Constants.token.pbkdf2KeyLength,
       Constants.token.pbkdf2Digest,
