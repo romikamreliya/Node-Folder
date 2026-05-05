@@ -1,20 +1,7 @@
 const BaseMiddleware = require("../../common/base/base-middleware");
+const userPermissionsQuery = require("../../common/queries/userPermissions.query");
 
 class AuthMiddleware extends BaseMiddleware {
-  static hasRequiredPermission(userPermissions = {}, requiredPermissions = {}) {
-    return Object.entries(requiredPermissions).some(([module, actions]) => {
-      if (!Array.isArray(actions) || actions.length === 0) {
-        return false;
-      }
-
-      const grantedActions = userPermissions[module];
-      if (!Array.isArray(grantedActions)) {
-        return false;
-      }
-
-      return actions.some((action) => grantedActions.includes(action));
-    });
-  }
 
   static validateAuthHeader(authHeader) {
     if (!authHeader) {
@@ -52,6 +39,25 @@ class AuthMiddleware extends BaseMiddleware {
     } catch (error) {
       next(error);
     }
+  }
+
+  static hasRequiredPermission(userPermissions = {}, requiredPermissions = {}) {
+    return Object.entries(requiredPermissions).some(([actions, module]) => {
+
+      // Validate required permissions format
+      if (!Array.isArray(module) || module.length === 0) {
+        return false;
+      }
+
+      // Validate user permissions format
+      const grantedActions = userPermissions[actions];
+      if (!Array.isArray(grantedActions)) {
+        return false;
+      }
+
+      // Check if any of the required modules are included in the granted actions for the specified permission type
+      return module.some((mod) => grantedActions.includes(mod));
+    });
   }
 
   static authorize(permissions = {}) {
