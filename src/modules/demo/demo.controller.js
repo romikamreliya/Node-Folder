@@ -3,7 +3,7 @@ const userSchema = require("../user/user.schema");
 
 class DemoController extends BaseController {
   constructor() {
-    super({inject: ["responseUtil","ajvUtil","storageUtil"]});
+    super({inject: ["responseUtil","ajvUtil","storageUtil","tokenUtil"]});
   }
 
   async test(req, res, next) {
@@ -85,9 +85,9 @@ class DemoController extends BaseController {
   async tokenGen(req, res, next) {
     try {
       const userData = { email: "user@gmail.com", pass: "pass" };
-      const customAccessToken = this.token.createCustomToken(userData);
-      const jwtAccessToken = this.token.createJwtAccessToken(userData);
-      const customRefreshToken = this.token.createRefreshToken();
+      const customAccessToken = this.tokenUtil.createCustomToken(userData);
+      const jwtAccessToken = this.tokenUtil.createJwtAccessToken(userData);
+      const customRefreshToken = this.tokenUtil.createRefreshToken();
 
       return this.responseUtil.send({
         req,
