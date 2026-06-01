@@ -132,6 +132,7 @@ class ValidationUtil {
     options.default !== undefined && (propObj.default = options.default);
     options.format !== undefined && (propObj[options.format] = true);
     options.required !== undefined && (propObj.required = options.required);
+    options.anyOf !== undefined && (propObj.anyOf = options.anyOf);
 
     return propObj;
   }

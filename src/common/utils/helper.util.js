@@ -26,8 +26,22 @@ class HelperUtil {
     }
 
     return value;
-  }  
+  }
+
+  static sanitizeFcmTopicName(topic) {
+    if (!topic) {
+      return "";
+    }
+    return String(topic).replace(/[^a-zA-Z0-9_.-]/g, '_');
+  }
   
+  static bufferToHex = (buffer) => {
+    return buffer ? Buffer.from(buffer).toString("hex").toUpperCase() : null;
+  };
+
+  static hexToBuffer = (hex) => {
+    return hex ? Buffer.from(hex, "hex") : null;
+  };
 
 }
 

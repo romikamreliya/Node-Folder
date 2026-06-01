@@ -1,6 +1,11 @@
 const constants = require("../../common/utils/constants");
+const helperUtil = require("../../common/utils/helper.util");
 
 class BaseResource {
+  constructor() {
+    this.constants = constants;
+    this.helperUtil = helperUtil;
+  }
   /**
    * Apply format() to an array of items.
    * @param {Array}    data
@@ -33,7 +38,7 @@ class BaseResource {
       pagination: {
         total: pageInfo.totalRows ?? 0,
         page: pageInfo.currentPage ?? 1,
-        limit: pageInfo.limit ?? constants.defaultPageLimit,
+        limit: pageInfo.limit ?? this.constants.defaultPageLimit,
         totalPages: pageInfo.totalPages ?? 0,
       },
     };
