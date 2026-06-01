@@ -53,6 +53,9 @@ module.exports = {
   OPERATION_FAILED: "Operation failed",
   OPERATION_SUCCESS: "Operation successful",
 
+  // Validation
+  DATABASE_ERROR: "A database error occurred.",
+
   // Server / System
   INTERNAL_SERVER_ERROR: "An unexpected server error occurred.",
   NOT_IMPLEMENTED: "This functionality is not implemented.",

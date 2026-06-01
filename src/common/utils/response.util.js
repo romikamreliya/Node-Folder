@@ -39,6 +39,9 @@ class ResponseUtil {
     TOKEN_EXPIRED: { status: 401, success: false },
     TOKEN_INVALID: { status: 401, success: false },
     ACCESS_DENIED: { status: 403, success: false },
+
+    // Customer Errors
+    DATABASE_ERROR: { status: 500, success: false },
   };
 
   /**

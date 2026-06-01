@@ -1,5 +1,6 @@
 const prisma = require("../../infra/database/connection");
 const Constants = require("../utils/constants");
+const AppError = require("../errors/app-error");
 
 class BaseModel {
   constructor({ table, columns = [], hidden = [], primaryKey = "id", limit = Constants.defaultPageLimit }) {
@@ -55,41 +56,73 @@ class BaseModel {
 
   // BASIC CRUD
   async get(options) {
-    return await this.db[this.table].findMany(options);
+    try {
+      return await this.db[this.table].findMany(options);
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async find(query) {
-    return await this.db[this.table].findMany({ where: this.clean(query) });
+    try {
+      return await this.db[this.table].findMany({ where: this.clean(query) });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async findOne(query) {
-    return await this.db[this.table].findFirst({ where: this.clean(query) });
+    try {
+      return await this.db[this.table].findFirst({ where: this.clean(query) });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async insert(data) {
-    return await this.db[this.table].create({ data: this.clean(data) });
+    try {
+      return await this.db[this.table].create({ data: this.clean(data) });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async update(id, data) {
-    return await this.db[this.table].update({
-      where: { [this.primaryKey]: id },
-      data: this.clean(data)
-    });
+    try {
+      return await this.db[this.table].update({
+        where: { [this.primaryKey]: id },
+        data: this.clean(data)
+      });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async updateWhere(query, data) {
-    return await this.db[this.table].update({
-      where: this.clean(query),
-      data: this.clean(data)
-    });
+    try {
+      return await this.db[this.table].update({
+        where: this.clean(query),
+        data: this.clean(data)
+      });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async delete(query) {
-    return await this.db[this.table].deleteMany({ where: this.clean(query) });
+    try {
+      return await this.db[this.table].deleteMany({ where: this.clean(query) });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   async count(query = {}) {
-    return await this.db[this.table].count({ where: this.clean(query) });
+    try {
+      return await this.db[this.table].count({ where: this.clean(query) });
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 
   // PAGINATION + ADVANCED FILTERS
@@ -128,40 +161,44 @@ class BaseModel {
     order = {},
     pagination = true
   } = {}) {
-    // Validate and cap pagination params to prevent DoS
-    const MAX_LIMIT = Constants.maxPageLimit;
-    page = Math.max(1, Math.floor(Number(page) || 1));
-    limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(Number(limit) || this.pageLimit)));
+    try {
+      // Validate and cap pagination params to prevent DoS
+      const MAX_LIMIT = Constants.maxPageLimit;
+      page = Math.max(1, Math.floor(Number(page) || 1));
+      limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(Number(limit) || this.pageLimit)));
 
-    if (!pagination) {
-      const data = await this.db[this.table].findMany({
-        where: filters,
-        select,
-        orderBy: order
-      });
-      return { data };
-    }
-    
-    const [data, total] = await this.db.$transaction([
-      this.db[this.table].findMany({
-        where: filters,
-        select,
-        orderBy: order,
-        skip: (page - 1) * limit,
-        take: limit
-      }),
-      this.db[this.table].count({ where: filters })
-    ]);
-
-    return {
-      data,
-      pagination: {
-        totalRows: total,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
-        limit
+      if (!pagination) {
+        const data = await this.db[this.table].findMany({
+          where: filters,
+          select,
+          orderBy: order
+        });
+        return { data };
       }
-    };
+      
+      const [data, total] = await this.db.$transaction([
+        this.db[this.table].findMany({
+          where: filters,
+          select,
+          orderBy: order,
+          skip: (page - 1) * limit,
+          take: limit
+        }),
+        this.db[this.table].count({ where: filters })
+      ]);
+
+      return {
+        data,
+        pagination: {
+          totalRows: total,
+          totalPages: Math.ceil(total / limit),
+          currentPage: page,
+          limit
+        }
+      };
+    } catch (error) {
+      throw new AppError({type: "DATABASE_ERROR"});
+    }
   }
 }
 
