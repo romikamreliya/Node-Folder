@@ -20,6 +20,16 @@ class AppRouter {
 
   registerRoutes() {
     const router = express.Router();
+    
+    // Health check — no auth, no rate limit
+    router.get("/health", (req, res) => {
+      res.status(200).json({
+        status: "ok",
+        uptime: process.uptime(),
+        timestamp: Date.now(),
+      });
+    });
+
     router.use("/", webRoutes.getRoutes());
     router.use("/api/v1", rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV1());
     router.use("/api/v2", rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV2());

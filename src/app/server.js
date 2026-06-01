@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("../common/utils/env.validator");
 const http = require("http");
 const https = require("https");
 
@@ -132,6 +133,25 @@ class ApplicationServer {
         memoryUtil.startMonitoring(10000);
       }
     });
+    this.setupGracefulShutdown();
+  }
+
+  setupGracefulShutdown() {
+    const shutdown = (signal) => {
+      console.log(`\n${signal} received. Shutting down gracefully...`);
+      this.server.close(() => {
+        console.log("HTTP server closed.");
+        process.exit(0);
+      });
+      // Force exit after 10s if connections aren't closed
+      setTimeout(() => {
+        console.error("Could not close connections in time, forcefully shutting down.");
+        process.exit(1);
+      }, 10000);
+    };
+
+    process.on("SIGTERM", () => shutdown("SIGTERM"));
+    process.on("SIGINT", () => shutdown("SIGINT"));
   }
 }
 

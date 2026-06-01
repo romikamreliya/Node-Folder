@@ -31,7 +31,8 @@ class UserRequestDto extends BaseDTO {
     static filterFromRequest(req) {
         const { name } = req.body || {};
         return { 
-            name:  typeof name === "string" ? name.trim() : ""
+            name:  typeof name === "string" ? name.trim() : "",
+            ...this.extractPagination(req.body)
         };
     }
 
