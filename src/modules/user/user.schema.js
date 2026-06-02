@@ -201,12 +201,10 @@ class UserSchema extends BaseSchema {
    * @returns {Object} { isValid: boolean, errors: Array, validate: Function }
    */
   static validate(data, schemaName) {
-    const schema = this.allSchemas[schemaName];
-    if (!schema) {
-      throw new Error(
-        `Schema '${schemaName}' not found in UserValidationSchemas. Available schemas: ${Object.keys(this.allSchemas).join(", ")}`,
-      );
+    if (!Object.prototype.hasOwnProperty.call(this.allSchemas, schemaName)) {
+      throw new Error(`Schema '${schemaName}' not found in ValidationSchemas. Available schemas: ${Object.keys(this.allSchemas).join(", ")}`);
     }
+    const schema = this.allSchemas[schemaName];
     const validate = this.ajv.ajvCheck(schema.fields, schema.options);
     return {
       isValid: validate(data),
