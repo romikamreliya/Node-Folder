@@ -5,16 +5,24 @@ const userRoutes = require("../modules/user/user.routes");
 const rateLimitMiddleware = require("./middleware/rate-limit.middleware");
 
 class AppRouter {
-  getRoutesV1() {
+
+  constructor() {
+    this.version = {
+      v1: "v1",
+      v2: "v2"
+    }
+  }
+
+  getRoutesV1(version) {
     const router = express.Router();
-    router.use("/public", demoRoutes.getRoutes("v1"));
-    router.use("/user", userRoutes.getRoutes("v1"));
+    router.use("/public", demoRoutes.getRoutes(version));
+    router.use("/user", userRoutes.getRoutes(version));
     return router;
   }
 
-  getRoutesV2() {
+  getRoutesV2(version) {
     const router = express.Router();
-    router.use("/public", demoRoutes.getRoutes("v2"));
+    router.use("/public", demoRoutes.getRoutes(version));
     return router;
   }
 
@@ -31,8 +39,8 @@ class AppRouter {
     });
 
     router.use("/", webRoutes.getRoutes());
-    router.use("/api/v1", rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV1());
-    router.use("/api/v2", rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV2());
+    router.use("/api/" + this.version.v1, rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV1(this.version.v1));
+    router.use("/api/" + this.version.v2, rateLimitMiddleware.globalLimiter.bind(rateLimitMiddleware), rateLimitMiddleware.userLimiter.bind(rateLimitMiddleware), this.getRoutesV2(this.version.v2));
     return router;
   }
 }

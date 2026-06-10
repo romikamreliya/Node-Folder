@@ -35,7 +35,7 @@ class BaseModel {
       return Number.isFinite(value) ? value : 0;
     }
 
-    if (value instanceof Date || Buffer.isBuffer(value)) {
+    if (value instanceof Date || Buffer.isBuffer(value) || ArrayBuffer.isView(value)) {
       return value;
     }
 
