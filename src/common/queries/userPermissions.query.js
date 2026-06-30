@@ -1,8 +1,8 @@
-const prisma = require("../../infra/database/connection");
+const pool = require("../../infra/database/mysql.connection");
 
 class UserPermissionsQuery {
   constructor() {
-    this.db = prisma;
+    this.db = pool;
   }
 
   format(data) {
@@ -14,8 +14,8 @@ class UserPermissionsQuery {
   }
 
   async get(userId) {
-    const data = await this.db.$queryRaw`SELECT * from user_permissions_view WHERE user_id = ${userId}`;
-    return this.format(data);
+    const [rows] = await this.db.promise().query("SELECT * FROM user_permissions_view WHERE user_id = ?", [userId]);
+    return this.format(rows);
   }
 }
 

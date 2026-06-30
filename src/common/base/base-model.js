@@ -1,4 +1,5 @@
 const prisma = require("../../infra/database/connection");
+const mysqlConn = require("../../infra/database/mysql.connection");
 const Constants = require("../utils/constants");
 const AppError = require("../errors/app-error");
 
@@ -10,6 +11,7 @@ class BaseModel {
     this.primaryKey = primaryKey;
     this.pageLimit = limit;
     this.db = prisma;
+    this.mysqlConn = mysqlConn;
   }
 
   clean(data) {
