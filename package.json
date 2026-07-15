@@ -4,52 +4,47 @@
   "description": "",
   "main": "app.js",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "scripts": {
-    "db:setup": "npm run db:migrate && npm run db:seeder",
-    "db:connection": "node ./src/database/migrations db:connection",
-    "db:migrate": "node ./src/database/migrations db:migrate",
-    "db:seeder": "node ./src/database/seeder db:seeder",
-    "db:reset": "node ./src/database/migrations db:reset",
-
-    "migration:create": "node ./src/database/migrations migration:create",
-    "migration:rollback": "node ./src/database/migrations migration:rollback",
-    "migration:status": "node ./src/database/migrations migration:status",
-
-    "seeder:create": "node ./src/database/seeder seeder:create",
-    "seeder:reset": "node ./src/database/seeder seeder:reset",
-
+    "migrate": "node prisma/script.js",
     "test": "jest",
     "start": "node app.js",
-    "load-test": "artillery run test.yml"
+    "load-test": "artillery run test.yml",
+    "format": "prettier --write app.js package.json README.md test.yml ecosystem.config.js jest.config.js \"src/**/*.js\" \"tests/**/*.js\"",
+    "format:check": "prettier --check app.js package.json README.md test.yml ecosystem.config.js jest.config.js \"src/**/*.js\" \"tests/**/*.js\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ajv": "8.18.0",
-    "body-parser": "2.2.2",
+    "@prisma/adapter-better-sqlite3": "^7.7.0",
+    "@prisma/client": "^7.8.0",
+    "ajv": "8.20.0",
     "cors": "^2.8.6",
     "cron": "4.4.0",
-    "dotenv": "17.3.1",
-    "ejs": "^5.0.1",
+    "dotenv": "17.4.2",
+    "ejs": "^6.0.1",
     "express": "5.2.1",
-    "express-rate-limit": "8.3.1",
-    "helmet": "8.1.0",
+    "express-rate-limit": "8.5.2",
+    "helmet": "8.2.0",
     "jsonwebtoken": "^9.0.3",
-    "knex": "^3.2.7",
     "lodash": "^4.17.23",
     "mqtt": "^5.15.1",
-    "multer": "2.1.1",
+    "multer": "2.2.0",
     "mysql": "^2.18.1",
-    "nodemailer": "8.0.4",
+    "mysql2": "^3.22.5",
+    "nodemailer": "9.0.2",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
-    "sqlite3": "^6.0.1",
-    "winston": "^3.11.0"
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "jest": "^30.3.0",
+    "jest": "^30.4.2",
+    "prettier": "^3.9.4",
+    "prisma": "^7.8.0",
     "supertest": "^7.2.2"
   }
 }

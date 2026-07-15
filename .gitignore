@@ -4,3 +4,4 @@ details
 /node_modules
 /logs
 db.sqlite
+prisma/generated/

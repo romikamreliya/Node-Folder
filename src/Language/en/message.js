@@ -14,7 +14,8 @@ module.exports = {
 
   // Error
   BAD_REQUEST: "The request is invalid.",
-  UNAUTHORIZED: "Unauthorized access",
+  UNAUTHORIZED: "Authentication token is required",
+  TOKEN_MISSING: "Authorization token is missing.",
   PAYMENT_REQUIRED: "Payment is required to complete this request.",
   FORBIDDEN: "You do not have permission to access this resource.",
   NOT_FOUND: "The requested resource was not found.",
@@ -24,7 +25,8 @@ module.exports = {
   CONFLICT: "The request could not be completed due to a conflict.",
   UNPROCESSABLE_ENTITY: "The request contains invalid or incomplete data.",
   TOO_MANY_REQUESTS: "Too many requests. Please try again later.",
-  INSUFFICIENT_PERMISSIONS: "You do not have sufficient permissions to perform this action.",
+  INSUFFICIENT_PERMISSIONS:
+    "You do not have sufficient permissions to perform this action.",
 
   // User related
   USER_NOT_FOUND: "User not found",
@@ -50,7 +52,10 @@ module.exports = {
   DATA_EXISTS: "Data already exists",
   OPERATION_FAILED: "Operation failed",
   OPERATION_SUCCESS: "Operation successful",
-  
+
+  // Validation
+  DATABASE_ERROR: "A database error occurred.",
+
   // Server / System
   INTERNAL_SERVER_ERROR: "An unexpected server error occurred.",
   NOT_IMPLEMENTED: "This functionality is not implemented.",
