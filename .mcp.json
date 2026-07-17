@@ -73,6 +73,16 @@
     "motion": {
       "command": "npx",
       "args": ["-y", "motion-mcp"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "./.mcp-memory.json"
+      }
     }
   }
 }
