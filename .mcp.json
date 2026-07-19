@@ -83,6 +83,16 @@
       "env": {
         "MEMORY_FILE_PATH": "./.mcp-memory.json"
       }
+    },
+    "gemini-image": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "gemini-image-studio-mcp"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "gmi-769daf3f776a4a5da63b7fa6661595b7"
+      }
     }
   }
 }
